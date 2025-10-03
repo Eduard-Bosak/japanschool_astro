@@ -1,0 +1,174 @@
+/* =============================================
+   Header Component
+   Компонент шапки сайта
+   ============================================= */
+
+/* Fixed header with blur effect | Фиксированная шапка с размытием */
+.site-header { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  z-index: 50; 
+  -webkit-backdrop-filter: blur(14px); 
+  backdrop-filter: blur(14px); 
+  background: linear-gradient(to bottom, rgba(15 17 21 / .82), rgba(15 17 21 / .55)); 
+  border-bottom: 1px solid rgba(255 255 255 / .06); 
+}
+
+/* Header inner container | Внутренний контейнер шапки */
+.header-inner { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  min-height: 70px; 
+}
+
+/* Brand logo | Логотип бренда */
+.brand { 
+  font-family: var(--font-display); 
+  font-size: 1.35rem; 
+  letter-spacing: .5px; 
+  color: var(--ink); 
+  display: flex; 
+  align-items: center; 
+  gap: .25rem; 
+}
+
+.brand span { 
+  color: var(--primary); 
+  font-weight: 700; 
+}
+
+.brand.sm { 
+  font-size: 1.1rem; 
+}
+
+/* Main navigation | Главная навигация */
+.main-nav ul { 
+  list-style: none; 
+  margin: 0; 
+  padding: 0; 
+  display: flex; 
+  gap: 1.25rem; 
+  align-items: center; 
+}
+
+.main-nav a { 
+  text-decoration: none; 
+  color: var(--ink-soft); 
+  font-weight: 500; 
+  font-size: .95rem; 
+  position: relative; 
+  transition: color .35s ease; 
+}
+
+/* Underline animation on hover | Анимация подчёркивания при наведении */
+.main-nav a::after { 
+  content: ""; 
+  position: absolute; 
+  left: 0; 
+  bottom: -4px; 
+  height: 2px; 
+  width: 0; 
+  background: linear-gradient(90deg, var(--primary), var(--accent)); 
+  border-radius: 2px; 
+  transition: width .4s; 
+}
+
+.main-nav a:hover::after, 
+.main-nav a:focus-visible::after, 
+.main-nav a.active::after { 
+  width: 100%; 
+}
+
+.main-nav a.active { 
+  color: var(--primary); 
+}
+
+.cta-link { 
+  color: var(--primary); 
+  font-weight: 600; 
+}
+
+/* Mobile menu toggle button | Кнопка мобильного меню */
+.nav-toggle { 
+  display: none; 
+  background: none; 
+  border: 1px solid rgba(255 255 255 / .2); 
+  width: 42px; 
+  height: 42px; 
+  border-radius: 50%; 
+  position: relative; 
+  cursor: pointer; 
+}
+
+/* Hamburger icon animation | Анимация иконки гамбургера */
+.nav-toggle span, 
+.nav-toggle span::before, 
+.nav-toggle span::after { 
+  position: absolute; 
+  left: 50%; 
+  top: 50%; 
+  width: 20px; 
+  height: 2px; 
+  background: var(--ink); 
+  content: ""; 
+  transform: translate(-50%, -50%); 
+  transition: var(--trans-fast); 
+}
+
+.nav-toggle span::before { 
+  transform: translate(-50%, -8px); 
+}
+
+.nav-toggle span::after { 
+  transform: translate(-50%, 6px); 
+}
+
+.nav-toggle[aria-expanded="true"] span { 
+  background: transparent; 
+}
+
+.nav-toggle[aria-expanded="true"] span::before { 
+  transform: translate(-50%, 0) rotate(45deg); 
+}
+
+.nav-toggle[aria-expanded="true"] span::after { 
+  transform: translate(-50%, 0) rotate(-45deg); 
+}
+
+/* Header actions (theme toggle, etc.) | Действия в шапке (переключатель темы, и т.д.) */
+.header-actions { 
+  display: flex; 
+  align-items: center; 
+  gap: .75rem; 
+}
+
+/* Theme toggle button | Кнопка переключения темы */
+.theme-toggle { 
+  width: 42px; 
+  height: 42px; 
+  border-radius: 50%; 
+  border: 1px solid rgba(255 255 255 / .18); 
+  background: linear-gradient(135deg, var(--surface), var(--surface-alt)); 
+  cursor: pointer; 
+  position: relative; 
+  box-shadow: var(--shadow-sm); 
+}
+
+.theme-toggle::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 8px; 
+  border-radius: 50%; 
+  background: radial-gradient(circle at 30% 30%, var(--accent), var(--primary)); 
+  mix-blend-mode: screen; 
+  filter: blur(1px); 
+  opacity: .8; 
+  transition: var(--trans-fast); 
+}
+
+[data-theme="light"] .theme-toggle::before { 
+  filter: none; 
+}

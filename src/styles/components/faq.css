@@ -1,0 +1,437 @@
+/* =============================
+   FAQ Component — Extreme Minimalism | Компонент FAQ — Экстремальный минимализм
+   EN: Minimalist accordion with search, filters, progress tracking
+   RU: Минималистичный аккордеон с поиском, фильтрами, отслеживанием прогресса
+   ============================= */
+
+/* ===== FAQ Controls Wrapper | Обёртка элементов управления ===== */
+.faq-controls { 
+  display: grid; 
+  gap: .8rem; 
+  margin: 0 0 1.2rem; 
+  justify-items: center; 
+}
+
+/* ===== Search Input | Поле поиска ===== */
+.faq-search-wrap { 
+  position: relative; 
+  width: min(650px, 100%); 
+}
+
+#faqSearch { 
+  width: 100%; 
+  padding: .7rem 2.5rem .7rem 1rem;          /* Space for reset button | Место для кнопки сброса */
+  border-radius: 4px; 
+  background: #fff; 
+  border: 1px solid #ddd; 
+  font: inherit; 
+  font-size: .85rem; 
+  color: #1a1f28; 
+  transition: border-color .2s; 
+}
+
+#faqSearch::placeholder { 
+  color: #999; 
+}
+
+#faqSearch:focus { 
+  outline: none; 
+  border-color: #ff4d8f; 
+}
+
+[data-theme="light"] #faqSearch { 
+  background: #fff; 
+  border-color: #ddd; 
+}
+
+/* Search reset button | Кнопка сброса поиска */
+.faq-reset { 
+  position: absolute; 
+  right: 2rem; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  width: 24px; 
+  height: 24px; 
+  border-radius: 4px; 
+  border: none; 
+  background: #ff4d8f; 
+  color: #fff; 
+  cursor: pointer; 
+  display: grid; 
+  place-items: center; 
+  font-size: .85rem; 
+  padding: 0; 
+  transition: background .2s; 
+}
+
+.faq-reset:hover { 
+  background: #ff1a6d; 
+}
+
+/* Search results counter | Счётчик результатов поиска */
+.faq-results { 
+  position: absolute; 
+  right: .6rem; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  font-size: .5rem; 
+  font-weight: 600; 
+  letter-spacing: .5px; 
+  text-transform: uppercase; 
+  color: #999; 
+  pointer-events: none; 
+}
+
+/* ===== Category Filters | Фильтры по категориям ===== */
+.faq-filters { 
+  display: flex; 
+  gap: .5rem; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+}
+
+.faq-filter { 
+  background: #ff4d8f;                        /* Active state | Активное состояние */
+  border: none; 
+  color: #fff; 
+  font: inherit; 
+  font-size: .65rem; 
+  font-weight: 600; 
+  letter-spacing: 0; 
+  text-transform: uppercase; 
+  padding: .5rem .8rem; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  transition: background .2s ease; 
+}
+
+.faq-filter.active { 
+  background: #ff1a6d; 
+}
+
+.faq-filter:hover:not(.active) { 
+  background: #ff1a6d; 
+}
+
+/* Inactive filter state | Неактивное состояние фильтра */
+.faq-filter:not(.active) { 
+  background: transparent; 
+  color: #999; 
+  border: 1px solid #ddd; 
+}
+
+.faq-filter:not(.active):hover { 
+  background: #f9f9f9; 
+}
+
+[data-theme="light"] .faq-filter { 
+  background: #ff4d8f; 
+}
+
+[data-theme="light"] .faq-filter:not(.active) { 
+  background: transparent; 
+  border-color: #ddd; 
+}
+
+/* ===== Bulk Actions | Массовые действия ===== */
+.faq-bulk { 
+  font-size: .65rem; 
+  font-weight: 400; 
+  letter-spacing: 0; 
+  text-transform: uppercase; 
+  display: flex; 
+  align-items: center; 
+  gap: .6rem; 
+}
+
+/* Text-only links | Текстовые ссылки */
+.faq-bulk .mini-link { 
+  background: none; 
+  border: none; 
+  color: #ff4d8f; 
+  cursor: pointer; 
+  font: inherit; 
+  font-weight: 400; 
+  padding: 0; 
+  text-decoration: underline; 
+  transition: color .2s ease; 
+}
+
+.faq-bulk .mini-link:hover { 
+  color: #ff1a6d; 
+  text-decoration: none; 
+}
+
+.faq-bulk .sep { 
+  opacity: .3; 
+  font-size: .75rem; 
+  color: #999; 
+}
+
+/* ===== Progress Bar | Индикатор прогресса ===== */
+.faq-progress { 
+  display: flex; 
+  flex-direction: column; 
+  gap: .4rem; 
+  align-items: center; 
+  margin: 0 0 1.2rem; 
+}
+
+.faq-progress-bar { 
+  position: relative; 
+  width: min(680px, 100%); 
+  height: 4px;                                /* Thin bar | Тонкая полоса */
+  background: #eee; 
+  border-radius: 0;                           /* Square edges | Прямые края */
+  overflow: hidden; 
+}
+
+.faq-progress-bar span { 
+  position: absolute; 
+  inset: 0; 
+  width: 0%; 
+  background: #ff4d8f; 
+  transition: width .8s ease; 
+}
+
+.faq-progress-meta { 
+  text-align: center; 
+  font-size: .65rem; 
+  font-weight: 400; 
+  color: #999; 
+}
+
+@media (prefers-reduced-motion: reduce) { 
+  .faq-progress-bar span { 
+    animation: none; 
+  } 
+}
+
+/* ===== FAQ Groups | Группы FAQ ===== */
+.faq-group { 
+  margin: 1rem 0 0; 
+  display: grid; 
+  gap: .6rem; 
+}
+
+.faq-group-title { 
+  margin: 0 0 .5rem; 
+  font-size: .9rem; 
+  font-weight: 600; 
+  letter-spacing: 0; 
+  text-transform: uppercase; 
+  color: #666; 
+  position: relative; 
+  padding-left: 0; 
+}
+
+.faq-group-title::before { 
+  display: none;                              /* No decorative arrow | Без декоративной стрелки */
+}
+
+/* ===== FAQ Items | Элементы FAQ ===== */
+.faq-list { 
+  display: grid; 
+  gap: .6rem; 
+}
+
+.faq-item { 
+  --accent-bar: #ff4d8f;                      /* Left accent color | Цвет левого акцента */
+  background: #fff; 
+  padding: 0; 
+  border: 1px solid #ddd; 
+  border-radius: 4px; 
+  position: relative; 
+  overflow: hidden; 
+  transition: border-color .2s ease; 
+}
+
+.faq-item:hover { 
+  border-color: #bbb; 
+}
+
+.faq-item.open { 
+  border-color: #ff4d8f; 
+}
+
+/* Left accent bar when open | Левая акцентная полоса при открытии */
+.faq-item.open::after { 
+  content: ""; 
+  position: absolute; 
+  left: 0; 
+  top: 0; 
+  bottom: 0; 
+  width: 3px; 
+  background: var(--accent-bar); 
+}
+
+.faq-item.open .faq-trigger-text { 
+  color: #ff4d8f; 
+}
+
+.faq-item.open .faq-icon { 
+  background: #ff4d8f; 
+}
+
+/* Hidden when filtered | Скрыт при фильтрации */
+.faq-item.filter-hide { 
+  display: none !important; 
+}
+
+/* Search highlight | Подсветка поиска */
+.faq-highlight mark { 
+  background: #ff4d8f; 
+  color: #fff; 
+  padding: 1px 3px; 
+  border-radius: 2px; 
+  font-weight: 600; 
+}
+
+[data-theme="light"] .faq-item { 
+  background: #fff; 
+  border-color: #ddd; 
+}
+
+[data-theme="light"] .faq-item.open { 
+  border-color: #ff4d8f; 
+}
+
+/* ===== FAQ Trigger Button | Кнопка-триггер ===== */
+.faq-trigger { 
+  all: unset;                                 /* Reset all styles | Сброс всех стилей */
+  box-sizing: border-box; 
+  cursor: pointer; 
+  display: grid; 
+  grid-template-columns: 1fr auto; 
+  align-items: center; 
+  gap: .8rem; 
+  width: 100%; 
+  padding: .7rem .8rem; 
+  text-align: left; 
+  position: relative; 
+  font-family: var(--font-display); 
+  font-size: .8rem; 
+  line-height: 1.3; 
+  color: #333; 
+  font-weight: 500; 
+  transition: padding .2s ease; 
+}
+
+.faq-item.open .faq-trigger { 
+  padding-bottom: .6rem;                      /* Less padding when open | Меньше отступ при открытии */
+}
+
+.faq-trigger:focus-visible { 
+  outline: 1px solid #ff4d8f; 
+  outline-offset: 1px; 
+  border-radius: 2px; 
+}
+
+.faq-trigger-text { 
+  display: block; 
+  font-weight: 500; 
+  color: #333; 
+  transition: color .2s ease; 
+}
+
+.faq-item.open .faq-trigger-text { 
+  color: #ff4d8f; 
+}
+
+/* ===== FAQ Icon (Plus/Minus) | Иконка FAQ (плюс/минус) ===== */
+.faq-icon { 
+  --sz: 18px;                                 /* Square icon size | Размер квадратной иконки */
+  position: relative; 
+  width: var(--sz); 
+  height: var(--sz); 
+  flex: 0 0 var(--sz); 
+  border-radius: 2px;                         /* Slightly rounded square | Слегка скруглённый квадрат */
+  background: #ddd; 
+  display: grid; 
+  place-items: center; 
+  transition: background .2s ease; 
+}
+
+/* Plus/minus lines | Линии плюса/минуса */
+.faq-icon::before, 
+.faq-icon::after { 
+  content: ""; 
+  position: absolute; 
+  background: #666; 
+  border-radius: 1px; 
+  transition: opacity .2s ease; 
+}
+
+.faq-icon::before { 
+  width: 8px; 
+  height: 1.5px; 
+  transform: translate(-50%, -50%); 
+  top: 50%; 
+  left: 50%; 
+}
+
+.faq-icon::after { 
+  width: 1.5px; 
+  height: 8px; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Hide vertical line when open (minus) | Скрыть вертикаль при открытии (минус) */
+.faq-item.open .faq-icon::after { 
+  opacity: 0; 
+}
+
+/* ===== FAQ Panel (Answer) | Панель FAQ (ответ) ===== */
+.faq-panel { 
+  --panel-max: 0px;                           /* Dynamic max-height set by JS | Динамическая высота от JS */
+  height: auto; 
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height .6s ease, opacity .4s ease; 
+  opacity: 0; 
+  position: relative; 
+}
+
+.faq-item.open .faq-panel { 
+  opacity: 1; 
+  max-height: var(--panel-max); 
+}
+
+.faq-panel-inner { 
+  padding: 0 .8rem .8rem; 
+  font-size: .8rem; 
+  line-height: 1.5; 
+  color: #666; 
+}
+
+.faq-panel-inner p { 
+  margin: .3rem 0 0; 
+}
+
+/* Disable transitions for reduced motion | Отключить переходы для уменьшенной анимации */
+@media (prefers-reduced-motion: reduce) { 
+  .faq-panel, 
+  .faq-icon, 
+  .faq-icon::before, 
+  .faq-icon::after { 
+    transition: none; 
+  } 
+}
+
+[data-theme="light"] .faq-trigger { 
+  color: #333; 
+}
+
+[data-theme="light"] .faq-trigger-text { 
+  color: #333; 
+}
+
+[data-theme="light"] .faq-item.open .faq-trigger-text { 
+  color: #ff4d8f; 
+}
+
+[data-theme="light"] .faq-panel-inner { 
+  color: #666; 
+}

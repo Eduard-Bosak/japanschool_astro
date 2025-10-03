@@ -1,0 +1,209 @@
+/* =============================================
+   Reviews Carousel Component
+   Компонент карусели отзывов
+   ============================================= */
+
+/* Reviews section | Секция отзывов */
+.reviews { 
+  background: linear-gradient(155deg, var(--surface), var(--bg)); 
+  position: relative; 
+  overflow: hidden; 
+}
+
+/* Carousel container | Контейнер карусели */
+.reviews-carousel { 
+  position: relative; 
+  max-width: 880px; 
+  margin: 0 auto; 
+  padding: 2rem 0; 
+}
+
+/* Carousel track | Трек карусели */
+.carousel-track { 
+  display: flex; 
+  gap: 2rem; 
+  overflow-x: auto; 
+  scroll-snap-type: x mandatory; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  padding: 1rem 0; 
+  touch-action: pan-x; 
+  cursor: grab; 
+}
+
+.carousel-track::-webkit-scrollbar { 
+  display: none; 
+}
+
+.carousel-track.grabbing { 
+  cursor: grabbing; 
+}
+
+/* Review card | Карточка отзыва */
+.review-card { 
+  min-width: 100%; 
+  scroll-snap-align: center; 
+  background: linear-gradient(145deg, var(--surface), var(--surface-alt)); 
+  padding: 2rem 2.25rem 2.5rem; 
+  border-radius: var(--radius-lg); 
+  box-shadow: var(--shadow); 
+  border: 1px solid rgba(255 255 255 / .08); 
+  position: relative; 
+  isolation: isolate; 
+}
+
+/* Quote decoration | Декорация кавычек */
+.review-card::before { 
+  content: "\201C"; 
+  position: absolute; 
+  top: 1.5rem; 
+  left: 1.75rem; 
+  font-size: 4.5rem; 
+  line-height: 1; 
+  font-family: Georgia, serif; 
+  color: rgba(var(--primary-rgb)/0.15); 
+  pointer-events: none; 
+}
+
+/* Review text | Текст отзыва */
+.review-text { 
+  font-size: 1rem; 
+  line-height: 1.7; 
+  color: var(--ink-soft); 
+  margin: 0 0 1.5rem; 
+  position: relative; 
+  z-index: 1; 
+}
+
+/* Reviewer info | Информация об авторе */
+.reviewer { 
+  display: flex; 
+  align-items: center; 
+  gap: 1rem; 
+}
+
+.reviewer-avatar { 
+  width: 52px; 
+  height: 52px; 
+  border-radius: 50%; 
+  background: linear-gradient(135deg, rgba(var(--primary-rgb)/0.25), rgba(var(--accent-rgb)/0.25)); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 1.3rem; 
+  font-weight: 600; 
+  color: var(--primary); 
+  border: 2px solid rgba(var(--primary-rgb)/0.35); 
+}
+
+.reviewer-info { 
+  flex: 1; 
+}
+
+.reviewer-name { 
+  font-weight: 600; 
+  font-size: .95rem; 
+  color: var(--ink); 
+  margin: 0; 
+}
+
+.reviewer-title { 
+  font-size: .8rem; 
+  color: var(--ink-dim); 
+  margin: .2rem 0 0; 
+}
+
+/* Rating stars | Звёздный рейтинг */
+.review-rating { 
+  display: flex; 
+  gap: .3rem; 
+  margin-bottom: 1rem; 
+}
+
+.review-rating .star { 
+  color: var(--accent); 
+  font-size: 1rem; 
+}
+
+/* Carousel navigation | Навигация карусели */
+.carousel-nav { 
+  display: flex; 
+  justify-content: center; 
+  gap: .75rem; 
+  margin-top: 2rem; 
+}
+
+.carousel-dot { 
+  width: 10px; 
+  height: 10px; 
+  border-radius: 50%; 
+  background: rgba(255 255 255 / .2); 
+  border: none; 
+  cursor: pointer; 
+  transition: background .3s ease, transform .3s ease; 
+}
+
+.carousel-dot.active { 
+  background: var(--primary); 
+  transform: scale(1.3); 
+}
+
+.carousel-dot:hover { 
+  background: rgba(var(--primary-rgb)/0.5); 
+}
+
+/* Navigation arrows | Стрелки навигации */
+.carousel-arrow { 
+  position: absolute; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  width: 44px; 
+  height: 44px; 
+  border-radius: 50%; 
+  background: rgba(255 255 255 / .08); 
+  border: 1px solid rgba(255 255 255 / .15); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: var(--ink-soft); 
+  cursor: pointer; 
+  transition: background .3s ease, transform .3s ease, color .3s ease; 
+  z-index: 5; 
+}
+
+.carousel-arrow:hover { 
+  background: rgba(var(--primary-rgb)/0.2); 
+  color: var(--primary); 
+  transform: translateY(-50%) scale(1.1); 
+}
+
+.carousel-arrow.prev { left: -60px; }
+.carousel-arrow.next { right: -60px; }
+
+/* Responsive adjustments | Адаптивные настройки */
+@media (max-width: 768px) {
+  .review-card { 
+    padding: 1.5rem 1.35rem 1.75rem; 
+  }
+  
+  .review-card::before { 
+    font-size: 3rem; 
+    top: 1rem; 
+    left: 1rem; 
+  }
+  
+  .carousel-arrow { 
+    width: 36px; 
+    height: 36px; 
+  }
+  
+  .carousel-arrow.prev { left: 0; }
+  .carousel-arrow.next { right: 0; }
+}
+
+/* Disable swipe on desktop | Отключение свайпа на десктопе */
+@media (pointer: fine) {
+  .carousel-track { 
+    overflow-x: hidden; 
+  }
+}

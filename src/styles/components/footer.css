@@ -1,0 +1,115 @@
+/* =============================================
+   Footer Component
+   Компонент подвала
+   ============================================= */
+
+/* Footer container | Контейнер футера */
+.footer { 
+  padding: 2.5rem 0 2rem; 
+  background: linear-gradient(175deg, var(--bg), var(--surface)); 
+  border-top: 1px solid rgba(255 255 255 / .08); 
+  position: relative; 
+  overflow: hidden; 
+}
+
+/* Footer background decoration | Декоративный фон футера */
+.footer::before { 
+  content: ""; 
+  position: absolute; 
+  top: 0; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 800px; 
+  height: 200px; 
+  background: radial-gradient(ellipse at center, rgba(var(--primary-rgb)/0.08), transparent 70%); 
+  pointer-events: none; 
+}
+
+/* Footer content grid | Сетка содержимого футера */
+.footer-inner { 
+  display: grid; 
+  gap: 2.5rem; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+}
+
+/* Footer column | Колонка футера */
+.footer-col h4 { 
+  margin: 0 0 1rem; 
+  font-size: .9rem; 
+  letter-spacing: 2px; 
+  text-transform: uppercase; 
+  color: var(--ink-dim); 
+}
+
+.footer-col ul { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+
+.footer-col li { 
+  margin-bottom: .65rem; 
+}
+
+.footer-col a { 
+  color: var(--ink-soft); 
+  text-decoration: none; 
+  font-size: .88rem; 
+  transition: color .25s ease; 
+}
+
+.footer-col a:hover { 
+  color: var(--primary); 
+}
+
+/* Footer bottom bar | Нижняя полоса футера */
+.footer-bottom { 
+  margin-top: 2.5rem; 
+  padding-top: 1.5rem; 
+  border-top: 1px solid rgba(255 255 255 / .06); 
+  text-align: center; 
+  font-size: .8rem; 
+  color: var(--ink-dim); 
+}
+
+.footer-bottom p { 
+  margin: .35rem 0; 
+}
+
+/* Social links | Социальные ссылки */
+.social-links { 
+  display: flex; 
+  gap: .75rem; 
+  justify-content: center; 
+  margin-top: 1rem; 
+}
+
+.social-links a { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 36px; 
+  height: 36px; 
+  border-radius: 50%; 
+  background: rgba(255 255 255 / .05); 
+  color: var(--ink-soft); 
+  transition: background .25s ease, color .25s ease, transform .25s ease; 
+}
+
+.social-links a:hover { 
+  background: rgba(var(--primary-rgb)/0.15); 
+  color: var(--primary); 
+  transform: translateY(-3px); 
+}
+
+/* Responsive adjustments | Адаптивные настройки */
+@media (max-width: 600px) {
+  .footer-inner { 
+    grid-template-columns: 1fr; 
+    gap: 1.5rem; 
+  }
+  
+  .footer-col { 
+    text-align: center; 
+  }
+}

@@ -1,0 +1,79 @@
+/* =============================================
+   Base Reset & Global Styles
+   Базовый сброс и глобальные стили
+   ============================================= */
+
+/* Box-sizing reset | Сброс box-sizing */
+* { 
+  box-sizing: border-box; 
+}
+
+/* Smooth scrolling | Плавная прокрутка */
+html { 
+  scroll-behavior: smooth; 
+}
+
+/* Body base styles | Базовые стили body */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink-soft);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Subtle noise overlay | Тонкий шумовой оверлей */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: var(--noise);
+  mix-blend-mode: overlay;
+  opacity: .75;
+  z-index: 1;
+}
+
+/* Image defaults | Стили изображений по умолчанию */
+img { 
+  max-width: 100%; 
+  display: block; 
+}
+
+/* Typography defaults | Типографика по умолчанию */
+h1, h2, h3, h4 { 
+  font-family: var(--font-display); 
+  color: var(--ink); 
+  font-weight: 600; 
+  line-height: 1.15; 
+}
+
+p { 
+  line-height: 1.55; 
+}
+
+ul { 
+  padding-left: 1.1rem; 
+}
+
+ul, ol { 
+  margin: .5rem 0 1rem; 
+}
+
+.rich-text ul { 
+  list-style: disc; 
+}
+
+/* Scroll animation utility | Утилита анимации при прокрутке */
+.reveal-on-scroll { 
+  opacity: 0; 
+  transform: translateY(24px) scale(.98); 
+  transition: opacity .9s var(--trans-fast), transform 1s var(--trans-fast); 
+}
+
+.reveal-on-scroll.is-visible { 
+  opacity: 1; 
+  transform: none; 
+}
