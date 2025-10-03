@@ -1,8 +1,38 @@
 {
   "name": "japanschool-landing",
   "version": "1.0.0",
-  "description": "Landing page for Japanese language school (build pipeline + dynamic OG generation).",
+  "description": "Professional landing page for Japanese language school with modular architecture, bilingual comments (EN/RU), and PWA support. Features: 27 ES6 modules, 6 themes, adaptive images (AVIF/WebP/JPG), static blog, canvas animations, offline-first.",
   "type": "module",
+  "keywords": [
+    "japanese-language",
+    "landing-page",
+    "modular-architecture",
+    "pwa",
+    "bilingual",
+    "responsive-images",
+    "static-site",
+    "esbuild",
+    "postcss",
+    "canvas-animations",
+    "sakura"
+  ],
+  "author": {
+    "name": "Eduard Bosak",
+    "url": "https://github.com/Eduard-Bosak"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eduard-Bosak/japanschool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Eduard-Bosak/japanschool/issues"
+  },
+  "homepage": "https://github.com/Eduard-Bosak/japanschool#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "clean": "node build.mjs --clean",
     "build": "cross-env NODE_ENV=production node build.mjs",
@@ -25,3 +55,4 @@
     "marked": "^12.0.2"
   }
 }
+

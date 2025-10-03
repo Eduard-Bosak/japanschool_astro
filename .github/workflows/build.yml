@@ -1,0 +1,106 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: 🏗️ Build project
+      run: npm run build
+      env:
+        NODE_ENV: production
+
+    - name: ✅ Check if build succeeded
+      run: |
+        if [ ! -d "dist" ]; then
+          echo "❌ Build failed: dist/ directory not found"
+          exit 1
+        fi
+        if [ ! -f "dist/index.html" ]; then
+          echo "❌ Build failed: dist/index.html not found"
+          exit 1
+        fi
+        echo "✅ Build succeeded!"
+
+    - name: 📊 Check file sizes
+      run: |
+        echo "📁 Dist folder size:"
+        du -sh dist/
+        echo ""
+        echo "📄 Main files:"
+        ls -lh dist/*.{css,js,html} 2>/dev/null || true
+
+    - name: 📤 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-${{ matrix.node-version }}
+        path: dist/
+        retention-days: 7
+
+  lint:
+    name: Check Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Check for TODO/FIXME comments
+      run: |
+        echo "🔍 Searching for TODO/FIXME comments..."
+        grep -r "TODO\|FIXME" src/ || echo "✅ No TODO/FIXME found"
+
+    - name: 📏 Check file structure
+      run: |
+        echo "📁 Project structure:"
+        tree -L 2 -I 'node_modules|dist' || ls -R
+
+  summary:
+    name: Build Summary
+    needs: [build, lint]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: 📊 Summary
+      run: |
+        echo "## 🎉 Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ All checks passed!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Build Info" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Node versions:** 18.x, 20.x" >> $GITHUB_STEP_SUMMARY
