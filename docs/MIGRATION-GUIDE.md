@@ -1,4 +1,5 @@
 # 🔄 Руководство по миграции на модульную архитектуру
+
 # 🔄 Migration Guide to Modular Architecture
 
 **Дата миграции / Migration Date:** 3 октября 2025  
@@ -8,15 +9,20 @@
 
 ## 📋 Краткое содержание / Summary
 
-**RU:** Проект полностью реорганизован в модульную структуру. Монолитные файлы `styles.css` (653 строки) и `main.js` (1310 строк) разделены на 27 специализированных модулей.
+**RU:** Проект полностью реорганизован в модульную структуру. Монолитные файлы
+`styles.css` (653 строки) и `main.js` (1310 строк) разделены на 27
+специализированных модулей.
 
-**EN:** The project has been fully reorganized into a modular structure. Monolithic files `styles.css` (653 lines) and `main.js` (1310 lines) were split into 27 specialized modules.
+**EN:** The project has been fully reorganized into a modular structure.
+Monolithic files `styles.css` (653 lines) and `main.js` (1310 lines) were split
+into 27 specialized modules.
 
 ---
 
 ## 🗂️ Структура файлов / File Structure
 
 ### До миграции / Before Migration
+
 ```
 japanschool/
 ├── styles.css              (653 строки / 653 lines)
@@ -25,6 +31,7 @@ japanschool/
 ```
 
 ### После миграции / After Migration
+
 ```
 japanschool/
 ├── src/
@@ -52,6 +59,7 @@ japanschool/
 **EN:** 16 modules instead of one monolithic file.
 
 #### Base система / Base System (271 строка / 271 lines)
+
 ```
 src/styles/base/
 ├── variables.css       # Design tokens (--primary, --bg, --shadow)
@@ -61,6 +69,7 @@ src/styles/base/
 ```
 
 #### UI Компоненты / UI Components (2229 строк / 2229 lines)
+
 ```
 src/styles/components/
 ├── preloader.css       # Loading screen with animated ring
@@ -83,6 +92,7 @@ src/styles/components/
 **EN:** 11 ES6 modules with import/export instead of one file.
 
 #### Утилиты / Utilities (240 строк / 240 lines)
+
 ```
 src/scripts/utils/
 ├── analytics.js        # Event tracking system (track, getQueue)
@@ -90,6 +100,7 @@ src/scripts/utils/
 ```
 
 #### UI Компоненты / UI Components (1770 строк / 1770 lines)
+
 ```
 src/scripts/components/
 ├── theme.js            # Theme switcher (6 themes)
@@ -108,17 +119,19 @@ src/scripts/components/
 ## 🔧 Build система / Build System
 
 ### Старая конфигурация / Old Configuration
+
 ```javascript
 // build.mjs (OLD)
 const cssEntry = 'styles.css';
 const jsEntry = 'main.js';
 await esbuild.build({
   entryPoints: [jsEntry],
-  bundle: false  // ❌ No bundling
+  bundle: false // ❌ No bundling
 });
 ```
 
 ### Новая конфигурация / New Configuration
+
 ```javascript
 // build.mjs (NEW)
 /* EN: Use modular entry point src/styles.css
@@ -130,8 +143,8 @@ const cssEntry = 'src/styles.css';
 const jsEntry = 'src/scripts/main.js';
 await esbuild.build({
   entryPoints: [jsEntry],
-  bundle: true,     // ✅ Bundle ES6 modules
-  format: 'esm'     // ✅ ES6 format
+  bundle: true, // ✅ Bundle ES6 modules
+  format: 'esm' // ✅ ES6 format
 });
 ```
 
@@ -140,6 +153,7 @@ await esbuild.build({
 ## 📦 Импорты и экспорты / Imports and Exports
 
 ### CSS (@import)
+
 ```css
 /* src/styles.css */
 
@@ -158,6 +172,7 @@ await esbuild.build({
 ```
 
 ### JavaScript (ES6 import/export)
+
 ```javascript
 // src/scripts/main.js
 
@@ -184,24 +199,28 @@ function initializeApp() {
 
 ## 🌐 Двуязычные комментарии / Bilingual Comments
 
-**RU:** Все новые модули содержат комментарии на английском и русском языках для работы мультинациональных команд.
+**RU:** Все новые модули содержат комментарии на английском и русском языках для
+работы мультинациональных команд.
 
-**EN:** All new modules contain comments in English and Russian for multinational team collaboration.
+**EN:** All new modules contain comments in English and Russian for
+multinational team collaboration.
 
 ### Шаблон комментариев / Comment Pattern
 
 #### Однострочные / Single-line
+
 ```javascript
 /* EN: Track analytics event | RU: Отслеживание события аналитики */
 track('faq_open', { id });
 ```
 
 #### JSDoc блоки / JSDoc Blocks
+
 ```javascript
 /**
  * EN: Open FAQ item with smooth animation
  * RU: Открытие элемента FAQ с плавной анимацией
- * 
+ *
  * @param {HTMLElement} trigger - Trigger button | Кнопка триггера
  * @param {boolean} silent - Don't track event | Не отслеживать событие
  */
@@ -211,6 +230,7 @@ function open(trigger, silent = false) {
 ```
 
 #### CSS комментарии / CSS Comments
+
 ```css
 /* EN: Primary button with gradient background
    RU: Основная кнопка с градиентным фоном */
@@ -224,6 +244,7 @@ function open(trigger, silent = false) {
 ## ✅ Чеклист миграции / Migration Checklist
 
 ### 1. **Проверка build системы / Build System Check**
+
 - [x] ✅ Обновлён `build.mjs` с новыми entry points
 - [x] ✅ CSS @import резолвятся через PostCSS
 - [x] ✅ JavaScript модули бандлятся через esbuild
@@ -231,6 +252,7 @@ function open(trigger, silent = false) {
 - [x] ✅ `index.html` обновляется с правильными путями
 
 ### 2. **Тестирование в браузере / Browser Testing**
+
 - [ ] ⏳ Открыть `dist/index.html` в браузере
 - [ ] ⏳ Проверить консоль на ошибки импортов
 - [ ] ⏳ Протестировать каждый модуль:
@@ -246,6 +268,7 @@ function open(trigger, silent = false) {
   - [ ] Spotlight cursor effect (hero section)
 
 ### 3. **Производительность / Performance**
+
 - [x] ✅ CSS минифицирован (~3 KB)
 - [x] ✅ JavaScript минифицирован (~27 KB)
 - [ ] ⏳ Lighthouse score > 90
@@ -253,6 +276,7 @@ function open(trigger, silent = false) {
 - [ ] ⏳ Time to Interactive < 3s
 
 ### 4. **Документация / Documentation**
+
 - [x] ✅ `README.md` обновлён с модульной архитектурой
 - [x] ✅ `AUDIT-REPORT.md` обновлён с новой структурой
 - [x] ✅ `MIGRATION-GUIDE.md` создан (этот файл)
@@ -264,7 +288,8 @@ function open(trigger, silent = false) {
 
 **Нет известных проблем / No known issues**
 
-Build система работает корректно, все импорты резолвятся, размеры бандлов оптимальны.
+Build система работает корректно, все импорты резолвятся, размеры бандлов
+оптимальны.
 
 ---
 
@@ -275,46 +300,53 @@ Build система работает корректно, все импорты 
 **EN:** If something goes wrong, quick rollback is possible:
 
 ### 1. Восстановить старые entry points
+
 ```javascript
 // build.mjs
-const cssEntry = 'styles.css';  // вместо src/styles.css
-const jsEntry = 'main.js';      // вместо src/scripts/main.js
+const cssEntry = 'styles.css'; // вместо src/styles.css
+const jsEntry = 'main.js'; // вместо src/scripts/main.js
 await esbuild.build({
-  bundle: false  // отключить бандлинг модулей
+  bundle: false // отключить бандлинг модулей
 });
 ```
 
 ### 2. Удалить папку src/
+
 ```bash
 rm -rf src/
 ```
 
 ### 3. Пересобрать проект
+
 ```bash
 npm run build
 ```
 
-**RU:** Старые файлы `styles.css` и `main.js` всё ещё находятся в корне проекта и не были изменены.
+**RU:** Старые файлы `styles.css` и `main.js` всё ещё находятся в корне проекта
+и не были изменены.
 
-**EN:** Old files `styles.css` and `main.js` are still in the project root and were not modified.
+**EN:** Old files `styles.css` and `main.js` are still in the project root and
+were not modified.
 
 ---
 
 ## 📊 Статистика проекта / Project Statistics
 
-| Метрика / Metric | До / Before | После / After | Изменение / Change |
-|------------------|-------------|---------------|-------------------|
-| CSS файлов / CSS files | 1 | 17 | +1600% |
-| JS файлов / JS files | 1 | 12 | +1100% |
-| Строк CSS / CSS lines | 653 | 2,500+ | +283% |
-| Строк JS / JS lines | 1,310 | 2,130+ | +63% |
-| Размер CSS bundle / CSS bundle size | ~3 KB | ~3 KB | 0% (без изменений) |
-| Размер JS bundle / JS bundle size | ~27 KB | ~27 KB | 0% (без изменений) |
-| Двуязычные комментарии / Bilingual comments | 0 | 100% | +∞ |
+| Метрика / Metric                            | До / Before | После / After | Изменение / Change |
+| ------------------------------------------- | ----------- | ------------- | ------------------ |
+| CSS файлов / CSS files                      | 1           | 17            | +1600%             |
+| JS файлов / JS files                        | 1           | 12            | +1100%             |
+| Строк CSS / CSS lines                       | 653         | 2,500+        | +283%              |
+| Строк JS / JS lines                         | 1,310       | 2,130+        | +63%               |
+| Размер CSS bundle / CSS bundle size         | ~3 KB       | ~3 KB         | 0% (без изменений) |
+| Размер JS bundle / JS bundle size           | ~27 KB      | ~27 KB        | 0% (без изменений) |
+| Двуязычные комментарии / Bilingual comments | 0           | 100%          | +∞                 |
 
-**RU:** Размеры бандлов не изменились, так как esbuild эффективно минифицирует код.
+**RU:** Размеры бандлов не изменились, так как esbuild эффективно минифицирует
+код.
 
-**EN:** Bundle sizes did not change because esbuild efficiently minifies the code.
+**EN:** Bundle sizes did not change because esbuild efficiently minifies the
+code.
 
 ---
 
@@ -342,26 +374,32 @@ npm run build
 ## 💡 Преимущества модульной архитектуры / Benefits of Modular Architecture
 
 ### 1. **Поддерживаемость / Maintainability**
+
 - **RU:** Легко найти и исправить код конкретного компонента
 - **EN:** Easy to find and fix code for specific components
 
 ### 2. **Масштабируемость / Scalability**
+
 - **RU:** Новые компоненты добавляются без конфликтов
 - **EN:** New components added without conflicts
 
 ### 3. **Переиспользование / Reusability**
+
 - **RU:** Модули можно использовать в других проектах
 - **EN:** Modules can be reused in other projects
 
 ### 4. **Командная работа / Team Collaboration**
+
 - **RU:** Разные разработчики могут работать над разными модулями
 - **EN:** Different developers can work on different modules
 
 ### 5. **Двуязычная документация / Bilingual Documentation**
+
 - **RU:** Поддержка мультинациональных команд (EN/RU)
 - **EN:** Support for multinational teams (EN/RU)
 
 ### 6. **Tree-shaking**
+
 - **RU:** Неиспользуемый код автоматически удаляется при сборке
 - **EN:** Unused code is automatically removed during build
 
@@ -369,9 +407,11 @@ npm run build
 
 ## 📞 Контакты / Contacts
 
-**RU:** Если у вас возникли вопросы по миграции, создайте issue в репозитории проекта.
+**RU:** Если у вас возникли вопросы по миграции, создайте issue в репозитории
+проекта.
 
-**EN:** If you have questions about the migration, create an issue in the project repository.
+**EN:** If you have questions about the migration, create an issue in the
+project repository.
 
 ---
 

@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{TITLE}}</title>
+    <meta name="description" content="{{DESCRIPTION}}" />
+    <meta name="keywords" content="{{KEYWORDS}}" />
+    {{META_TAGS}}
+    <link rel="stylesheet" href="/{{CSS_REF}}" />
+    <script defer src="/{{JS_REF}}"></script>
+    <style>
+      /* Inline critical CSS */
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: rgba(255 255 255/0.08);
+        z-index: 300;
+      }
+      .reading-progress span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        transition: width 0.15s;
+      }
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: rgba(var(--bg-rgb) / 0.85);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid rgba(255 255 255/0.06);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+        width: min(1240px, 100% - 3rem);
+        margin: 0 auto;
+      }
+      .brand {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.35rem;
+        letter-spacing: 0.5px;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        text-decoration: none;
+      }
+      .brand span {
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .main-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1.75rem;
+        align-items: center;
+      }
+      .main-nav a {
+        text-decoration: none;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: color 0.25s;
+        letter-spacing: 0.3px;
+      }
+      .main-nav a:hover,
+      .main-nav a.cta-link {
+        color: var(--primary);
+      }
+      .nav-toggle {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .main-nav {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: var(--surface);
+          border-bottom: 1px solid rgba(255 255 255/0.08);
+          padding: 1.5rem;
+          transform: translateY(-100%);
+          opacity: 0;
+          pointer-events: none;
+          transition:
+            transform 0.3s,
+            opacity 0.3s;
+        }
+        .main-nav.open {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .main-nav ul {
+          flex-direction: column;
+          gap: 1.25rem;
+          align-items: flex-start;
+        }
+        .nav-toggle {
+          display: block;
+          background: none;
+          border: none;
+          width: 32px;
+          height: 32px;
+          cursor: pointer;
+          position: relative;
+        }
+        .nav-toggle span,
+        .nav-toggle span::before,
+        .nav-toggle span::after {
+          display: block;
+          width: 24px;
+          height: 2px;
+          background: var(--ink-soft);
+          transition:
+            transform 0.3s,
+            opacity 0.3s;
+        }
+        .nav-toggle span {
+          position: relative;
+        }
+        .nav-toggle span::before,
+        .nav-toggle span::after {
+          content: '';
+          position: absolute;
+          left: 0;
+        }
+        .nav-toggle span::before {
+          top: -7px;
+        }
+        .nav-toggle span::after {
+          top: 7px;
+        }
+        .nav-toggle[aria-expanded='true'] span {
+          background: transparent;
+        }
+        .nav-toggle[aria-expanded='true'] span::before {
+          transform: rotate(45deg);
+          top: 0;
+        }
+        .nav-toggle[aria-expanded='true'] span::after {
+          transform: rotate(-45deg);
+          top: 0;
+        }
+      }
+    </style>
+    {{SCHEMA_JSON}}
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true"><span id="readingBar"></span></div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="/" class="brand">日本語<span>School</span></a>
+        <nav class="main-nav" aria-label="Главная навигация">
+          <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="Меню">
+            <span></span>
+          </button>
+          <ul id="navMenu">
+            <li><a href="/">Главная</a></li>
+            <li><a href="/#about">О школе</a></li>
+            <li><a href="/#programs">Программы</a></li>
+            <li><a href="/blog/">Блог</a></li>
+            <li><a href="/#contact" class="cta-link">Запись</a></li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему"></button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container rich-text" style="padding: 7rem 0 4rem; max-width: 820px">
+      <nav style="margin-bottom: 1.5rem">
+        <a
+          href="/"
+          style="
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--primary);
+          "
+          >← Главная</a
+        >
+        <span style="color: var(--ink-dim); margin: 0 0.5rem">/</span>
+        <a
+          href="/blog/"
+          style="
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+          "
+          >Блог</a
+        >
+      </nav>
+      {{ARTICLE_CONTENT}}
+    </main>
+
+    <!-- Reading Mode Controls -->
+    <aside class="reading-controls" aria-label="Настройки чтения">
+      <div class="reading-controls-section">
+        <span class="reading-control-label">Размер</span>
+        <button
+          class="reading-control-btn"
+          data-mode="small"
+          data-tooltip="Уменьшить текст"
+          aria-label="Уменьшить размер текста"
+        >
+          A-
+        </button>
+        <button
+          class="reading-control-btn"
+          data-mode="large"
+          data-tooltip="Увеличить текст"
+          aria-label="Увеличить размер текста"
+        >
+          A+
+        </button>
+        <button
+          class="reading-control-btn"
+          data-mode="xlarge"
+          data-tooltip="Очень крупный текст"
+          aria-label="Очень крупный текст"
+        >
+          A++
+        </button>
+      </div>
+      <div class="reading-controls-separator"></div>
+      <div class="reading-controls-section">
+        <span class="reading-control-label">Вид</span>
+        <button
+          class="reading-control-btn"
+          data-mode="serif"
+          data-tooltip="Шрифт с засечками"
+          aria-label="Переключить шрифт"
+        >
+          Aa
+        </button>
+        <button
+          class="reading-control-btn"
+          data-mode="wide"
+          data-tooltip="Широкая колонка"
+          aria-label="Широкая колонка"
+        >
+          ⇔
+        </button>
+        <button class="reading-control-btn" data-mode="focus" data-tooltip="Режим фокуса" aria-label="Режим фокуса">
+          ◉
+        </button>
+        <button
+          class="reading-control-btn"
+          data-mode="contrast"
+          data-tooltip="Высокий контраст"
+          aria-label="Высокий контраст"
+        >
+          ◐
+        </button>
+      </div>
+      <div class="reading-controls-separator"></div>
+      <div class="reading-controls-section">
+        <span class="reading-control-label">Действия</span>
+        <button
+          class="reading-control-btn print-btn"
+          onclick="window.print()"
+          data-tooltip="Печать"
+          aria-label="Распечатать статью"
+        >
+          🖨
+        </button>
+        <button
+          class="reading-control-btn share-btn"
+          id="shareBtn"
+          data-tooltip="Поделиться"
+          aria-label="Поделиться статьей"
+        >
+          🔗
+        </button>
+        <button
+          class="reading-control-btn bookmark-btn"
+          id="bookmarkBtn"
+          data-tooltip="Закладка"
+          aria-label="Добавить в закладки"
+        >
+          ★
+        </button>
+      </div>
+    </aside>
+
+    <!-- Reading Time Estimate -->
+    <div class="reading-time-estimate" id="timeEstimate">
+      Осталось читать: <span class="reading-time-value">~{{READING_TIME}} мин</span>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="foot-brand">
+          <div class="brand sm">日本語<span>School</span></div>
+          <p class="foot-tagline">Японский язык как система мышления.</p>
+        </div>
+        <nav class="foot-nav" aria-label="Дополнительные ссылки">
+          <ul>
+            <li><a href="/#programs">Программы</a></li>
+            <li><a href="/#method">Методика</a></li>
+            <li><a href="/#contact">Контакты</a></li>
+          </ul>
+        </nav>
+        <div class="foot-meta">
+          <p>© {{YEAR}} Школа японского языка. Все права защищены.</p>
+        </div>
+      </div>
+    </footer>
+
+    {{SCRIPTS}}
+  </body>
+</html>

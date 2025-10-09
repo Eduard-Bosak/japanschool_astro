@@ -36,17 +36,17 @@ function slideWidth() {
 /**
  * EN: Translate carousel to current index
  * RU: Перемещение карусели к текущему индексу
- * 
+ *
  * @param {boolean} withTransition - Use CSS transition | Использовать CSS переход
  */
 function translate(withTransition = true) {
   if (!withTransition) {
     carouselTrack.style.transition = 'none';
   }
-  
+
   const offset = -(slideWidth() + gap()) * index;
   carouselTrack.style.transform = `translateX(${offset}px)`;
-  
+
   if (!withTransition) {
     /* EN: Force reflow to apply immediate position without transition
        RU: Принудительный reflow для применения мгновенной позиции без перехода */
@@ -71,13 +71,13 @@ function currentRealIndex() {
  */
 function updateDots() {
   const realIndex = currentRealIndex();
-  
+
   dots.forEach((d, i) => {
     const isActive = i === realIndex;
     d.setAttribute('aria-selected', String(isActive));
     d.setAttribute('tabindex', isActive ? '0' : '-1');
   });
-  
+
   if (live) {
     live.textContent = `Слайд ${realIndex + 1} из ${baseSlides.length}`;
   }
@@ -86,7 +86,7 @@ function updateDots() {
 /**
  * EN: Go to specific slide by real index
  * RU: Переход к конкретному слайду по реальному индексу
- * 
+ *
  * @param {number} realIndex - Real slide index | Реальный индекс слайда
  * @param {boolean} userTriggered - User initiated | Инициировано пользователем
  */
@@ -94,7 +94,7 @@ function goToActual(realIndex, userTriggered = false) {
   index = realIndex + 1; // EN: Account for leading clone | RU: Учёт ведущего клона
   translate();
   updateDots();
-  
+
   if (userTriggered) {
     restartAuto();
     track('reviews_carousel_goTo', { index: realIndex });
@@ -104,12 +104,14 @@ function goToActual(realIndex, userTriggered = false) {
 /**
  * EN: Shift carousel by delta
  * RU: Сдвиг карусели на дельту
- * 
+ *
  * @param {number} delta - Shift amount | Величина сдвига
  */
 function shift(delta) {
-  if (isTransitioning) return;
-  
+  if (isTransitioning) {
+    return;
+  }
+
   index += delta;
   isTransitioning = true;
   translate();
@@ -122,7 +124,7 @@ function shift(delta) {
  */
 function handleTransitionEnd() {
   isTransitioning = false;
-  
+
   /* EN: Jump to opposite clone for seamless loop
      RU: Прыжок к противоположному клону для бесшовного зацикливания */
   if (index === 0) {
@@ -163,8 +165,10 @@ function prev() {
  * RU: Запуск автопроигрывания
  */
 export function startAuto() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
   stopAuto();
   autoTimer = setInterval(() => shift(1), INTERVAL);
 }
@@ -174,7 +178,9 @@ export function startAuto() {
  * RU: Остановка автопроигрывания
  */
 export function stopAuto() {
-  if (autoTimer) clearInterval(autoTimer);
+  if (autoTimer) {
+    clearInterval(autoTimer);
+  }
 }
 
 /**
@@ -191,25 +197,32 @@ function restartAuto() {
  * RU: Настройка drag/swipe взаимодействия
  */
 function setupDragSwipe() {
-  carouselTrack.addEventListener('pointerdown', e => {
-    let startX = e.clientX;
+  carouselTrack.addEventListener('pointerdown', (e) => {
+    const startX = e.clientX;
     let moved = false;
-    
-    const move = ev => {
-      if (Math.abs(ev.clientX - startX) > 10) moved = true;
+
+    const move = (ev) => {
+      if (Math.abs(ev.clientX - startX) > 10) {
+        moved = true;
+      }
     };
-    
-    const up = ev => {
+
+    const up = (ev) => {
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
-      
-      if (!moved) return;
-      
+
+      if (!moved) {
+        return;
+      }
+
       const diff = ev.clientX - startX;
-      if (diff < -40) next();
-      else if (diff > 40) prev();
+      if (diff < -40) {
+        next();
+      } else if (diff > 40) {
+        prev();
+      }
     };
-    
+
     window.addEventListener('pointermove', move, { passive: true });
     window.addEventListener('pointerup', up, { passive: true });
   });
@@ -221,8 +234,8 @@ function setupDragSwipe() {
  */
 function setupKeyboard() {
   carouselTrack.setAttribute('tabindex', '0');
-  
-  carouselTrack.addEventListener('keydown', e => {
+
+  carouselTrack.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') {
       next();
       e.preventDefault();
@@ -248,8 +261,10 @@ function setupKeyboard() {
  */
 function setupPauseOnInteraction() {
   const region = document.getElementById('reviews');
-  if (!region) return;
-  
+  if (!region) {
+    return;
+  }
+
   region.addEventListener('mouseenter', stopAuto);
   region.addEventListener('mouseleave', startAuto);
   region.addEventListener('focusin', stopAuto);
@@ -266,44 +281,50 @@ export function init() {
   nextBtn = document.querySelector('.reviews-controls [data-dir="next"]');
   dotsWrap = document.getElementById('revDots');
   live = document.getElementById('reviewsStatus');
-  
-  if (!carouselTrack || !prevBtn || !nextBtn || !dotsWrap) return;
-  
+
+  if (!carouselTrack || !prevBtn || !nextBtn || !dotsWrap) {
+    return;
+  }
+
   baseSlides = Array.from(carouselTrack.children);
   const totalSlides = baseSlides.length;
-  
-  if (totalSlides === 0) return;
-  
+
+  if (totalSlides === 0) {
+    return;
+  }
+
   /* EN: Setup ARIA attributes
      RU: Настройка ARIA атрибутов */
   carouselTrack.setAttribute('role', 'group');
   carouselTrack.setAttribute('aria-live', 'off');
   carouselTrack.setAttribute('aria-roledescription', 'track');
-  
+
   /* EN: Clone edge slides for seamless looping
      RU: Клонирование крайних слайдов для бесшовного зацикливания */
   const firstClone = baseSlides[0].cloneNode(true);
   const lastClone = baseSlides[totalSlides - 1].cloneNode(true);
-  
+
   firstClone.classList.add('is-clone');
   lastClone.classList.add('is-clone');
   firstClone.setAttribute('aria-hidden', 'true');
   lastClone.setAttribute('aria-hidden', 'true');
-  
+
   carouselTrack.appendChild(firstClone);
   carouselTrack.insertBefore(lastClone, baseSlides[0]);
-  
+
   slidesWithClones = Array.from(carouselTrack.children);
-  
+
   /* EN: Add ARIA labels to real slides
      RU: Добавление ARIA меток к реальным слайдам */
-  slidesWithClones.forEach((slide, idx) => {
-    if (slide.classList.contains('is-clone')) return;
-    
+  slidesWithClones.forEach((slide, _idx) => {
+    if (slide.classList.contains('is-clone')) {
+      return;
+    }
+
     slide.setAttribute('role', 'group');
     slide.setAttribute('aria-label', `Слайд ${baseSlides.indexOf(slide) + 1} из ${totalSlides}`);
   });
-  
+
   /* EN: Build dot indicators
      RU: Построение индикаторов точек */
   baseSlides.forEach((_, i) => {
@@ -311,40 +332,42 @@ export function init() {
     d.type = 'button';
     d.setAttribute('role', 'tab');
     d.setAttribute('aria-label', `Отзыв ${i + 1}`);
-    
-    if (i === 0) d.setAttribute('aria-selected', 'true');
+
+    if (i === 0) {
+      d.setAttribute('aria-selected', 'true');
+    }
     d.setAttribute('tabindex', i === 0 ? '0' : '-1');
-    
+
     d.addEventListener('click', () => goToActual(i, true));
     dotsWrap.appendChild(d);
   });
-  
+
   dots = Array.from(dotsWrap.children);
-  
+
   /* EN: Setup navigation buttons
      RU: Настройка кнопок навигации */
   prevBtn.addEventListener('click', () => prev());
   nextBtn.addEventListener('click', () => next());
-  
+
   /* EN: Setup interactions
      RU: Настройка взаимодействий */
   carouselTrack.addEventListener('transitionend', handleTransitionEnd);
   setupDragSwipe();
   setupKeyboard();
   setupPauseOnInteraction();
-  
+
   /* EN: Update on window resize
      RU: Обновление при изменении размера окна */
   window.addEventListener('resize', () => {
     translate(false);
   });
-  
+
   /* EN: Initial setup
      RU: Начальная настройка */
   translate(false);
   updateDots();
   startAuto();
-  
+
   /* EN: Export control functions
      RU: Экспорт функций управления */
   window.startCarouselAuto = startAuto;

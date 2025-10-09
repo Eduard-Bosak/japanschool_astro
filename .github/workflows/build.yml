@@ -77,6 +77,12 @@ jobs:
     - name: 📦 Install dependencies
       run: npm ci
 
+    - name: 🎨 Run Prettier Check
+      run: npm run format:check
+
+    - name: 🔍 Run ESLint
+      run: npm run lint
+
     - name: 🔍 Check for TODO/FIXME comments
       run: |
         echo "🔍 Searching for TODO/FIXME comments..."

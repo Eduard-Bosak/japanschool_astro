@@ -5,6 +5,9 @@ package-lock.json
 # Build output / Результат сборки
 dist/
 
+# Lighthouse CI reports / Отчёты Lighthouse CI
+.lighthouseci/
+
 # Environment variables / Переменные окружения
 .env
 .env.local

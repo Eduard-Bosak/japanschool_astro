@@ -15,29 +15,29 @@ let lastFocus = null;
 /**
  * EN: Open lightbox at specific image index
  * RU: Открытие лайтбокса с конкретным изображением
- * 
+ *
  * @param {number} i - Image index | Индекс изображения
  */
 function open(i) {
   current = (i + images.length) % images.length;
-  
+
   const fig = images[current].closest('figure');
-  
+
   /* EN: Update lightbox content
      RU: Обновление содержимого лайтбокса */
   imgEl.src = images[current].src;
   imgEl.alt = images[current].alt || '';
   caption.textContent = fig?.querySelector('figcaption')?.textContent || '';
-  
+
   /* EN: Show lightbox
      RU: Показ лайтбокса */
   lightbox.classList.add('open');
-  
+
   /* EN: Store last focused element and focus close button
      RU: Сохранение последнего сфокусированного элемента и фокус на кнопку закрытия */
   lastFocus = document.activeElement;
   setTimeout(() => closeBtn.focus(), 40);
-  
+
   track('lightbox_open', { index: current, src: imgEl.src });
 }
 
@@ -47,7 +47,7 @@ function open(i) {
  */
 function close() {
   lightbox.classList.remove('open');
-  
+
   /* EN: Restore focus to triggering element
      RU: Восстановление фокуса на триггерный элемент */
   if (lastFocus) {
@@ -58,7 +58,7 @@ function close() {
 /**
  * EN: Navigate to previous/next image
  * RU: Навигация к предыдущему/следующему изображению
- * 
+ *
  * @param {number} dir - Direction (-1 or 1) | Направление (-1 или 1)
  */
 function show(dir) {
@@ -70,9 +70,11 @@ function show(dir) {
  * RU: Настройка клавиатурной навигации
  */
 function setupKeyboard() {
-  window.addEventListener('keydown', e => {
-    if (!lightbox.classList.contains('open')) return;
-    
+  window.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) {
+      return;
+    }
+
     if (e.key === 'Escape') {
       close();
     }
@@ -103,9 +105,9 @@ function createLightbox() {
       <p class="lightbox-caption" aria-live="polite"></p>
     </div>
   `;
-  
+
   document.body.appendChild(lightbox);
-  
+
   /* EN: Get lightbox elements
      RU: Получение элементов лайтбокса */
   imgEl = lightbox.querySelector('img');
@@ -123,15 +125,15 @@ function setupEventListeners() {
   /* EN: Close button
      RU: Кнопка закрытия */
   closeBtn.addEventListener('click', close);
-  
+
   /* EN: Navigation buttons
      RU: Кнопки навигации */
   prevNav.addEventListener('click', () => show(-1));
   nextNav.addEventListener('click', () => show(1));
-  
+
   /* EN: Click outside to close
      RU: Клик вне области для закрытия */
-  lightbox.addEventListener('click', e => {
+  lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) {
       close();
     }
@@ -148,14 +150,14 @@ function setupGalleryImages() {
        RU: Сделать изображения фокусируемыми и кликабельными */
     im.style.cursor = 'zoom-in';
     im.setAttribute('tabindex', '0');
-    
+
     /* EN: Click handler
        RU: Обработчик клика */
     im.addEventListener('click', () => open(i));
-    
+
     /* EN: Keyboard handler
        RU: Обработчик клавиатуры */
-    im.addEventListener('keydown', e => {
+    im.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         open(i);
@@ -170,15 +172,19 @@ function setupGalleryImages() {
  */
 export function init() {
   const gallery = document.querySelector('.gallery-grid');
-  if (!gallery) return;
-  
+  if (!gallery) {
+    return;
+  }
+
   /* EN: Get all gallery images
      RU: Получение всех изображений галереи */
   const figures = Array.from(gallery.querySelectorAll('figure'));
-  images = figures.map(f => f.querySelector('img')).filter(Boolean);
-  
-  if (images.length === 0) return;
-  
+  images = figures.map((f) => f.querySelector('img')).filter(Boolean);
+
+  if (images.length === 0) {
+    return;
+  }
+
   /* EN: Create and setup lightbox
      RU: Создание и настройка лайтбокса */
   createLightbox();

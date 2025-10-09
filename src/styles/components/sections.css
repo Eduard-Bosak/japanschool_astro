@@ -4,310 +4,321 @@
    ============================================= */
 
 /* Generic section styles | Общие стили секций */
-.section { 
-  padding: 5.5rem 0 4.5rem; 
-  position: relative; 
+.section {
+  padding: 5.5rem 0 4.5rem;
+  position: relative;
 }
 
 /* Section header | Заголовок секции */
-.section-head { 
-  max-width: 780px; 
-  margin: 0 auto 3.5rem; 
-  text-align: center; 
+.section-head {
+  max-width: 780px;
+  margin: 0 auto 3.5rem;
+  text-align: center;
 }
 
-.section-head p { 
-  margin-top: .75rem; 
-  font-size: 1.05rem; 
+.section-head p {
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
 }
 
 /* About Section | Секция "О школе" */
-.about-grid { 
-  display: grid; 
-  gap: 1.5rem; 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+.about-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.about-card { 
-  background: linear-gradient(145deg, var(--surface), var(--surface-alt)); 
-  padding: 1.35rem 1.25rem 1.4rem; 
-  border-radius: var(--radius); 
-  position: relative; 
-  overflow: hidden; 
-  box-shadow: var(--shadow); 
-  border: 1px solid rgba(255 255 255 / .06); 
+.about-card {
+  background: linear-gradient(145deg, var(--surface), var(--surface-alt));
+  padding: 1.35rem 1.25rem 1.4rem;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255 255 255 / 0.06);
 }
 
-.about-card::before { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  background: radial-gradient(circle at 20% 15%, rgba(var(--primary-rgb)/0.25), transparent 60%); 
-  opacity: .65; 
-  mix-blend-mode: overlay; 
+.about-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 15%, rgba(var(--primary-rgb) / 0.25), transparent 60%);
+  opacity: 0.65;
+  mix-blend-mode: overlay;
 }
 
-.about-card h3 { 
-  margin-top: 0; 
-  font-size: 1.15rem; 
+.about-card h3 {
+  margin-top: 0;
+  font-size: 1.15rem;
 }
 
-.about-card p { 
-  font-size: .88rem; 
-  color: var(--ink-dim); 
+.about-card p {
+  font-size: 0.88rem;
+  color: var(--ink-dim);
 }
 
 /* Founder Section | Секция "Основатель" */
-.founder-inner { 
-  display: grid; 
-  gap: 3rem; 
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-  align-items: start; 
+.founder-inner {
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
 }
 
-.founder-photo img { 
-  border-radius: var(--radius-lg); 
-  box-shadow: var(--shadow-lg); 
-  outline: 1px solid rgba(255 255 255 / .08); 
+.founder-photo img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  outline: 1px solid rgba(255 255 255 / 0.08);
 }
 
 /* Highlight metrics | Метрики достижений */
-.highlight-metrics { 
-  display: flex; 
-  gap: 1.5rem; 
-  flex-wrap: wrap; 
-  margin-top: 1.75rem; 
+.highlight-metrics {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
 }
 
-.metric { 
-  background: linear-gradient(140deg, rgba(var(--primary-rgb)/0.12), rgba(var(--accent-rgb)/0.12)); 
-  padding: .95rem 1.15rem 1rem; 
-  border-radius: var(--radius-sm); 
-  min-width: 140px; 
-  position: relative; 
-  overflow: hidden; 
+.metric {
+  background: linear-gradient(
+    140deg,
+    rgba(var(--primary-rgb) / 0.12),
+    rgba(var(--accent-rgb) / 0.12)
+  );
+  padding: 0.95rem 1.15rem 1rem;
+  border-radius: var(--radius-sm);
+  min-width: 140px;
+  position: relative;
+  overflow: hidden;
 }
 
-.metric .num { 
-  font-size: 1.85rem; 
-  display: block; 
-  font-weight: 600; 
-  background: linear-gradient(90deg, var(--primary), var(--accent)); 
-  -webkit-background-clip: text; 
-  background-clip: text; 
-  color: transparent; 
+.metric .num {
+  font-size: 1.85rem;
+  display: block;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.metric .label { 
-  font-size: .7rem; 
-  letter-spacing: 1.5px; 
-  text-transform: uppercase; 
-  color: var(--ink-dim); 
+.metric .label {
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
 }
 
 /* Timeline | Таймлайн */
-.timeline { 
-  list-style: none; 
-  margin: 0; 
-  padding: 0; 
-  position: relative; 
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
 }
 
-.timeline::before { 
-  content: ""; 
-  position: absolute; 
-  left: 12px; 
-  top: 0; 
-  bottom: 0; 
-  width: 2px; 
-  background: linear-gradient(to bottom, var(--primary), transparent); 
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary), transparent);
 }
 
-.timeline-item { 
-  position: relative; 
-  padding-left: 2.75rem; 
-  margin-bottom: 2rem; 
+.timeline-item {
+  position: relative;
+  padding-left: 2.75rem;
+  margin-bottom: 2rem;
 }
 
-.timeline-item::before { 
-  content: ""; 
-  position: absolute; 
-  left: 4px; 
-  top: .35rem; 
-  width: 16px; 
-  height: 16px; 
-  background: radial-gradient(circle at 35% 35%, var(--accent), var(--primary)); 
-  border-radius: 50%; 
-  box-shadow: 0 0 0 4px rgba(var(--primary-rgb)/0.15), 
-              0 0 0 8px rgba(var(--primary-rgb)/0.05); 
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.35rem;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 35% 35%, var(--accent), var(--primary));
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(var(--primary-rgb) / 0.15),
+    0 0 0 8px rgba(var(--primary-rgb) / 0.05);
 }
 
-.timeline-item .time { 
-  font-size: .75rem; 
-  letter-spacing: 2px; 
-  text-transform: uppercase; 
-  color: var(--ink-dim); 
-  margin-bottom: .3rem; 
+.timeline-item .time {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.3rem;
 }
 
-.timeline-item .content { 
-  font-size: .95rem; 
-  color: var(--ink-soft); 
+.timeline-item .content {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
 }
 
 /* Programs Section | Секция "Программы" */
-.program-cards { 
-  display: grid; 
-  gap: 2rem; 
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+.program-cards {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.program-card { 
-  position: relative; 
-  background: linear-gradient(150deg, var(--surface), var(--surface-alt)); 
-  padding: 1.5rem 1.4rem 1.7rem; 
-  border-radius: var(--radius-lg); 
-  box-shadow: var(--shadow); 
-  border: 1px solid rgba(255 255 255 / .07); 
-  overflow: hidden; 
-  isolation: isolate; 
-  will-change: transform; 
-  transition: transform .6s cubic-bezier(.19, 1, .22, 1), box-shadow .4s; 
+.program-card {
+  position: relative;
+  background: linear-gradient(150deg, var(--surface), var(--surface-alt));
+  padding: 1.5rem 1.4rem 1.7rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255 255 255 / 0.07);
+  overflow: hidden;
+  isolation: isolate;
+  will-change: transform;
+  transition:
+    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+    box-shadow 0.4s;
 }
 
-.program-card::before { 
-  content: ""; 
-  position: absolute; 
-  inset: -1px; 
-  background: linear-gradient(120deg, rgba(var(--primary-rgb)/0.45), rgba(var(--accent-rgb)/0.45)); 
-  opacity: .15; 
-  mix-blend-mode: overlay; 
-  pointer-events: none; 
+.program-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(
+    120deg,
+    rgba(var(--primary-rgb) / 0.45),
+    rgba(var(--accent-rgb) / 0.45)
+  );
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
-.program-card:hover { 
-  transform: translateY(-6px) scale(1.02); 
-  box-shadow: var(--shadow-lg); 
+.program-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-lg);
 }
 
-.program-card h3 { 
-  margin-top: 0; 
-  font-size: 1.2rem; 
+.program-card h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
 }
 
-.program-card .mini-list { 
-  list-style: none; 
-  padding: 0; 
-  margin: 1rem 0; 
-  display: grid; 
-  gap: .5rem; 
+.program-card .mini-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  gap: 0.5rem;
 }
 
-.program-card .mini-list li { 
-  font-size: .8rem; 
-  color: var(--ink-dim); 
-  padding-left: 1.2rem; 
-  position: relative; 
+.program-card .mini-list li {
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  padding-left: 1.2rem;
+  position: relative;
 }
 
-.program-card .mini-list li::before { 
-  content: "→"; 
-  position: absolute; 
-  left: 0; 
-  color: var(--primary); 
+.program-card .mini-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
 }
 
 /* Method grid | Сетка методики */
-.method-grid { 
-  display: grid; 
-  gap: 1.5rem; 
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+.method-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.method-item { 
-  background: var(--surface); 
-  padding: 1.2rem 1.15rem 1.3rem; 
-  border-radius: var(--radius); 
-  border: 1px solid rgba(255 255 255 / .06); 
+.method-item {
+  background: var(--surface);
+  padding: 1.2rem 1.15rem 1.3rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255 255 255 / 0.06);
 }
 
-.method-item h3 { 
-  margin: 0 0 .55rem; 
-  font-size: 1rem; 
-  color: var(--primary); 
+.method-item h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  color: var(--primary);
 }
 
-.method-item p { 
-  font-size: .85rem; 
-  color: var(--ink-dim); 
-  margin: 0; 
+.method-item p {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin: 0;
 }
 
 /* Gallery grid | Сетка галереи */
-.gallery-grid { 
-  display: grid; 
-  gap: 1.5rem; 
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+.gallery-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.gallery-grid figure { 
-  margin: 0; 
-  position: relative; 
-  border-radius: var(--radius-lg); 
-  overflow: hidden; 
-  cursor: pointer; 
-  transition: transform .4s ease; 
+.gallery-grid figure {
+  margin: 0;
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s ease;
 }
 
-.gallery-grid figure:hover { 
-  transform: translateY(-4px) scale(1.02); 
+.gallery-grid figure:hover {
+  transform: translateY(-4px) scale(1.02);
 }
 
-.gallery-grid figure img { 
-  width: 100%; 
-  height: auto; 
-  display: block; 
+.gallery-grid figure img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.gallery-grid figcaption { 
-  position: absolute; 
-  bottom: 0; 
-  left: 0; 
-  right: 0; 
-  padding: 1rem; 
-  background: linear-gradient(to top, rgba(0 0 0 / .8), transparent); 
-  color: #fff; 
-  font-size: .8rem; 
-  letter-spacing: 1px; 
-  text-transform: uppercase; 
+.gallery-grid figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0 0 0 / 0.8), transparent);
+  color: #fff;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* Contact section | Секция контактов */
-.contact-inner { 
-  display: grid; 
-  gap: 3rem; 
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-  align-items: start; 
+.contact-inner {
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  align-items: start;
 }
 
-.contact-list { 
-  list-style: none; 
-  padding: 0; 
-  margin: 1.5rem 0 0; 
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
 }
 
-.contact-list li { 
-  margin-bottom: .85rem; 
-  font-size: .9rem; 
-  color: var(--ink-soft); 
+.contact-list li {
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
 }
 
-.contact-list a { 
-  color: var(--primary); 
-  text-decoration: none; 
-  transition: color .3s ease; 
+.contact-list a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.contact-list a:hover { 
-  color: var(--accent); 
+.contact-list a:hover {
+  color: var(--accent);
 }

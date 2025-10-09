@@ -17,7 +17,7 @@ let programModal, programForm, programStatusEl, hiddenProgramInput;
 /**
  * EN: Show field error message
  * RU: Показ сообщения об ошибке поля
- * 
+ *
  * @param {HTMLElement} field - Form field | Поле формы
  * @param {string} msgId - Error message element ID | ID элемента сообщения об ошибке
  */
@@ -33,7 +33,7 @@ function showFieldError(field, msgId) {
 /**
  * EN: Clear field error message
  * RU: Очистка сообщения об ошибке поля
- * 
+ *
  * @param {HTMLElement} field - Form field | Поле формы
  * @param {string} msgId - Error message element ID | ID элемента сообщения об ошибке
  */
@@ -49,14 +49,16 @@ function clearFieldError(field, msgId) {
 /**
  * EN: Validate lead form fields
  * RU: Валидация полей формы лидов
- * 
+ *
  * @returns {boolean} - Is form valid | Форма валидна
  */
 function validateLead() {
-  if (!leadForm) return false;
-  
+  if (!leadForm) {
+    return false;
+  }
+
   let ok = true;
-  
+
   /* EN: Validate name
      RU: Валидация имени */
   const name = leadForm.querySelector('#leadName');
@@ -68,7 +70,7 @@ function validateLead() {
       clearFieldError(name, 'errName');
     }
   }
-  
+
   /* EN: Validate email
      RU: Валидация email */
   const email = leadForm.querySelector('#leadEmail');
@@ -81,7 +83,7 @@ function validateLead() {
       clearFieldError(email, 'errEmail');
     }
   }
-  
+
   /* EN: Validate goal
      RU: Валидация цели */
   const goal = leadForm.querySelector('#leadGoal');
@@ -93,7 +95,7 @@ function validateLead() {
       clearFieldError(goal, 'errGoal');
     }
   }
-  
+
   /* EN: Validate level
      RU: Валидация уровня */
   const level = leadForm.querySelector('#leadLevel');
@@ -105,7 +107,7 @@ function validateLead() {
       clearFieldError(level, 'errLevel');
     }
   }
-  
+
   return ok;
 }
 
@@ -115,35 +117,43 @@ function validateLead() {
  */
 function setupLeadForm() {
   leadForm = document.getElementById('leadForm');
-  if (!leadForm) return;
-  
+  if (!leadForm) {
+    return;
+  }
+
   leadStatusEl = leadForm.querySelector('.form-status');
-  
+
   /* EN: Real-time validation on input/change/blur
      RU: Валидация в реальном времени при input/change/blur */
-  ['input', 'change', 'blur'].forEach(ev => {
+  ['input', 'change', 'blur'].forEach((ev) => {
     leadForm.addEventListener(ev, (e) => {
       const t = e.target;
-      if (!(t instanceof HTMLElement)) return;
-      
-      if (t.id === 'leadName' || t.id === 'leadEmail' || 
-          t.id === 'leadGoal' || t.id === 'leadLevel') {
+      if (!(t instanceof HTMLElement)) {
+        return;
+      }
+
+      if (
+        t.id === 'leadName' ||
+        t.id === 'leadEmail' ||
+        t.id === 'leadGoal' ||
+        t.id === 'leadLevel'
+      ) {
         validateLead();
       }
     });
   });
-  
+
   /* EN: Form submission
      RU: Отправка формы */
   leadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     if (!validateLead()) {
       leadStatusEl.textContent = 'Исправьте ошибки формы';
       leadStatusEl.style.color = 'var(--danger)';
       return;
     }
-    
+
     /* EN: Build payload
        RU: Формирование данных */
     const payload = {
@@ -153,23 +163,24 @@ function setupLeadForm() {
       level: leadForm.leadLevel?.value || '',
       message: leadForm.leadMsg?.value?.trim() || ''
     };
-    
+
     leadStatusEl.textContent = 'Отправка...';
     leadStatusEl.style.color = 'var(--ink-dim)';
-    
+
     track('lead_form_submit', { goal: payload.goal, level: payload.level });
-    
+
     /* EN: Send to backend
        RU: Отправка на бэкенд */
     const result = await sendToBackend('lead', payload);
-    
+
     if (result.ok) {
       leadStatusEl.textContent = 'Заявка отправлена! Мы свяжемся.';
       leadStatusEl.style.color = 'var(--accent)';
       leadForm.reset();
       track('lead_form_success', { mode: 'live' });
     } else if (result.mock) {
-      leadStatusEl.textContent = 'Заявка сохранена (демо-режим). Подключите backend для реальной отправки.';
+      leadStatusEl.textContent =
+        'Заявка сохранена (демо-режим). Подключите backend для реальной отправки.';
       leadStatusEl.style.color = 'var(--accent)';
       leadForm.reset();
       track('lead_form_success', { mode: 'mock', reason: result.error });
@@ -184,18 +195,20 @@ function setupLeadForm() {
 /**
  * EN: Open program modal
  * RU: Открытие модального окна программы
- * 
+ *
  * @param {string} prog - Program name | Название программы
  */
 function openModal(prog) {
-  if (!programModal) return;
-  
+  if (!programModal) {
+    return;
+  }
+
   programModal.removeAttribute('hidden');
   hiddenProgramInput.value = prog;
   document.body.style.overflow = 'hidden';
-  
+
   track('program_modal_open', { program: prog });
-  
+
   /* EN: Focus trap
      RU: Ловушка фокуса */
   const focusables = programModal.querySelectorAll(
@@ -203,9 +216,11 @@ function openModal(prog) {
   );
   const first = focusables[0];
   const last = focusables[focusables.length - 1];
-  
-  if (first) first.focus();
-  
+
+  if (first) {
+    first.focus();
+  }
+
   function trap(e) {
     if (e.key === 'Tab') {
       if (e.shiftKey && document.activeElement === first) {
@@ -220,7 +235,7 @@ function openModal(prog) {
       closeModal();
     }
   }
-  
+
   programModal.__trapHandler = trap;
   window.addEventListener('keydown', trap);
 }
@@ -230,11 +245,13 @@ function openModal(prog) {
  * RU: Закрытие модального окна программы
  */
 function closeModal() {
-  if (!programModal) return;
-  
+  if (!programModal) {
+    return;
+  }
+
   programModal.setAttribute('hidden', '');
   document.body.style.overflow = '';
-  
+
   if (programModal.__trapHandler) {
     window.removeEventListener('keydown', programModal.__trapHandler);
     delete programModal.__trapHandler;
@@ -247,21 +264,23 @@ function closeModal() {
  */
 function setupProgramModal() {
   programModal = document.getElementById('programModal');
-  if (!programModal) return;
-  
+  if (!programModal) {
+    return;
+  }
+
   programForm = document.getElementById('programForm');
   programStatusEl = programForm?.querySelector('.mini-status');
   hiddenProgramInput = programForm?.querySelector('input[name="program"]');
-  
+
   /* EN: Open modal buttons
      RU: Кнопки открытия модального окна */
   const programButtons = document.querySelectorAll('[data-program]');
-  programButtons.forEach(btn => {
+  programButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       openModal(btn.getAttribute('data-program'));
     });
   });
-  
+
   /* EN: Close modal on backdrop click
      RU: Закрытие модального окна при клике на подложку */
   programModal.addEventListener('click', (e) => {
@@ -269,11 +288,11 @@ function setupProgramModal() {
       closeModal();
     }
   });
-  
+
   /* EN: Close button
      RU: Кнопка закрытия */
   programModal.querySelector('.modal-close')?.addEventListener('click', closeModal);
-  
+
   /* EN: Escape key closes modal
      RU: Клавиша Escape закрывает модальное окно */
   window.addEventListener('keydown', (e) => {
@@ -281,31 +300,31 @@ function setupProgramModal() {
       closeModal();
     }
   });
-  
+
   /* EN: Form submission
      RU: Отправка формы */
   if (programForm) {
     programForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       if (!programForm.checkValidity()) {
         programStatusEl.textContent = 'Введите корректный email';
         programStatusEl.style.color = 'var(--danger)';
         return;
       }
-      
+
       programStatusEl.textContent = 'Отправляем...';
       programStatusEl.style.color = 'var(--ink-dim)';
-      
+
       const payload = {
         email: programForm.elements.email?.value?.trim(),
         program: hiddenProgramInput?.value || 'unknown'
       };
-      
+
       track('program_form_submit', { program: payload.program });
-      
+
       const result = await sendToBackend('program', payload);
-      
+
       if (result.ok) {
         programStatusEl.textContent = 'Готово! Мы свяжемся.';
         programStatusEl.style.color = 'var(--accent)';

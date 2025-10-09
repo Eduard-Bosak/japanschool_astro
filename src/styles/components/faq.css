@@ -1,437 +1,753 @@
 /* =============================
-   FAQ Component — Extreme Minimalism | Компонент FAQ — Экстремальный минимализм
-   EN: Minimalist accordion with search, filters, progress tracking
-   RU: Минималистичный аккордеон с поиском, фильтрами, отслеживанием прогресса
+   FAQ Component — Ultra Minimalist + Stylish | Компонент FAQ — Ультра минималистичный + Стильный
+   EN: Simple animated accordion with smooth transitions and site-wide styling
+   RU: Простой анимированный аккордеон с плавными переходами и стилизацией сайта
    ============================= */
 
-/* ===== FAQ Controls Wrapper | Обёртка элементов управления ===== */
-.faq-controls { 
-  display: grid; 
-  gap: .8rem; 
-  margin: 0 0 1.2rem; 
-  justify-items: center; 
+/* ===== FAQ Section Wrapper — Modern 2025 ===== */
+.faq {
+  position: relative;
+  overflow: hidden;
 }
 
-/* ===== Search Input | Поле поиска ===== */
-.faq-search-wrap { 
-  position: relative; 
-  width: min(650px, 100%); 
+/* Animated floating gradient orbs — Анимированные плавающие сферы */
+.faq::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(var(--primary-rgb), 0.18), transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: float 10s ease-in-out infinite;
+  filter: blur(40px);
 }
 
-#faqSearch { 
-  width: 100%; 
-  padding: .7rem 2.5rem .7rem 1rem;          /* Space for reset button | Место для кнопки сброса */
-  border-radius: 4px; 
-  background: #fff; 
-  border: 1px solid #ddd; 
-  font: inherit; 
-  font-size: .85rem; 
-  color: #1a1f28; 
-  transition: border-color .2s; 
+.faq::after {
+  content: '';
+  position: absolute;
+  bottom: -250px;
+  left: -250px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.15), transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: float 12s ease-in-out infinite reverse;
+  filter: blur(50px);
 }
 
-#faqSearch::placeholder { 
-  color: #999; 
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(50px, -50px) scale(1.15);
+    opacity: 0.8;
+  }
 }
 
-#faqSearch:focus { 
-  outline: none; 
-  border-color: #ff4d8f; 
+.faq > .container {
+  position: relative;
+  z-index: 1;
 }
 
-[data-theme="light"] #faqSearch { 
-  background: #fff; 
-  border-color: #ddd; 
-}
-
-/* Search reset button | Кнопка сброса поиска */
-.faq-reset { 
-  position: absolute; 
-  right: 2rem; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  width: 24px; 
-  height: 24px; 
-  border-radius: 4px; 
-  border: none; 
-  background: #ff4d8f; 
-  color: #fff; 
-  cursor: pointer; 
-  display: grid; 
-  place-items: center; 
-  font-size: .85rem; 
-  padding: 0; 
-  transition: background .2s; 
-}
-
-.faq-reset:hover { 
-  background: #ff1a6d; 
-}
-
-/* Search results counter | Счётчик результатов поиска */
-.faq-results { 
-  position: absolute; 
-  right: .6rem; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  font-size: .5rem; 
-  font-weight: 600; 
-  letter-spacing: .5px; 
-  text-transform: uppercase; 
-  color: #999; 
-  pointer-events: none; 
-}
-
-/* ===== Category Filters | Фильтры по категориям ===== */
-.faq-filters { 
-  display: flex; 
-  gap: .5rem; 
-  flex-wrap: wrap; 
-  justify-content: center; 
-}
-
-.faq-filter { 
-  background: #ff4d8f;                        /* Active state | Активное состояние */
-  border: none; 
-  color: #fff; 
-  font: inherit; 
-  font-size: .65rem; 
-  font-weight: 600; 
-  letter-spacing: 0; 
-  text-transform: uppercase; 
-  padding: .5rem .8rem; 
-  border-radius: 4px; 
-  cursor: pointer; 
-  transition: background .2s ease; 
-}
-
-.faq-filter.active { 
-  background: #ff1a6d; 
-}
-
-.faq-filter:hover:not(.active) { 
-  background: #ff1a6d; 
-}
-
-/* Inactive filter state | Неактивное состояние фильтра */
-.faq-filter:not(.active) { 
-  background: transparent; 
-  color: #999; 
-  border: 1px solid #ddd; 
-}
-
-.faq-filter:not(.active):hover { 
-  background: #f9f9f9; 
-}
-
-[data-theme="light"] .faq-filter { 
-  background: #ff4d8f; 
-}
-
-[data-theme="light"] .faq-filter:not(.active) { 
-  background: transparent; 
-  border-color: #ddd; 
-}
-
-/* ===== Bulk Actions | Массовые действия ===== */
-.faq-bulk { 
-  font-size: .65rem; 
-  font-weight: 400; 
-  letter-spacing: 0; 
-  text-transform: uppercase; 
-  display: flex; 
-  align-items: center; 
-  gap: .6rem; 
-}
-
-/* Text-only links | Текстовые ссылки */
-.faq-bulk .mini-link { 
-  background: none; 
-  border: none; 
-  color: #ff4d8f; 
-  cursor: pointer; 
-  font: inherit; 
-  font-weight: 400; 
-  padding: 0; 
-  text-decoration: underline; 
-  transition: color .2s ease; 
-}
-
-.faq-bulk .mini-link:hover { 
-  color: #ff1a6d; 
-  text-decoration: none; 
-}
-
-.faq-bulk .sep { 
-  opacity: .3; 
-  font-size: .75rem; 
-  color: #999; 
-}
-
-/* ===== Progress Bar | Индикатор прогресса ===== */
-.faq-progress { 
-  display: flex; 
-  flex-direction: column; 
-  gap: .4rem; 
-  align-items: center; 
-  margin: 0 0 1.2rem; 
-}
-
-.faq-progress-bar { 
-  position: relative; 
-  width: min(680px, 100%); 
-  height: 4px;                                /* Thin bar | Тонкая полоса */
-  background: #eee; 
-  border-radius: 0;                           /* Square edges | Прямые края */
-  overflow: hidden; 
-}
-
-.faq-progress-bar span { 
-  position: absolute; 
-  inset: 0; 
-  width: 0%; 
-  background: #ff4d8f; 
-  transition: width .8s ease; 
-}
-
-.faq-progress-meta { 
-  text-align: center; 
-  font-size: .65rem; 
-  font-weight: 400; 
-  color: #999; 
-}
-
-@media (prefers-reduced-motion: reduce) { 
-  .faq-progress-bar span { 
-    animation: none; 
-  } 
+/* ===== Hide complex controls | Скрываем сложные элементы управления ===== */
+.faq-controls,
+.faq-search-wrap,
+.faq-filters,
+.faq-bulk,
+.faq-progress {
+  display: none;
 }
 
 /* ===== FAQ Groups | Группы FAQ ===== */
-.faq-group { 
-  margin: 1rem 0 0; 
-  display: grid; 
-  gap: .6rem; 
+.faq-group {
+  margin: 0;
+  display: grid;
+  gap: 0;
 }
 
-.faq-group-title { 
-  margin: 0 0 .5rem; 
-  font-size: .9rem; 
-  font-weight: 600; 
-  letter-spacing: 0; 
-  text-transform: uppercase; 
-  color: #666; 
-  position: relative; 
-  padding-left: 0; 
+.faq-group-title {
+  display: none; /* Hide group titles | Скрываем заголовки групп */
 }
 
-.faq-group-title::before { 
-  display: none;                              /* No decorative arrow | Без декоративной стрелки */
+/* ===== FAQ Items List — Modern Layout ===== */
+.faq-list {
+  display: grid;
+  gap: 1.8rem;
+  position: relative;
+  padding: 2rem 0;
 }
 
-/* ===== FAQ Items | Элементы FAQ ===== */
-.faq-list { 
-  display: grid; 
-  gap: .6rem; 
+/* Remove old decorative line */
+.faq-list::before {
+  display: none;
 }
 
-.faq-item { 
-  --accent-bar: #ff4d8f;                      /* Left accent color | Цвет левого акцента */
-  background: #fff; 
-  padding: 0; 
-  border: 1px solid #ddd; 
-  border-radius: 4px; 
-  position: relative; 
-  overflow: hidden; 
-  transition: border-color .2s ease; 
+.faq-item {
+  background: rgba(var(--bg-rgb), 0.6);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  padding: 0;
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.faq-item:hover { 
-  border-color: #bbb; 
+/* Advanced radial glow with multi-color gradient */
+.faq-item::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--primary-rgb), 0.28) 0%,
+    rgba(var(--accent-rgb), 0.18) 35%,
+    transparent 70%
+  );
+  opacity: 0;
+  filter: blur(25px);
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.faq-item.open { 
-  border-color: #ff4d8f; 
+/* Animated gradient border line with glow */
+.faq-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--primary) 12%,
+    var(--accent) 50%,
+    var(--primary) 88%,
+    transparent 100%
+  );
+  opacity: 0;
+  border-radius: 28px 0 0 28px;
+  transition:
+    opacity 0.5s ease,
+    box-shadow 0.5s ease;
+  box-shadow: 0 0 0 rgba(var(--primary-rgb), 0);
+  z-index: 1;
 }
 
-/* Left accent bar when open | Левая акцентная полоса при открытии */
-.faq-item.open::after { 
-  content: ""; 
-  position: absolute; 
-  left: 0; 
-  top: 0; 
-  bottom: 0; 
-  width: 3px; 
-  background: var(--accent-bar); 
+/* Premium Hover Effects */
+.faq-item:hover {
+  background: rgba(var(--primary-rgb), 0.14);
+  border-color: rgba(var(--primary-rgb), 0.45);
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 24px 48px rgba(var(--primary-rgb), 0.25),
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    inset 0 3px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(var(--primary-rgb), 0.25);
 }
 
-.faq-item.open .faq-trigger-text { 
-  color: #ff4d8f; 
+.faq-item:hover::before {
+  height: 180%;
+  opacity: 1;
 }
 
-.faq-item.open .faq-icon { 
-  background: #ff4d8f; 
+.faq-item:hover::after {
+  opacity: 1;
+  box-shadow:
+    0 0 35px rgba(var(--primary-rgb), 0.8),
+    0 0 70px rgba(var(--primary-rgb), 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+/* Premium Open State */
+.faq-item.open {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--primary-rgb), 0.18) 0%,
+    rgba(var(--accent-rgb), 0.1) 100%
+  );
+  border-color: transparent;
+  box-shadow:
+    0 16px 32px rgba(var(--primary-rgb), 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.25),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25),
+    inset 0 0 0 1px rgba(var(--primary-rgb), 0.3),
+    0 0 80px rgba(var(--primary-rgb), 0.15);
+  transform: scale(1.01);
+}
+
+.faq-item.open::before {
+  height: 120%;
+  opacity: 1;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--primary-rgb), 0.25) 50%,
+    transparent 100%
+  );
+  filter: blur(30px);
+}
+
+.faq-item.open::after {
+  opacity: 1;
+  box-shadow:
+    0 0 50px rgba(var(--primary-rgb), 1),
+    0 0 100px rgba(var(--primary-rgb), 0.6),
+    inset 0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+/* Accent dot indicator removed — now using gradient line */
+.faq-item.open .faq-trigger-text {
+  color: var(--primary);
+  font-weight: 700;
+  text-shadow: 0 0 30px rgba(var(--primary-rgb), 0.4);
+  letter-spacing: -0.02em;
+}
+
+.faq-item.open .faq-icon {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  transform: rotate(180deg) scale(1.25);
+  border-color: transparent;
+  box-shadow:
+    0 0 50px rgba(var(--primary-rgb), 0.9),
+    0 0 100px rgba(var(--primary-rgb), 0.5),
+    0 16px 32px rgba(0, 0, 0, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.4);
+}
+
+.faq-item.open .faq-icon::before,
+.faq-item.open .faq-icon::after {
+  background: #fff;
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 1),
+    0 0 40px rgba(255, 255, 255, 0.6);
 }
 
 /* Hidden when filtered | Скрыт при фильтрации */
-.faq-item.filter-hide { 
-  display: none !important; 
+.faq-item.filter-hide {
+  display: none !important;
 }
 
 /* Search highlight | Подсветка поиска */
-.faq-highlight mark { 
-  background: #ff4d8f; 
-  color: #fff; 
-  padding: 1px 3px; 
-  border-radius: 2px; 
-  font-weight: 600; 
+.faq-highlight mark {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.4);
 }
 
-[data-theme="light"] .faq-item { 
-  background: #fff; 
-  border-color: #ddd; 
+/* Dark theme enhancements — Premium shadows */
+[data-theme='dark'] .faq-item {
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="light"] .faq-item.open { 
-  border-color: #ff4d8f; 
+[data-theme='dark'] .faq-item:hover {
+  box-shadow:
+    0 24px 48px rgba(var(--primary-rgb), 0.35),
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    inset 0 3px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(var(--primary-rgb), 0.35);
 }
 
-/* ===== FAQ Trigger Button | Кнопка-триггер ===== */
-.faq-trigger { 
-  all: unset;                                 /* Reset all styles | Сброс всех стилей */
-  box-sizing: border-box; 
-  cursor: pointer; 
-  display: grid; 
-  grid-template-columns: 1fr auto; 
-  align-items: center; 
-  gap: .8rem; 
-  width: 100%; 
-  padding: .7rem .8rem; 
-  text-align: left; 
-  position: relative; 
-  font-family: var(--font-display); 
-  font-size: .8rem; 
-  line-height: 1.3; 
-  color: #333; 
-  font-weight: 500; 
-  transition: padding .2s ease; 
+[data-theme='dark'] .faq-item.open {
+  box-shadow:
+    0 16px 32px rgba(var(--primary-rgb), 0.45),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    inset 0 3px 6px rgba(255, 255, 255, 0.15),
+    inset 0 0 0 1px rgba(var(--primary-rgb), 0.4),
+    0 0 100px rgba(var(--primary-rgb), 0.25);
 }
 
-.faq-item.open .faq-trigger { 
-  padding-bottom: .6rem;                      /* Less padding when open | Меньше отступ при открытии */
+/* Light theme subtle refinements */
+[data-theme='light'] .faq-item {
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.03);
 }
 
-.faq-trigger:focus-visible { 
-  outline: 1px solid #ff4d8f; 
-  outline-offset: 1px; 
-  border-radius: 2px; 
+[data-theme='light'] .faq-item:hover {
+  box-shadow:
+    0 24px 48px rgba(var(--primary-rgb), 0.18),
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    inset 0 3px 0 rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(var(--primary-rgb), 0.2);
 }
 
-.faq-trigger-text { 
-  display: block; 
-  font-weight: 500; 
-  color: #333; 
-  transition: color .2s ease; 
+[data-theme='light'] .faq-item.open {
+  box-shadow:
+    0 16px 32px rgba(var(--primary-rgb), 0.22),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(var(--primary-rgb), 0.25),
+    0 0 80px rgba(var(--primary-rgb), 0.12);
 }
 
-.faq-item.open .faq-trigger-text { 
-  color: #ff4d8f; 
+/* ===== FAQ Trigger Button — Modern 3D Style ===== */
+.faq-trigger {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  width: 100%;
+  padding: 2.5rem 3rem;
+  text-align: left;
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--ink);
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
 }
 
-/* ===== FAQ Icon (Plus/Minus) | Иконка FAQ (плюс/минус) ===== */
-.faq-icon { 
-  --sz: 18px;                                 /* Square icon size | Размер квадратной иконки */
-  position: relative; 
-  width: var(--sz); 
-  height: var(--sz); 
-  flex: 0 0 var(--sz); 
-  border-radius: 2px;                         /* Slightly rounded square | Слегка скруглённый квадрат */
-  background: #ddd; 
-  display: grid; 
-  place-items: center; 
-  transition: background .2s ease; 
+.faq-trigger:active {
+  transform: scale(0.98);
 }
 
-/* Plus/minus lines | Линии плюса/минуса */
-.faq-icon::before, 
-.faq-icon::after { 
-  content: ""; 
-  position: absolute; 
-  background: #666; 
-  border-radius: 1px; 
-  transition: opacity .2s ease; 
+.faq-trigger:hover {
+  color: var(--primary);
 }
 
-.faq-icon::before { 
-  width: 8px; 
-  height: 1.5px; 
-  transform: translate(-50%, -50%); 
-  top: 50%; 
-  left: 50%; 
+.faq-item.open .faq-trigger {
+  padding-bottom: 1.5rem;
+  color: var(--primary);
 }
 
-.faq-icon::after { 
-  width: 1.5px; 
-  height: 8px; 
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
+.faq-trigger:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 8px;
+  border-radius: var(--radius-xs);
 }
 
-/* Hide vertical line when open (minus) | Скрыть вертикаль при открытии (минус) */
-.faq-item.open .faq-icon::after { 
-  opacity: 0; 
+.faq-trigger-text {
+  display: block;
+  flex: 1;
+  font-weight: 600;
+  color: inherit;
+  transition: all 0.4s ease;
+  letter-spacing: -0.015em;
 }
 
-/* ===== FAQ Panel (Answer) | Панель FAQ (ответ) ===== */
-.faq-panel { 
-  --panel-max: 0px;                           /* Dynamic max-height set by JS | Динамическая высота от JS */
-  height: auto; 
-  max-height: 0; 
-  overflow: hidden; 
-  transition: max-height .6s ease, opacity .4s ease; 
-  opacity: 0; 
-  position: relative; 
+.faq-item:hover .faq-trigger-text {
+  color: var(--primary);
+  transform: translateX(4px);
+  text-shadow: 0 0 25px rgba(var(--primary-rgb), 0.3);
 }
 
-.faq-item.open .faq-panel { 
-  opacity: 1; 
-  max-height: var(--panel-max); 
+.faq-item.open .faq-trigger-text {
+  color: var(--primary);
+  font-weight: 700;
 }
 
-.faq-panel-inner { 
-  padding: 0 .8rem .8rem; 
-  font-size: .8rem; 
-  line-height: 1.5; 
-  color: #666; 
+/* ===== FAQ Icon (Plus/X) — 3D Neomorphism ===== */
+.faq-icon {
+  --sz: 54px;
+  position: relative;
+  width: var(--sz);
+  height: var(--sz);
+  flex: 0 0 var(--sz);
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.28), rgba(var(--accent-rgb), 0.2));
+  border: 3px solid rgba(var(--primary-rgb), 0.4);
+  display: grid;
+  place-items: center;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 3px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+  overflow: hidden;
 }
 
-.faq-panel-inner p { 
-  margin: .3rem 0 0; 
+/* Shine effect on icon */
+.faq-icon::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  transform: rotate(45deg);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.faq-item:hover .faq-icon::before {
+  opacity: 1;
+  animation: shine 2.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-150%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(45deg);
+  }
+}
+
+/* Plus/X lines with enhanced 3D effect */
+.faq-icon::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 3px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--ink-soft);
+  border-radius: 3px;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0 10px rgba(var(--ink-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+/* Vertical line for plus */
+.faq-trigger::after {
+  content: '';
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: var(--ink-soft);
+  border-radius: 3px;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0 10px rgba(var(--ink-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+/* Glow effect on hover */
+.faq-item:hover .faq-icon::after,
+.faq-item:hover .faq-trigger::after {
+  background: var(--primary);
+  box-shadow:
+    0 0 15px rgba(var(--primary-rgb), 0.8),
+    0 0 30px rgba(var(--primary-rgb), 0.4);
+}
+
+.faq-item:hover .faq-icon {
+  transform: scale(1.25) rotate(10deg);
+  border-color: rgba(var(--primary-rgb), 0.7);
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.5), rgba(var(--accent-rgb), 0.35));
+  box-shadow:
+    0 16px 32px rgba(var(--primary-rgb), 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    inset 0 4px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Transform to X when open */
+.faq-item.open .faq-trigger::after {
+  opacity: 0;
+  transform: translateY(-50%) rotate(90deg) scale(0);
+}
+
+/* ===== FAQ Panel (Answer) — Premium Slide-in ===== */
+.faq-panel {
+  --panel-max: 0px;
+  height: auto;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(-20px);
+  position: relative;
+  z-index: 2;
+}
+
+.faq-item.open .faq-panel {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: var(--panel-max);
+}
+
+.faq-panel-inner {
+  padding: 0 3rem 3rem;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--ink-soft);
+  position: relative;
+  background: linear-gradient(135deg, rgba(var(--bg-rgb), 0.4), rgba(var(--bg-rgb), 0.2));
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 28px 28px;
+  margin: 0 1px 1px;
+  padding: 2rem 3rem 3rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Decorative gradient accent line */
+.faq-panel-inner::before {
+  content: '';
+  position: absolute;
+  left: 3rem;
+  top: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.6s ease 0.3s;
+  box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.5);
+}
+
+.faq-item.open .faq-panel-inner::before {
+  opacity: 1;
+  width: 120px;
+}
+
+.faq-panel-inner p {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1.5rem;
+  background: rgba(var(--bg-rgb), 0.3);
+  border-radius: 16px;
+  border-left: 4px solid rgba(var(--primary-rgb), 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.faq-item.open .faq-panel-inner p {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+}
+
+/* Premium text glow effect */
+.faq-item.open .faq-panel-inner {
+  text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.12);
 }
 
 /* Disable transitions for reduced motion | Отключить переходы для уменьшенной анимации */
-@media (prefers-reduced-motion: reduce) { 
-  .faq-panel, 
-  .faq-icon, 
-  .faq-icon::before, 
-  .faq-icon::after { 
-    transition: none; 
-  } 
+@media (prefers-reduced-motion: reduce) {
+  .faq-panel,
+  .faq-icon,
+  .faq-icon::before,
+  .faq-icon::after,
+  .faq-trigger,
+  .faq-trigger-text,
+  .faq-panel-inner p,
+  .faq-item::before,
+  .faq-item::after {
+    transition: none;
+    animation: none;
+  }
 }
 
-[data-theme="light"] .faq-trigger { 
-  color: #333; 
+[data-theme='light'] .faq-trigger {
+  color: var(--ink);
 }
 
-[data-theme="light"] .faq-trigger-text { 
-  color: #333; 
+[data-theme='light'] .faq-trigger-text {
+  color: var(--ink);
 }
 
-[data-theme="light"] .faq-item.open .faq-trigger-text { 
-  color: #ff4d8f; 
+[data-theme='light'] .faq-item.open .faq-trigger,
+[data-theme='light'] .faq-item.open .faq-trigger-text {
+  color: var(--primary);
 }
 
-[data-theme="light"] .faq-panel-inner { 
-  color: #666; 
+[data-theme='light'] .faq-panel-inner {
+  color: var(--ink-soft);
+}
+
+/* Mobile optimization — Modern Responsive */
+@media (max-width: 768px) {
+  .faq::before,
+  .faq::after {
+    width: 400px;
+    height: 400px;
+  }
+
+  .faq-list {
+    gap: 1.2rem;
+    padding: 1rem 0;
+  }
+
+  .faq-item {
+    border-radius: 24px;
+  }
+
+  .faq-trigger {
+    font-size: 1.05rem;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .faq-icon {
+    --sz: 46px;
+  }
+
+  .faq-icon::after {
+    width: 14px;
+    height: 3px;
+  }
+
+  .faq-trigger::after {
+    width: 3px;
+    height: 14px;
+    right: 1.5rem;
+  }
+
+  .faq-panel-inner {
+    font-size: 1rem;
+    padding: 1.5rem;
+    line-height: 1.9;
+  }
+
+  .faq-panel-inner::before {
+    left: 1.5rem;
+  }
+
+  .faq-panel-inner p {
+    padding: 1.25rem;
+  }
+}
+
+/* Tablet optimization — Enhanced for mid-size */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .faq-trigger {
+    font-size: 1.1rem;
+    padding: 2.25rem 2.5rem;
+  }
+
+  .faq-icon {
+    --sz: 50px;
+  }
+
+  .faq-panel-inner {
+    padding: 1.75rem 2.5rem 2.5rem;
+  }
+}
+
+/* Stagger animation for FAQ items on load — Enhanced modern entrance */
+@keyframes faqFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.faq-item {
+  animation: faqFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.faq-item:nth-child(1) {
+  animation-delay: calc(var(--stagger-step) * 0);
+}
+.faq-item:nth-child(2) {
+  animation-delay: calc(var(--stagger-step) * 1);
+}
+.faq-item:nth-child(3) {
+  animation-delay: calc(var(--stagger-step) * 2);
+}
+.faq-item:nth-child(4) {
+  animation-delay: calc(var(--stagger-step) * 3);
+}
+.faq-item:nth-child(5) {
+  animation-delay: calc(var(--stagger-step) * 4);
+}
+.faq-item:nth-child(6) {
+  animation-delay: calc(var(--stagger-step) * 5);
+}
+.faq-item:nth-child(7) {
+  animation-delay: calc(var(--stagger-step) * 6);
+}
+.faq-item:nth-child(8) {
+  animation-delay: calc(var(--stagger-step) * 7);
+}
+
+/* Pulse keyframe for breathing effect */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+}
+
+/* Pulsing dot on open icon */
+.faq-item.open .faq-icon svg,
+.faq-item.open .faq-icon::after {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item {
+    animation: none;
+  }
+
+  .faq-item.open .faq-icon svg,
+  .faq-item.open .faq-icon::after {
+    animation: none;
+  }
+
+  .faq-icon::before {
+    animation: none !important;
+  }
 }

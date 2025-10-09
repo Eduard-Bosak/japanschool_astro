@@ -4,13 +4,13 @@
    ============================================= */
 
 /* Box-sizing reset | Сброс box-sizing */
-* { 
-  box-sizing: border-box; 
+* {
+  box-sizing: border-box;
 }
 
 /* Smooth scrolling | Плавная прокрутка */
-html { 
-  scroll-behavior: smooth; 
+html {
+  scroll-behavior: smooth;
 }
 
 /* Body base styles | Базовые стили body */
@@ -26,54 +26,60 @@ body {
 
 /* Subtle noise overlay | Тонкий шумовой оверлей */
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   background: var(--noise);
   mix-blend-mode: overlay;
-  opacity: .75;
+  opacity: 0.75;
   z-index: 1;
 }
 
 /* Image defaults | Стили изображений по умолчанию */
-img { 
-  max-width: 100%; 
-  display: block; 
+img {
+  max-width: 100%;
+  display: block;
 }
 
 /* Typography defaults | Типографика по умолчанию */
-h1, h2, h3, h4 { 
-  font-family: var(--font-display); 
-  color: var(--ink); 
-  font-weight: 600; 
-  line-height: 1.15; 
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.15;
 }
 
-p { 
-  line-height: 1.55; 
+p {
+  line-height: 1.55;
 }
 
-ul { 
-  padding-left: 1.1rem; 
+ul {
+  padding-left: 1.1rem;
 }
 
-ul, ol { 
-  margin: .5rem 0 1rem; 
+ul,
+ol {
+  margin: 0.5rem 0 1rem;
 }
 
-.rich-text ul { 
-  list-style: disc; 
+.rich-text ul {
+  list-style: disc;
 }
 
 /* Scroll animation utility | Утилита анимации при прокрутке */
-.reveal-on-scroll { 
-  opacity: 0; 
-  transform: translateY(24px) scale(.98); 
-  transition: opacity .9s var(--trans-fast), transform 1s var(--trans-fast); 
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition:
+    opacity 0.9s var(--trans-fast),
+    transform 1s var(--trans-fast);
 }
 
-.reveal-on-scroll.is-visible { 
-  opacity: 1; 
-  transform: none; 
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: none;
 }

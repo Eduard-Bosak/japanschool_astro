@@ -7,9 +7,11 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
 [![Code Style](https://img.shields.io/badge/code_style-modular-blueviolet)](https://github.com/Eduard-Bosak/japanschool)
 
-**Профессиональный одностраничный сайт-презентация с акцентом на визуальный вау‑эффект, анимации и конверсию**
+**Профессиональный одностраничный сайт-презентация с акцентом на визуальный
+вау‑эффект, анимации и конверсию**
 
-[🚀 Демо](#) • [📖 Документация](docs/) • [🐛 Баг-репорты](https://github.com/Eduard-Bosak/japanschool/issues)
+[🚀 Демо](#) • [📖 Документация](docs/) •
+[🐛 Баг-репорты](https://github.com/Eduard-Bosak/japanschool/issues)
 
 </div>
 
@@ -35,7 +37,8 @@
 ⚡ **Производительность** — Lighthouse Score 95+  
 ♿ **Доступность (A11y)** — ARIA, keyboard navigation, screen readers  
 📱 **Полностью адаптивный** — Mobile-first дизайн  
-🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn, Winter, Sakura)  
+🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn, Winter,
+Sakura)  
 🖼️ **Адаптивные изображения** — AVIF/WebP/JPG в 5 размерах  
 📝 **Статический блог** — Markdown → HTML с RSS/Atom  
 🌸 **Canvas анимации** — Падающие лепестки сакуры  
@@ -77,6 +80,16 @@ npm run build
 npm run dev      # Режим разработки с hot-reload (http://localhost:5173)
 npm run build    # Production сборка → dist/
 npm run clean    # Очистка папки dist/
+
+# 🎨 Code Quality
+npm run lint           # Проверка JavaScript с ESLint
+npm run lint:fix       # Автоисправление проблем ESLint
+npm run format         # Форматирование всего кода с Prettier
+npm run format:check   # Проверка форматирования без изменений
+
+# 🚀 Performance
+npm run lighthouse       # Запуск Lighthouse CI аудита
+npm run lighthouse:open  # Запуск аудита и открытие отчёта
 ```
 
 ---
@@ -91,9 +104,18 @@ npm run clean    # Очистка папки dist/
 
 ### Build Tools
 
-- **[esbuild](https://esbuild.github.io/)** — Ультра-быстрый бандлер JS (100x быстрее Webpack)
+- **[esbuild](https://esbuild.github.io/)** — Ультра-быстрый бандлер JS (100x
+  быстрее Webpack)
 - **[PostCSS](https://postcss.org/)** — Autoprefixer + cssnano
-- **[sharp](https://sharp.pixelplumbing.com/)** — Генерация адаптивных изображений (AVIF/WebP/JPG)
+- **[sharp](https://sharp.pixelplumbing.com/)** — Генерация адаптивных
+  изображений (AVIF/WebP/JPG)
+
+### Code Quality
+
+- **[ESLint](https://eslint.org/)** — Линтер JavaScript с правилами ES6+
+- **[Prettier](https://prettier.io/)** — Автоматическое форматирование кода
+- **[Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci)** —
+  Автоматический аудит производительности
 
 ### Development
 
@@ -197,9 +219,11 @@ japanschool/
 
 ### Модульная система
 
-Проект построен на **полностью модульной архитектуре** для максимальной поддерживаемости:
+Проект построен на **полностью модульной архитектуре** для максимальной
+поддерживаемости:
 
 #### 📦 **27 независимых модулей**
+
 - **16 CSS модулей** (2,500+ строк) — компонентный подход
 - **11 JavaScript модулей** (1,900+ строк) — ES6 modules
 
@@ -234,23 +258,101 @@ function initTheme() {
 
 #### 📊 Детальная документация модулей
 
-- **[AUDIT-REPORT.md](docs/AUDIT-REPORT.md)** — Полный анализ всех 27 модулей с метриками
-- **[MIGRATION-GUIDE.md](docs/MIGRATION-GUIDE.md)** — Руководство по переходу на модульную структуру
-- **[MODULARIZATION-COMPLETE.md](docs/MODULARIZATION-COMPLETE.md)** — Отчёт о завершении модуляризации
+- **[AUDIT-REPORT.md](docs/AUDIT-REPORT.md)** — Полный анализ всех 27 модулей с
+  метриками
+- **[MIGRATION-GUIDE.md](docs/MIGRATION-GUIDE.md)** — Руководство по переходу на
+  модульную структуру
+- **[MODULARIZATION-COMPLETE.md](docs/MODULARIZATION-COMPLETE.md)** — Отчёт о
+  завершении модуляризации
 
 ---
 
 ## 🔧 Разработка
 
+### Code Quality Tools
+
+Проект использует современные инструменты для поддержания высокого качества
+кода:
+
+#### ESLint
+
+Проверка JavaScript кода на соответствие стандартам:
+
+```bash
+# Проверить весь код
+npm run lint
+
+# Автоматически исправить проблемы
+npm run lint:fix
+```
+
+**Конфигурация:** `.eslintrc.json`
+
+- ES6+ правила
+- Единый стиль кода
+- Автоматическая проверка в CI/CD
+
+#### Prettier
+
+Автоматическое форматирование кода для единообразия:
+
+```bash
+# Отформатировать весь код
+npm run format
+
+# Проверить форматирование (без изменений)
+npm run format:check
+```
+
+**Конфигурация:** `.prettierrc.json`
+
+- Единые отступы (2 пробела)
+- Single quotes для JS
+- Автоматический line wrap
+
+#### Lighthouse CI
+
+Автоматический аудит производительности и доступности:
+
+```bash
+# Запустить Lighthouse аудит
+npm run lighthouse
+
+# Запустить и открыть отчёт
+npm run lighthouse:open
+```
+
+**Конфигурация:** `lighthouserc.json`
+
+- Performance: ≥ 95
+- Accessibility: 100
+- Best Practices: ≥ 95
+- SEO: ≥ 95
+
+**Core Web Vitals Budgets:**
+
+- FCP (First Contentful Paint): < 2s
+- LCP (Largest Contentful Paint): < 2.5s
+- CLS (Cumulative Layout Shift): < 0.1
+- TBT (Total Blocking Time): < 300ms
+
+**GitHub Actions Integration:**
+
+- Автоматический аудит при каждом push/PR
+- Комментарии с результатами в Pull Requests
+- Artifacts с детальными отчётами
+
 ### CSS модули (16 файлов, 2,500+ строк)
 
 **Base система:**
+
 - `variables.css` (76 строк) — Design tokens, цвета, spacing, shadows
 - `themes.css` (52 строки) — 4 сезонные темы (spring, autumn, winter, sakura)
 - `reset.css` (69 строк) — Глобальные сбросы, smooth scroll
 - `layout.css` (74 строки) — Container, skip-link, page transitions
 
 **UI компоненты:**
+
 - `preloader.css` (125 строк) — Загрузочный экран с анимированным кольцом
 - `header.css` (173 строки) — Фиксированная шапка с blur, мобильное меню
 - `hero.css` (208 строк) — Hero с градиентами и photo stack
@@ -267,26 +369,33 @@ function initTheme() {
 ### JavaScript модули (11 файлов, ES6)
 
 **Utilities:**
+
 - `analytics.js` — Легковесная очередь событий аналитики
 - `api.js` — Отправка на backend, offline queue, mock mode
 
 **Компоненты:**
-- `theme.js` — Переключение между 6 темами (dark, light, spring, autumn, winter, sakura)
+
+- `theme.js` — Переключение между 6 темами (dark, light, spring, autumn, winter,
+  sakura)
 - `preloader.js` — Fade-out прелоадера после загрузки
 - `navigation.js` — Мобильное меню, smooth scroll, scroll spy, scroll progress
 - `animations.js` — IntersectionObserver, count-up, parallax, spotlight cursor
 - `sakura.js` — Canvas анимация падающих лепестков сакуры (200+ строк)
-- `faq.js` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage (480+ строк)
-- `carousel.js` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+ строк)
+- `faq.js` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage
+  (480+ строк)
+- `carousel.js` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+
+  строк)
 - `gallery.js` — Lightbox с клавиатурной навигацией и accessibility (160+ строк)
 - `forms.js` — Валидация форм, modal управление, отправка данных (280+ строк)
 
 **Main entry:**
+
 - `main.js` — Импорт и инициализация всех модулей, responsive images
 
 ### Добавление нового модуля
 
 #### CSS модуль:
+
 1. Создать файл в `src/styles/components/my-component.css`
 2. Добавить импорт в `src/styles.css`:
    ```css
@@ -295,6 +404,7 @@ function initTheme() {
 3. Запустить `npm run build`
 
 #### JavaScript модуль:
+
 1. Создать файл в `src/scripts/components/myComponent.js`
 2. Добавить импорт в `src/scripts/main.js`:
    ```javascript
@@ -306,18 +416,19 @@ function initTheme() {
 
 1. Создать файл `content/blog/my-post.md`
 2. Добавить front-matter:
+
    ```yaml
    ---
-   title: "Заголовок статьи"
+   title: 'Заголовок статьи'
    slug: my-post
    date: 2025-10-03
-   description: "Краткое описание"
-   keywords: ["ключ1", "ключ2"]
-   cover: image.jpg  # опционально
+   description: 'Краткое описание'
+   keywords: ['ключ1', 'ключ2']
+   cover: image.jpg # опционально
    ---
-   
    Текст статьи в **Markdown**
    ```
+
 3. Запустить `npm run build`
 4. Статья доступна: `dist/blog/my-post/index.html`
 
@@ -330,9 +441,11 @@ function initTheme() {
 3. Результат в `dist/img/` + манифест `img-manifest.json`
 
 **Генерируемые размеры:**
+
 - 320px, 480px, 640px, 800px, 1024px
 
 **Форматы:**
+
 - AVIF (лучшее сжатие, ~50% меньше JPG)
 - WebP (хорошее сжатие, ~30% меньше JPG)
 - JPG (fallback для старых браузеров)
@@ -340,16 +453,18 @@ function initTheme() {
 ### Кастомизация
 
 **Цвета и темы:**
+
 ```css
 /* src/styles/base/variables.css */
 :root {
-  --primary: #ff6b9d;    /* Сакура розовый */
-  --accent: #ffd700;     /* Золотой */
-  --bg: #0f1115;         /* Тёмный фон */
+  --primary: #ff6b9d; /* Сакура розовый */
+  --accent: #ffd700; /* Золотой */
+  --bg: #0f1115; /* Тёмный фон */
 }
 ```
 
 **Скорость анимаций:**
+
 ```css
 :root {
   --trans-fast: 0.2s;
@@ -358,18 +473,21 @@ function initTheme() {
 ```
 
 **Количество лепестков сакуры:**
+
 ```javascript
 /* src/scripts/components/sakura.js */
 const PETAL_COUNT = 50; // Уменьшить для слабых устройств
 ```
 
 ---
+
 - `variables.css` (76 строк) — Design tokens, цвета, spacing, shadows
 - `themes.css` (52 строки) — 4 сезонные темы (spring, autumn, winter, sakura)
 - `reset.css` (69 строк) — Глобальные сбросы, smooth scroll
 - `layout.css` (74 строки) — Container, skip-link, page transitions
 
 **UI компоненты:**
+
 - `preloader.css` (125 строк) — Загрузочный экран с анимированным кольцом
 - `header.css` (173 строки) — Фиксированная шапка с blur, мобильное меню
 - `hero.css` (208 строк) — Hero с градиентами и photo stack
@@ -386,26 +504,33 @@ const PETAL_COUNT = 50; // Уменьшить для слабых устройс
 ### 🚀 JavaScript модули (11 файлов, ES6)
 
 **Utilities:**
+
 - `analytics.js` — Легковесная очередь событий аналитики
 - `api.js` — Отправка на backend, offline queue, mock mode
 
 **Компоненты:**
-- `theme.js` — Переключение между 6 темами (dark, light, spring, autumn, winter, sakura)
+
+- `theme.js` — Переключение между 6 темами (dark, light, spring, autumn, winter,
+  sakura)
 - `preloader.js` — Fade-out прелоадера после загрузки
 - `navigation.js` — Мобильное меню, smooth scroll, scroll spy, scroll progress
 - `animations.js` — IntersectionObserver, count-up, parallax, spotlight cursor
 - `sakura.js` — Canvas анимация падающих лепестков сакуры (200+ строк)
-- `faq.js` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage (480+ строк)
-- `carousel.js` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+ строк)
+- `faq.js` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage
+  (480+ строк)
+- `carousel.js` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+
+  строк)
 - `gallery.js` — Lightbox с клавиатурной навигацией и accessibility (160+ строк)
 - `forms.js` — Валидация форм, modal управление, отправка данных (280+ строк)
 
 **Main entry:**
+
 - `main.js` — Импорт и инициализация всех модулей, responsive images
 
 ### 🌐 Билингвальные комментарии
 
-Все модули содержат **полностью двуязычные комментарии** (EN/RU) для мультинациональных команд:
+Все модули содержат **полностью двуязычные комментарии** (EN/RU) для
+мультинациональных команд:
 
 ```javascript
 /* =============================================
@@ -546,6 +671,7 @@ chore: обновление зависимостей, конфигов
 - ✅ Chrome Android 90+
 
 ---
+
 1. Hero + call-to-action
 2. О школе (ценности)
 3. Основатель (био + метрики)
@@ -564,21 +690,21 @@ chore: обновление зависимостей, конфигов
 #### Цветовая палитра
 
 **Dark Theme (по умолчанию):**
+
 ```css
---primary: #ff6b9d      /* Сакура розовый */
---accent: #ffd700       /* Золотой */
---bg: #0f1115           /* Глубокий тёмный */
---surface: #1a1d24      /* Поверхность карточек */
---ink: #e8eaed          /* Основной текст */
+--primary: #ff6b9d /* Сакура розовый */ --accent: #ffd700 /* Золотой */
+  --bg: #0f1115 /* Глубокий тёмный */ --surface: #1a1d24
+  /* Поверхность карточек */ --ink: #e8eaed /* Основной текст */;
 ```
 
 **Light Theme:**
+
 ```css
---bg: #f5f7fa           /* Светлый фон */
---ink: #1a1d24          /* Тёмный текст */
+--bg: #f5f7fa /* Светлый фон */ --ink: #1a1d24 /* Тёмный текст */;
 ```
 
 **Сезонные темы:**
+
 - 🌸 **Spring** — Нежно-розовый, свежая зелень
 - 🍂 **Autumn** — Тёплый оранжевый, коричневый
 - ❄️ **Winter** — Холодный синий, серебристый
@@ -613,6 +739,7 @@ chore: обновление зависимостей, конфигов
 ### Адаптивность
 
 **Брейкпоинты:**
+
 ```css
 @media (max-width: 860px) {
   /* Мобильная версия */
@@ -699,6 +826,7 @@ npm run build
 ```
 
 **Override через ENV:**
+
 ```bash
 SITE_URL=https://prod.com npm run build
 ```
@@ -825,6 +953,7 @@ chore: обновление зависимостей, конфигов
 ### Формы (заглушка)
 
 До подключения сервера формы работают в демо-режиме:
+
 - Данные сохраняются в `localStorage` (ключ `japanschool.pendingForms`)
 - Пользователю показывается успешная отправка
 
@@ -842,6 +971,7 @@ chore: обновление зависимостей, конфигов
 **Формат запроса:** `POST application/json`
 
 **Поля:**
+
 - `name`, `email`, `goal`, `level`, `message`
 - `program` (для модального окна)
 - Автоматические: `page`, `utm`, `timestamp`
@@ -853,6 +983,7 @@ chore: обновление зависимостей, конфигов
 ### Version 1.0.0 (2025-10-03)
 
 #### ✨ Features
+
 - 🎯 Модульная архитектура (27 модулей)
 - 🌐 Билингвальные комментарии (EN/RU)
 - 🎨 6 тем оформления (dark, light, 4 сезонные)
@@ -863,12 +994,14 @@ chore: обновление зависимостей, конфигов
 - 🔍 SEO-оптимизация (sitemap, JSON-LD)
 
 #### 🏗️ Architecture
+
 - Build система (esbuild + PostCSS)
 - Responsive images pipeline (sharp)
 - Service Worker caching
 - LocalStorage для тем и форм
 
 #### ♿ Accessibility
+
 - ARIA-атрибуты
 - Keyboard navigation
 - Screen reader support
@@ -881,18 +1014,21 @@ chore: обновление зависимостей, конфигов
 ### Планы на будущее
 
 **v1.1 (Q4 2025)**
+
 - [ ] Автотесты (Jest + Testing Library)
 - [ ] CI/CD через GitHub Actions
 - [ ] Автоматический деплой на Netlify
 - [ ] Performance бюджет в Lighthouse CI
 
 **v1.2 (Q1 2026)**
+
 - [ ] Интеграция с CMS (Headless)
 - [ ] Реальный backend API
 - [ ] Админ-панель для управления контентом
 - [ ] Email уведомления
 
 **v2.0 (Q2 2026)**
+
 - [ ] LMS функциональность (личный кабинет)
 - [ ] Система записи на курсы
 - [ ] Онлайн-оплата
@@ -906,23 +1042,22 @@ chore: обновление зависимостей, конфигов
 
 Copyright (c) 2025 Eduard Bosak
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
@@ -950,4 +1085,3 @@ SOFTWARE.
 Made with ❤️ and 🌸 (сакура)
 
 </div>
-

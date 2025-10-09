@@ -9,8 +9,10 @@
  */
 export function init() {
   const preloader = document.getElementById('preloader');
-  if (!preloader) return;
-  
+  if (!preloader) {
+    return;
+  }
+
   /* EN: Fade out preloader after page load
      RU: Исчезновение прелоадера после загрузки страницы */
   window.addEventListener('load', () => {

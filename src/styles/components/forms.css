@@ -4,106 +4,108 @@
    ============================================= */
 
 /* Form container | Контейнер формы */
-.contact-form { 
-  background: var(--surface); 
-  padding: 1.75rem 1.5rem 2rem; 
-  border-radius: var(--radius); 
-  border: 1px solid rgba(255 255 255 / .07); 
-  box-shadow: var(--shadow); 
+.contact-form {
+  background: var(--surface);
+  padding: 1.75rem 1.5rem 2rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255 255 255 / 0.07);
+  box-shadow: var(--shadow);
 }
 
 /* Form row (field wrapper) | Строка формы (обёртка поля) */
-.form-row { 
-  margin-bottom: 1.1rem; 
-  display: flex; 
-  flex-direction: column; 
-  gap: .55rem; 
+.form-row {
+  margin-bottom: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
 /* Split row (two columns) | Разделённая строка (два столбца) */
-.form-row.split { 
-  flex-direction: row; 
-  gap: 1rem; 
+.form-row.split {
+  flex-direction: row;
+  gap: 1rem;
 }
 
-.form-row.split label { 
-  flex: 1; 
+.form-row.split label {
+  flex: 1;
 }
 
 /* Label styles | Стили меток */
-label { 
-  font-size: .75rem; 
-  letter-spacing: 1px; 
-  text-transform: uppercase; 
-  font-weight: 600; 
-  color: var(--ink-dim); 
-  display: flex; 
-  flex-direction: column; 
-  gap: .4rem; 
+label {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 /* Input, textarea, select base styles | Базовые стили полей ввода */
-input, 
-textarea, 
-select { 
-  font: inherit; 
-  background: var(--bg-soft); 
-  border: 1px solid rgba(255 255 255 / .1); 
-  padding: .75rem .85rem; 
-  border-radius: var(--radius-sm); 
-  color: var(--ink); 
-  resize: vertical; 
-  transition: border-color var(--trans-fast), background var(--trans-fast); 
+input,
+textarea,
+select {
+  font: inherit;
+  background: var(--bg-soft);
+  border: 1px solid rgba(255 255 255 / 0.1);
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  resize: vertical;
+  transition:
+    border-color var(--trans-fast),
+    background var(--trans-fast);
 }
 
 /* Focus state | Состояние фокуса */
-input:focus, 
-textarea:focus, 
-select:focus { 
-  outline: none; 
-  border-color: var(--primary); 
-  background: var(--surface-alt); 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--surface-alt);
 }
 
 /* Form status message | Сообщение о статусе формы */
-.form-status { 
-  font-size: .75rem; 
-  min-height: 1.2rem; 
+.form-status {
+  font-size: 0.75rem;
+  min-height: 1.2rem;
 }
 
 /* Field error message | Сообщение об ошибке поля */
-.field-error { 
-  display: block; 
-  margin-top: .35rem; 
-  font-size: .62rem; 
-  letter-spacing: .5px; 
-  color: var(--danger, #ff4d61); 
-  text-transform: uppercase; 
+.field-error {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.5px;
+  color: var(--danger, #ff4d61);
+  text-transform: uppercase;
 }
 
-.field-error[hidden] { 
-  display: none !important; 
+.field-error[hidden] {
+  display: none !important;
 }
 
 /* Invalid field state | Состояние невалидного поля */
-input.invalid, 
-select.invalid, 
-textarea.invalid { 
-  border-color: var(--danger, #ff4d61) !important; 
-  box-shadow: 0 0 0 2px rgba(255 77 97 / .25); 
+input.invalid,
+select.invalid,
+textarea.invalid {
+  border-color: var(--danger, #ff4d61) !important;
+  box-shadow: 0 0 0 2px rgba(255 77 97 / 0.25);
 }
 
 /* Mini form (in modals) | Мини-форма (в модалках) */
-.mini-form { 
-  display: grid; 
-  gap: 1rem; 
+.mini-form {
+  display: grid;
+  gap: 1rem;
 }
 
-.mini-form input { 
-  width: 100%; 
+.mini-form input {
+  width: 100%;
 }
 
-.mini-status { 
-  font-size: .7rem; 
-  min-height: 1rem; 
+.mini-status {
+  font-size: 0.7rem;
+  min-height: 1rem;
 }

@@ -16,8 +16,7 @@ const CORE_ASSETS = [
   '/styles.css',
   '/main.js',
   '/manifest.json',
-  '/favicon.svg',
-  '/fonts.css'
+  '/favicon.svg'
 ];
 
 /* EN: Install event - cache core assets | RU: Событие установки - кеширование основных ресурсов */

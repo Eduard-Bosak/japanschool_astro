@@ -12,8 +12,10 @@ import { track } from '../utils/analytics.js';
 function setupMobileNav() {
   const navToggle = document.querySelector('.nav-toggle');
   const navMenu = document.getElementById('navMenu');
-  if (!navToggle || !navMenu) return;
-  
+  if (!navToggle || !navMenu) {
+    return;
+  }
+
   /* EN: Toggle mobile menu on button click
      RU: Переключение мобильного меню по клику на кнопку */
   navToggle.addEventListener('click', () => {
@@ -22,10 +24,10 @@ function setupMobileNav() {
     navMenu.setAttribute('data-open', String(!expanded));
     document.body.classList.toggle('nav-open', !expanded);
   });
-  
+
   /* EN: Close menu when link is clicked on mobile
      RU: Закрытие меню при клике на ссылку на мобильном */
-  navMenu.querySelectorAll('a').forEach(a => {
+  navMenu.querySelectorAll('a').forEach((a) => {
     a.addEventListener('click', () => {
       if (window.innerWidth < 860) {
         navToggle.setAttribute('aria-expanded', 'false');
@@ -53,12 +55,12 @@ function setupSmoothScroll() {
       }
     }
   }
-  
+
   /* EN: Add scroll handler to all anchor links
      RU: Добавление обработчика прокрутки ко всем якорным ссылкам */
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', offsetScroll);
-    
+
     /* EN: Track anchor clicks
        RU: Отслеживание кликов по якорям */
     a.addEventListener('click', () => {
@@ -73,55 +75,68 @@ function setupSmoothScroll() {
  */
 function setupScrollSpy() {
   const links = Array.from(document.querySelectorAll('.main-nav a[href^="#"]'));
-  if (!links.length || typeof IntersectionObserver === 'undefined') return;
-  
+  if (!links.length || typeof IntersectionObserver === 'undefined') {
+    return;
+  }
+
   /* EN: Map sections to navigation links
      RU: Сопоставление секций и навигационных ссылок */
   const map = new Map();
-  links.forEach(link => {
+  links.forEach((link) => {
     const hash = link.getAttribute('href');
-    if (!hash || hash.length < 2) return;
-    
+    if (!hash || hash.length < 2) {
+      return;
+    }
+
     const id = hash.slice(1);
     const section = document.getElementById(id);
     if (section) {
       map.set(section, link);
     }
   });
-  
-  if (!map.size) return;
-  
+
+  if (!map.size) {
+    return;
+  }
+
   let activeId = null;
-  
+
   /* EN: Activate link by section ID
      RU: Активация ссылки по ID секции */
   const activate = (id) => {
-    if (id === activeId) return;
+    if (id === activeId) {
+      return;
+    }
     activeId = id;
-    
-    links.forEach(link => {
+
+    links.forEach((link) => {
       const linkId = link.getAttribute('href')?.slice(1);
       link.classList.toggle('active', linkId === id);
     });
   };
-  
+
   /* EN: Observe sections for intersection
      RU: Наблюдение за пересечением секций */
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      
-      const link = map.get(entry.target);
-      if (link) {
-        activate(entry.target.id);
-      }
-    });
-  }, { rootMargin: '-48% 0px -48% 0px', threshold: 0 });
-  
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        const link = map.get(entry.target);
+        if (link) {
+          activate(entry.target.id);
+        }
+      });
+    },
+    { rootMargin: '-48% 0px -48% 0px', threshold: 0 }
+  );
+
   /* EN: Start observing all sections
      RU: Начало наблюдения за всеми секциями */
   map.forEach((_link, section) => observer.observe(section));
-  
+
   /* EN: Set first link active on load
      RU: Установка первой ссылки активной при загрузке */
   const first = links[0];
@@ -136,18 +151,20 @@ function setupScrollSpy() {
  */
 function setupScrollProgress() {
   const progressBar = document.querySelector('.scroll-progress span');
-  if (!progressBar) return;
-  
+  if (!progressBar) {
+    return;
+  }
+
   /* EN: Update scroll progress on scroll
      RU: Обновление прогресса прокрутки при скролле */
   function updateScrollProgress() {
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = max > 0 ? (window.scrollY / max) : 0;
+    const ratio = max > 0 ? window.scrollY / max : 0;
     progressBar.style.width = (ratio * 100).toFixed(2) + '%';
   }
-  
+
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
-  
+
   /* EN: Initial update on load
      RU: Начальное обновление при загрузке */
   window.addEventListener('load', updateScrollProgress);
@@ -173,15 +190,18 @@ function setupScrollRestore() {
       /* EN: Ignore errors | RU: Игнорировать ошибки */
     }
   });
-  
+
   /* EN: Save scroll position before unload
      RU: Сохранение позиции прокрутки перед выгрузкой */
   window.addEventListener('beforeunload', () => {
     try {
-      sessionStorage.setItem('scroll:restore', JSON.stringify({
-        path: window.location.pathname,
-        y: window.scrollY
-      }));
+      sessionStorage.setItem(
+        'scroll:restore',
+        JSON.stringify({
+          path: window.location.pathname,
+          y: window.scrollY
+        })
+      );
     } catch (_) {
       /* EN: Ignore errors | RU: Игнорировать ошибки */
     }

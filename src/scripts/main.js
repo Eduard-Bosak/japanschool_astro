@@ -27,7 +27,7 @@ function initializeApp() {
   /* EN: Initialize theme system first (runs before DOM ready)
      RU: Инициализация системы тем в первую очередь (выполняется до готовности DOM) */
   theme.initTheme();
-  
+
   /* EN: Initialize components after DOM is ready
      RU: Инициализация компонентов после готовности DOM */
   if (document.readyState === 'loading') {
@@ -51,24 +51,36 @@ function initComponents() {
   navigation.init();
   animations.init();
   sakura.init();
-  
+
   /* EN: Interactive components
      RU: Интерактивные компоненты */
   faq.init();
   carousel.init();
   gallery.init();
   forms.init();
-  
+
   /* EN: Additional features
      RU: Дополнительные функции */
   setupResponsiveImages();
-  
+  updateFooterYear();
+
   /* EN: Track page view
      RU: Отслеживание просмотра страницы */
-  track('page_view', { 
+  track('page_view', {
     path: window.location.pathname,
     referrer: document.referrer
   });
+}
+
+/**
+ * EN: Update footer year dynamically
+ * RU: Динамическое обновление года в футере
+ */
+function updateFooterYear() {
+  const yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
 }
 
 /**
@@ -77,42 +89,48 @@ function initComponents() {
  */
 function setupResponsiveImages() {
   fetch('img-manifest.json')
-    .then(r => r && r.ok ? r.json() : null)
-    .then(manifest => {
-      if (!manifest) return;
-      
+    .then((r) => (r && r.ok ? r.json() : null))
+    .then((manifest) => {
+      if (!manifest) {
+        return;
+      }
+
       /* EN: Build srcset from array of responsive images
          RU: Построение srcset из массива адаптивных изображений */
       function buildSrcSet(arr) {
-        return arr.map(p => {
-          const m = p.match(/-w(\d+)\./);
-          return m ? `${p} ${m[1]}w` : p;
-        }).join(', ');
+        return arr
+          .map((p) => {
+            const m = p.match(/-w(\d+)\./);
+            return m ? `${p} ${m[1]}w` : p;
+          })
+          .join(', ');
       }
-      
+
       /* EN: Enhance gallery images with modern formats
          RU: Улучшение изображений галереи современными форматами */
-      document.querySelectorAll('#galleryGrid img').forEach(img => {
+      document.querySelectorAll('#galleryGrid img').forEach((img) => {
         const orig = img.getAttribute('src');
-        if (!manifest[orig]) return;
-        
+        if (!manifest[orig]) {
+          return;
+        }
+
         const picture = document.createElement('picture');
-        
+
         /* EN: Add AVIF source
            RU: Добавление AVIF источника */
         const avif = document.createElement('source');
         avif.type = 'image/avif';
         avif.srcset = buildSrcSet(manifest[orig].avif);
-        
+
         /* EN: Add WebP source
            RU: Добавление WebP источника */
         const webp = document.createElement('source');
         webp.type = 'image/webp';
         webp.srcset = buildSrcSet(manifest[orig].webp);
-        
+
         const sizes = '(max-width: 640px) 50vw, 240px';
         img.setAttribute('sizes', sizes);
-        
+
         picture.appendChild(avif);
         picture.appendChild(webp);
         picture.appendChild(img.cloneNode(true));

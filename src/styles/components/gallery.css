@@ -4,122 +4,134 @@
    ============================================= */
 
 /* Lightbox overlay | Подложка лайтбокса */
-.lightbox { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0 0 0 / .92); 
-  z-index: 10000; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  opacity: 0; 
-  pointer-events: none; 
-  transition: opacity .35s ease; 
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0 0 0 / 0.92);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
 }
 
 /* Active state | Активное состояние */
-.lightbox.active { 
-  opacity: 1; 
-  pointer-events: auto; 
+.lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Lightbox image container | Контейнер изображения */
-.lightbox-content { 
-  max-width: 92%; 
-  max-height: 85vh; 
-  position: relative; 
-  transform: scale(.92); 
-  transition: transform .35s cubic-bezier(.19, 1, .22, 1); 
+.lightbox-content {
+  max-width: 92%;
+  max-height: 85vh;
+  position: relative;
+  transform: scale(0.92);
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.lightbox.active .lightbox-content { 
-  transform: scale(1); 
+.lightbox.active .lightbox-content {
+  transform: scale(1);
 }
 
 /* Lightbox image | Изображение в лайтбоксе */
-.lightbox-content img { 
-  max-width: 100%; 
-  max-height: 85vh; 
-  border-radius: var(--radius-lg); 
-  box-shadow: 0 20px 60px rgba(0 0 0 / .5); 
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0 0 0 / 0.5);
 }
 
 /* Close button | Кнопка закрытия */
-.lightbox-close { 
-  position: absolute; 
-  top: -48px; 
-  right: 0; 
-  background: rgba(255 255 255 / .15); 
-  border: none; 
-  width: 40px; 
-  height: 40px; 
-  border-radius: 50%; 
-  color: #fff; 
-  font-size: 1.5rem; 
-  cursor: pointer; 
-  transition: background .25s ease, transform .25s ease; 
+.lightbox-close {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  background: rgba(255 255 255 / 0.15);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
-.lightbox-close:hover { 
-  background: rgba(255 255 255 / .25); 
-  transform: scale(1.1); 
+.lightbox-close:hover {
+  background: rgba(255 255 255 / 0.25);
+  transform: scale(1.1);
 }
 
 /* Navigation buttons | Кнопки навигации */
-.lightbox-nav { 
-  position: absolute; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  background: rgba(255 255 255 / .15); 
-  border: none; 
-  width: 50px; 
-  height: 50px; 
-  border-radius: 50%; 
-  color: #fff; 
-  font-size: 1.5rem; 
-  cursor: pointer; 
-  transition: background .25s ease, transform .25s ease; 
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255 255 255 / 0.15);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
-.lightbox-nav:hover { 
-  background: rgba(255 255 255 / .25); 
-  transform: translateY(-50%) scale(1.1); 
+.lightbox-nav:hover {
+  background: rgba(255 255 255 / 0.25);
+  transform: translateY(-50%) scale(1.1);
 }
 
-.lightbox-prev { left: -70px; }
-.lightbox-next { right: -70px; }
+.lightbox-prev {
+  left: -70px;
+}
+.lightbox-next {
+  right: -70px;
+}
 
 /* Caption | Подпись изображения */
-.lightbox-caption { 
-  position: absolute; 
-  bottom: -40px; 
-  left: 0; 
-  right: 0; 
-  text-align: center; 
-  color: rgba(255 255 255 / .85); 
-  font-size: .9rem; 
-  letter-spacing: .5px; 
+.lightbox-caption {
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: rgba(255 255 255 / 0.85);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
 }
 
 /* Responsive adjustments | Адаптивные настройки */
 @media (max-width: 768px) {
-  .lightbox-close { 
-    top: 1rem; 
-    right: 1rem; 
+  .lightbox-close {
+    top: 1rem;
+    right: 1rem;
   }
-  
-  .lightbox-nav { 
-    width: 42px; 
-    height: 42px; 
-    font-size: 1.2rem; 
+
+  .lightbox-nav {
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
   }
-  
-  .lightbox-prev { left: 1rem; }
-  .lightbox-next { right: 1rem; }
-  
-  .lightbox-caption { 
-    position: static; 
-    margin-top: 1rem; 
-    padding: 0 1rem; 
+
+  .lightbox-prev {
+    left: 1rem;
+  }
+  .lightbox-next {
+    right: 1rem;
+  }
+
+  .lightbox-caption {
+    position: static;
+    margin-top: 1rem;
+    padding: 0 1rem;
   }
 }

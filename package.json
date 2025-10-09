@@ -38,16 +38,27 @@
     "build": "cross-env NODE_ENV=production node build.mjs",
     "watch": "node build.mjs --watch",
     "serve": "npx http-server dist -p 5173 -c-1",
-    "dev": "npm run build && npm-run-all --parallel watch serve"
+    "dev": "npm run build && npm-run-all --parallel watch serve",
+    "lint": "eslint src/**/*.js build.mjs og.js",
+    "lint:fix": "eslint src/**/*.js build.mjs og.js --fix",
+    "format": "prettier --write \"**/*.{js,json,css,md,html}\"",
+    "format:check": "prettier --check \"**/*.{js,json,css,md,html}\"",
+    "lighthouse": "npm run build && lhci autorun",
+    "lighthouse:open": "npm run build && lhci autorun && open .lighthouseci/lhr-*.html"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.14.0",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "cssnano": "^6.1.2",
     "esbuild": "^0.23.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.47",
     "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.1",
+    "prettier": "^3.3.3",
     "sharp": "^0.33.4"
   },
   "dependencies": {
@@ -55,4 +66,3 @@
     "marked": "^12.0.2"
   }
 }
-

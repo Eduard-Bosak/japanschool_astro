@@ -13,19 +13,19 @@ window.analyticsQueue = window.analyticsQueue || [];
 /**
  * EN: Track analytics event with optional data payload
  * RU: Отслеживание события аналитики с опциональными данными
- * 
+ *
  * @param {string} evt - Event name | Название события
  * @param {Object} data - Event data payload | Данные события
  */
 export function track(evt, data = {}) {
-  const payload = { 
-    evt, 
-    ts: Date.now(), 
-    ...data 
+  const payload = {
+    evt,
+    ts: Date.now(),
+    ...data
   };
-  
+
   window.analyticsQueue.push(payload);
-  
+
   /* EN: Development logging (remove in production)
      RU: Логирование для разработки (удалить в продакшене) */
   const isDev = !window.__PRODUCTION_BUILD;
@@ -37,7 +37,7 @@ export function track(evt, data = {}) {
       payload
     );
   }
-  
+
   /* EN: Dispatch custom event for listeners
      RU: Отправка пользовательского события для слушателей */
   window.dispatchEvent(new CustomEvent('analytics', { detail: payload }));
@@ -46,7 +46,7 @@ export function track(evt, data = {}) {
 /**
  * EN: Get all tracked events from queue
  * RU: Получить все отслеженные события из очереди
- * 
+ *
  * @returns {Array} - Analytics queue | Очередь аналитики
  */
 export function getAnalyticsQueue() {

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+public/
+
+# Generated files
+*.bundle.js
+*.min.js
+*.min.css
+
+# Lighthouse CI
+.lighthouseci/
+
+# Temporary files
+.tmp/
+*.tmp
+
+# Configuration files
+*.config.js
+*.config.cjs
+postcss.config.cjs
+
+# Test files (if added in future)
+**/*.test.js
+**/*.spec.js
