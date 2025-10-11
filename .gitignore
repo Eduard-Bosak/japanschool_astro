@@ -5,6 +5,15 @@ package-lock.json
 # Build output / Результат сборки
 dist/
 
+# Build artifacts in root (should only be in dist/) / Артефакты сборки в корне
+/index.html
+/main.js
+/styles.css
+/service-worker.js
+/manifest.json
+/offline.html
+/favicon.svg
+
 # Lighthouse CI reports / Отчёты Lighthouse CI
 .lighthouseci/
 
