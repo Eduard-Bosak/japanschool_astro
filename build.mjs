@@ -1,6 +1,6 @@
 /* =============================================
    Build System for Japan School Landing Page
-   Система сборки для лендинга школы японского языка
+   пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
    ============================================= */
 
 import { promises as fs } from 'fs';
@@ -26,7 +26,7 @@ const env = process.env.NODE_ENV || (isWatch ? 'development' : 'production');
 
 /**
  * EN: Recursively delete directory
- * RU: Рекурсивное удаление директории
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 async function rimraf(p){
   try {
@@ -36,7 +36,7 @@ async function rimraf(p){
 
 /**
  * EN: Generate SHA-256 hash for content-based cache busting
- * RU: Генерация SHA-256 хеша для cache busting на основе содержимого
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SHA-256 пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ cache busting пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 function hashContent(buf){
   return crypto.createHash('sha256').update(buf).digest('hex').slice(0,10);
@@ -44,7 +44,7 @@ function hashContent(buf){
 
 /**
  * EN: Run shell command as a child process
- * RU: Запуск shell команды как дочернего процесса
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅ shell пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 async function run(cmd, args, opts={}){
   return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ async function run(cmd, args, opts={}){
 
 /**
  * EN: Ensure directory exists (create if needed)
- * RU: Убедиться что директория существует (создать если нужно)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
  */
 async function ensureDir(p){
   await fs.mkdir(p, { recursive: true });
@@ -63,11 +63,11 @@ async function ensureDir(p){
 
 /**
  * EN: Build and minify CSS with PostCSS
- * RU: Сборка и минификация CSS через PostCSS
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ CSS пїЅпїЅпїЅпїЅпїЅ PostCSS
  */
 async function buildCSS(){
   /* EN: Use modular entry point src/styles.css
-     RU: Использование модульной точки входа src/styles.css */
+     RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ src/styles.css */
   const cssPath = path.join(root, 'src', 'styles.css');
   const cssRaw = await fs.readFile(cssPath, 'utf8');
   const tmpIn = path.join(root, '.tmp.styles.css');
@@ -85,11 +85,11 @@ async function buildCSS(){
 
 /**
  * EN: Build and bundle JavaScript with esbuild
- * RU: Сборка и бандлинг JavaScript через esbuild
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ JavaScript пїЅпїЅпїЅпїЅпїЅ esbuild
  */
 async function buildJS(){
   /* EN: Use modular entry point src/scripts/main.js with ES6 bundling
-     RU: Использование модульной точки входа src/scripts/main.js с ES6 бандлингом */
+     RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ src/scripts/main.js пїЅ ES6 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
   const entry = path.join(root, 'src', 'scripts', 'main.js');
   const result = await esbuild.build({
     entryPoints: [entry],
@@ -112,7 +112,7 @@ async function buildJS(){
 
 /**
  * EN: Self-host Google Fonts (download and serve locally)
- * RU: Самостоятельный хостинг Google Fonts (загрузка и локальная раздача)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Google Fonts (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
  */
 async function buildFonts(){
   try {
@@ -166,16 +166,16 @@ async function buildFonts(){
 
 /**
  * EN: Generate blog post HTML template with all features
- * RU: Генерация HTML шаблона поста блога со всеми фичами
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTML пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
  */
 function generateBlogPostHTML({ title, desc, keywords, ogImageMeta, isoDate, dateModified, twitterMeta, articleJson, breadcrumbJson, cssRef, jsRef, localeDate, readingTime, catsHtml, coverFigure, tocHtml, htmlBodyWithFootnotes, site, slug }) {
   const currentYear = new Date().getFullYear();
-  return `<!DOCTYPE html><html lang="ru" data-theme="dark"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${title}</title><meta name="description" content="${desc.replace(/"/g,'&quot;')}"><meta name="keywords" content="${keywords}"><meta property="og:type" content="article"/><meta property="og:title" content="${title}"/><meta property="og:description" content="${desc.replace(/"/g,'&quot;')}"/>${ogImageMeta}<meta property="og:url" content="${site.replace(/\/$/,'')}/blog/${slug}/"/><meta property="article:published_time" content="${isoDate}"/><meta property="article:modified_time" content="${dateModified || isoDate}"/><meta property="og:updated_time" content="${dateModified || isoDate}"/>${twitterMeta}__CANONICAL__<link rel="alternate" type="application/rss+xml" title="RSS" href="/__RSS__"/><link rel="alternate" type="application/atom+xml" title="Atom" href="/__ATOM__"/><link rel="stylesheet" href="/${cssRef}"/><script defer src="/${jsRef}"></script><style>.reading-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(255 255 255/.08);z-index:300}.reading-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .15s}.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(var(--bg-rgb)/.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255 255 255/.06)}.header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}.brand{font-family:'Playfair Display',serif;font-size:1.35rem;letter-spacing:.5px;color:var(--ink);display:flex;align-items:center;gap:.25rem;text-decoration:none}.brand span{color:var(--primary);font-weight:700}.main-nav ul{list-style:none;padding:0;margin:0;display:flex;gap:1.75rem;align-items:center}.main-nav a{text-decoration:none;color:var(--ink-soft);font-size:.85rem;font-weight:500;transition:color .25s;letter-spacing:.3px}.main-nav a:hover,.main-nav a.cta-link{color:var(--primary)}.nav-toggle{display:none}@media(max-width:900px){.main-nav{position:fixed;top:70px;left:0;right:0;background:var(--surface);border-bottom:1px solid rgba(255 255 255/.08);padding:1.5rem;transform:translateY(-100%);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s}.main-nav.open{transform:translateY(0);opacity:1;pointer-events:auto}.main-nav ul{flex-direction:column;gap:1.25rem;align-items:flex-start}.nav-toggle{display:block;background:none;border:none;width:32px;height:32px;cursor:pointer;position:relative}.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{display:block;width:24px;height:2px;background:var(--ink-soft);transition:transform .3s,opacity .3s}.nav-toggle span{position:relative}.nav-toggle span::before,.nav-toggle span::after{content:'';position:absolute;left:0}.nav-toggle span::before{top:-7px}.nav-toggle span::after{top:7px}.nav-toggle[aria-expanded="true"] span{background:transparent}.nav-toggle[aria-expanded="true"] span::before{transform:rotate(45deg);top:0}.nav-toggle[aria-expanded="true"] span::after{transform:rotate(-45deg);top:0}}</style><script type="application/ld+json">${articleJson}</script><script type="application/ld+json">${breadcrumbJson}</script></head><body><canvas id="sakura-canvas" aria-hidden="true"></canvas><div class="reading-progress" aria-hidden="true"><span id="readingBar"></span></div><header class="site-header"><div class="header-inner"><a href="/" class="brand">???<span>School</span></a><nav class="main-nav" aria-label="Главная навигация"><button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="Меню"><span></span></button><ul id="navMenu"><li><a href="/">Главная</a></li><li><a href="/#about">О школе</a></li><li><a href="/#programs">Программы</a></li><li><a href="/blog/">Блог</a></li><li><a href="/#contact" class="cta-link">Запись</a></li></ul></nav><div class="header-actions"><button id="themeToggle" class="theme-toggle" aria-label="Переключить тему"></button></div></div></header><main class="container rich-text" style="padding:7rem 0 4rem;max-width:820px"><nav style="margin-bottom:1.5rem"><a href="/" style="text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">< Главная</a> <span style="color:var(--ink-dim);margin:0 .5rem">/</span> <a href="/blog/" style="text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft)">Блог</a></nav><h1 style="margin-top:1rem">${title}</h1><p class="post-meta-line"><time datetime="${isoDate}">${localeDate}</time> · <span class="rt">${readingTime} мин чтения</span></p>${catsHtml}${coverFigure}${tocHtml}<article class="post-content">${htmlBodyWithFootnotes}</article></main><aside class="reading-controls" aria-label="Настройки чтения"><button class="reading-control-btn" data-mode="small" data-tooltip="Мельче" aria-label="Уменьшить размер текста">A-</button><button class="reading-control-btn" data-mode="large" data-tooltip="Крупнее" aria-label="Увеличить размер текста">A+</button><div class="reading-controls-separator"></div><button class="reading-control-btn" data-mode="serif" data-tooltip="Serif" aria-label="Шрифт с засечками">Aa</button><button class="reading-control-btn" data-mode="wide" data-tooltip="Шире" aria-label="Широкая колонка">?</button><button class="reading-control-btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">?</button><button class="reading-control-btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">?</button><div class="reading-controls-separator"></div><button class="reading-control-btn print-btn" onclick="window.print()" data-tooltip="Печать" aria-label="Распечатать статью">??</button><button class="reading-control-btn share-btn" id="shareBtn" data-tooltip="Поделиться" aria-label="Поделиться статьей">??</button><button class="reading-control-btn bookmark-btn" id="bookmarkBtn" data-tooltip="Закладка" aria-label="Добавить в закладки">?</button></aside><div class="reading-time-estimate" id="timeEstimate" data-time="${readingTime}">Осталось: <span class="reading-time-value">~${readingTime} мин</span></div><footer class="site-footer"><div class="footer-grid"><div class="foot-brand"><div class="brand sm">???<span>School</span></div><p class="foot-tagline">Японский язык как система мышления.</p></div><nav class="foot-nav" aria-label="Дополнительные ссылки"><ul><li><a href="/#programs">Программы</a></li><li><a href="/#method">Методика</a></li><li><a href="/#contact">Контакты</a></li></ul></nav><div class="foot-meta"><p>© ${currentYear} Школа японского языка. Все права защищены.</p></div></div></footer><script>(function(){const bar=document.getElementById('readingBar');const timeEst=document.getElementById('timeEstimate');const totalTime=parseInt(timeEst?.dataset.time||'5',10);function upd(){const el=document.querySelector('.post-content');if(!el)return;const max=el.offsetHeight - window.innerHeight;const y=window.scrollY-(el.offsetTop-70);const ratio=max>0?Math.min(1,Math.max(0,y/max)):0;if(bar)bar.style.width=(ratio*100).toFixed(2)+'%';if(timeEst){const remaining=Math.ceil(totalTime*(1-ratio));if(remaining>0&&ratio>0.05&&ratio<0.98){timeEst.classList.remove('hidden');timeEst.querySelector('.reading-time-value').textContent='~'+remaining+' мин';}else{timeEst.classList.add('hidden');}}}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('load',()=>{const el=document.querySelector('.post-content');if(el&&el.offsetHeight<window.innerHeight*1.2){if(bar)bar.parentElement.style.display='none';if(timeEst)timeEst.style.display='none';}upd();});})();(function(){const toc=document.querySelector('.post-toc');if(!toc)return;const links=[...toc.querySelectorAll('a[href^="#"]')];const map=new Map();links.forEach(a=>{const id=a.getAttribute('href').slice(1);const h=document.getElementById(id);if(h)map.set(h,a);});if(!map.size)return;let active=null;const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const link=map.get(e.target);if(link){if(active)active.parentElement.classList.remove('active');active=link;link.parentElement.classList.add('active');}}});},{rootMargin:'-55% 0px -40% 0px',threshold:[0,1]});map.forEach((_,h)=>io.observe(h));})();(function(){const btns=document.querySelectorAll('.reading-control-btn[data-mode]');const KEY='readingModes';let modes=new Set();try{const saved=localStorage.getItem(KEY);if(saved)modes=new Set(JSON.parse(saved));}catch{}modes.forEach(m=>document.body.classList.add('reading-mode-'+m));btns.forEach(btn=>{const mode=btn.dataset.mode;if(modes.has(mode))btn.classList.add('active');btn.addEventListener('click',()=>{const isSize=['small','large'].includes(mode);const wasActive=modes.has(mode);if(isSize){['small','large'].forEach(m=>{modes.delete(m);document.body.classList.remove('reading-mode-'+m);const other=document.querySelector('[data-mode="'+m+'"]');if(other)other.classList.remove('active');});}if(wasActive&&isSize){return;}if(wasActive){modes.delete(mode);document.body.classList.remove('reading-mode-'+mode);btn.classList.remove('active');}else{modes.add(mode);document.body.classList.add('reading-mode-'+mode);btn.classList.add('active');}try{localStorage.setItem(KEY,JSON.stringify([...modes]));}catch{}});});const shareBtn=document.getElementById('shareBtn');if(shareBtn){shareBtn.addEventListener('click',async()=>{if(navigator.share){try{await navigator.share({title:document.title,url:window.location.href});}catch{}}else{try{await navigator.clipboard.writeText(window.location.href);shareBtn.textContent='?';setTimeout(()=>shareBtn.textContent='??',2000);}catch{}}});}const bookmarkBtn=document.getElementById('bookmarkBtn');if(bookmarkBtn){const BOOKMARKS_KEY='blogBookmarks';let bookmarks=[];try{bookmarks=JSON.parse(localStorage.getItem(BOOKMARKS_KEY)||'[]');}catch{}if(bookmarks.includes(window.location.pathname)){bookmarkBtn.classList.add('active');}bookmarkBtn.addEventListener('click',()=>{const path=window.location.pathname;if(bookmarks.includes(path)){bookmarks=bookmarks.filter(b=>b!==path);bookmarkBtn.classList.remove('active');}else{bookmarks.push(path);bookmarkBtn.classList.add('active');}try{localStorage.setItem(BOOKMARKS_KEY,JSON.stringify(bookmarks));}catch{}});}const toggle=document.querySelector('.nav-toggle');const nav=document.querySelector('.main-nav');if(toggle&&nav){toggle.addEventListener('click',()=>{const expanded=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',!expanded);nav.classList.toggle('open');});}})();</script></body></html>`;
+  return `<!DOCTYPE html><html lang="ru" data-theme="dark"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${title}</title><meta name="description" content="${desc.replace(/"/g,'&quot;')}"><meta name="keywords" content="${keywords}"><meta property="og:type" content="article"/><meta property="og:title" content="${title}"/><meta property="og:description" content="${desc.replace(/"/g,'&quot;')}"/>${ogImageMeta}<meta property="og:url" content="${site.replace(/\/$/,'')}/blog/${slug}/"/><meta property="article:published_time" content="${isoDate}"/><meta property="article:modified_time" content="${dateModified || isoDate}"/><meta property="og:updated_time" content="${dateModified || isoDate}"/>${twitterMeta}__CANONICAL__<link rel="alternate" type="application/rss+xml" title="RSS" href="/__RSS__"/><link rel="alternate" type="application/atom+xml" title="Atom" href="/__ATOM__"/><link rel="stylesheet" href="/${cssRef}"/><script defer src="/${jsRef}"></script><style>.reading-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(255 255 255/.08);z-index:300}.reading-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .15s}.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(var(--bg-rgb)/.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255 255 255/.06)}.header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}.brand{font-family:'Playfair Display',serif;font-size:1.35rem;letter-spacing:.5px;color:var(--ink);display:flex;align-items:center;gap:.25rem;text-decoration:none}.brand span{color:var(--primary);font-weight:700}.main-nav ul{list-style:none;padding:0;margin:0;display:flex;gap:1.75rem;align-items:center}.main-nav a{text-decoration:none;color:var(--ink-soft);font-size:.85rem;font-weight:500;transition:color .25s;letter-spacing:.3px}.main-nav a:hover,.main-nav a.cta-link{color:var(--primary)}.nav-toggle{display:none}@media(max-width:900px){.main-nav{position:fixed;top:70px;left:0;right:0;background:var(--surface);border-bottom:1px solid rgba(255 255 255/.08);padding:1.5rem;transform:translateY(-100%);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s}.main-nav.open{transform:translateY(0);opacity:1;pointer-events:auto}.main-nav ul{flex-direction:column;gap:1.25rem;align-items:flex-start}.nav-toggle{display:block;background:none;border:none;width:32px;height:32px;cursor:pointer;position:relative}.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{display:block;width:24px;height:2px;background:var(--ink-soft);transition:transform .3s,opacity .3s}.nav-toggle span{position:relative}.nav-toggle span::before,.nav-toggle span::after{content:'';position:absolute;left:0}.nav-toggle span::before{top:-7px}.nav-toggle span::after{top:7px}.nav-toggle[aria-expanded="true"] span{background:transparent}.nav-toggle[aria-expanded="true"] span::before{transform:rotate(45deg);top:0}.nav-toggle[aria-expanded="true"] span::after{transform:rotate(-45deg);top:0}}</style><script type="application/ld+json">${articleJson}</script><script type="application/ld+json">${breadcrumbJson}</script></head><body><canvas id="sakura-canvas" aria-hidden="true"></canvas><div class="reading-progress" aria-hidden="true"><span id="readingBar"></span></div><header class="site-header"><div class="header-inner"><a href="/" class="brand">???<span>School</span></a><nav class="main-nav" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"><button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="пїЅпїЅпїЅпїЅ"><span></span></button><ul id="navMenu"><li><a href="/">пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href="/#about">пїЅ пїЅпїЅпїЅпїЅпїЅ</a></li><li><a href="/#programs">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href="/blog/">пїЅпїЅпїЅпїЅ</a></li><li><a href="/#contact" class="cta-link">пїЅпїЅпїЅпїЅпїЅпїЅ</a></li></ul></nav><div class="header-actions"><button id="themeToggle" class="theme-toggle" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ"></button></div></div></header><main class="container rich-text" style="padding:7rem 0 4rem;max-width:820px"><nav style="margin-bottom:1.5rem"><a href="/" style="text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">< пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a> <span style="color:var(--ink-dim);margin:0 .5rem">/</span> <a href="/blog/" style="text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft)">пїЅпїЅпїЅпїЅ</a></nav><h1 style="margin-top:1rem">${title}</h1><p class="post-meta-line"><time datetime="${isoDate}">${localeDate}</time> пїЅ <span class="rt">${readingTime} пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</span></p>${catsHtml}${coverFigure}${tocHtml}<article class="post-content">${htmlBodyWithFootnotes}</article></main><aside class="reading-controls" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"><button class="reading-control-btn" data-mode="small" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ">A-</button><button class="reading-control-btn" data-mode="large" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ">A+</button><div class="reading-controls-separator"></div><button class="reading-control-btn" data-mode="serif" data-tooltip="Serif" aria-label="пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ">Aa</button><button class="reading-control-btn" data-mode="wide" data-tooltip="пїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ">?</button><button class="reading-control-btn" data-mode="focus" data-tooltip="пїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ">?</button><button class="reading-control-btn" data-mode="contrast" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ">?</button><div class="reading-controls-separator"></div><button class="reading-control-btn print-btn" onclick="window.print()" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ">??</button><button class="reading-control-btn share-btn" id="shareBtn" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ">??</button><button class="reading-control-btn bookmark-btn" id="bookmarkBtn" data-tooltip="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ">?</button></aside><div class="reading-time-estimate" id="timeEstimate" data-time="${readingTime}">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: <span class="reading-time-value">~${readingTime} пїЅпїЅпїЅ</span></div><footer class="site-footer"><div class="footer-grid"><div class="foot-brand"><div class="brand sm">???<span>School</span></div><p class="foot-tagline">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</p></div><nav class="foot-nav" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"><ul><li><a href="/#programs">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href="/#method">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href="/#contact">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li></ul></nav><div class="foot-meta"><p>пїЅ ${currentYear} пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</p></div></div></footer><script>(function(){const bar=document.getElementById('readingBar');const timeEst=document.getElementById('timeEstimate');const totalTime=parseInt(timeEst?.dataset.time||'5',10);function upd(){const el=document.querySelector('.post-content');if(!el)return;const max=el.offsetHeight - window.innerHeight;const y=window.scrollY-(el.offsetTop-70);const ratio=max>0?Math.min(1,Math.max(0,y/max)):0;if(bar)bar.style.width=(ratio*100).toFixed(2)+'%';if(timeEst){const remaining=Math.ceil(totalTime*(1-ratio));if(remaining>0&&ratio>0.05&&ratio<0.98){timeEst.classList.remove('hidden');timeEst.querySelector('.reading-time-value').textContent='~'+remaining+' пїЅпїЅпїЅ';}else{timeEst.classList.add('hidden');}}}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('load',()=>{const el=document.querySelector('.post-content');if(el&&el.offsetHeight<window.innerHeight*1.2){if(bar)bar.parentElement.style.display='none';if(timeEst)timeEst.style.display='none';}upd();});})();(function(){const toc=document.querySelector('.post-toc');if(!toc)return;const links=[...toc.querySelectorAll('a[href^="#"]')];const map=new Map();links.forEach(a=>{const id=a.getAttribute('href').slice(1);const h=document.getElementById(id);if(h)map.set(h,a);});if(!map.size)return;let active=null;const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const link=map.get(e.target);if(link){if(active)active.parentElement.classList.remove('active');active=link;link.parentElement.classList.add('active');}}});},{rootMargin:'-55% 0px -40% 0px',threshold:[0,1]});map.forEach((_,h)=>io.observe(h));})();(function(){const btns=document.querySelectorAll('.reading-control-btn[data-mode]');const KEY='readingModes';let modes=new Set();try{const saved=localStorage.getItem(KEY);if(saved)modes=new Set(JSON.parse(saved));}catch{}modes.forEach(m=>document.body.classList.add('reading-mode-'+m));btns.forEach(btn=>{const mode=btn.dataset.mode;if(modes.has(mode))btn.classList.add('active');btn.addEventListener('click',()=>{const isSize=['small','large'].includes(mode);const wasActive=modes.has(mode);if(isSize){['small','large'].forEach(m=>{modes.delete(m);document.body.classList.remove('reading-mode-'+m);const other=document.querySelector('[data-mode="'+m+'"]');if(other)other.classList.remove('active');});}if(wasActive&&isSize){return;}if(wasActive){modes.delete(mode);document.body.classList.remove('reading-mode-'+mode);btn.classList.remove('active');}else{modes.add(mode);document.body.classList.add('reading-mode-'+mode);btn.classList.add('active');}try{localStorage.setItem(KEY,JSON.stringify([...modes]));}catch{}});});const shareBtn=document.getElementById('shareBtn');if(shareBtn){shareBtn.addEventListener('click',async()=>{if(navigator.share){try{await navigator.share({title:document.title,url:window.location.href});}catch{}}else{try{await navigator.clipboard.writeText(window.location.href);shareBtn.textContent='?';setTimeout(()=>shareBtn.textContent='??',2000);}catch{}}});}const bookmarkBtn=document.getElementById('bookmarkBtn');if(bookmarkBtn){const BOOKMARKS_KEY='blogBookmarks';let bookmarks=[];try{bookmarks=JSON.parse(localStorage.getItem(BOOKMARKS_KEY)||'[]');}catch{}if(bookmarks.includes(window.location.pathname)){bookmarkBtn.classList.add('active');}bookmarkBtn.addEventListener('click',()=>{const path=window.location.pathname;if(bookmarks.includes(path)){bookmarks=bookmarks.filter(b=>b!==path);bookmarkBtn.classList.remove('active');}else{bookmarks.push(path);bookmarkBtn.classList.add('active');}try{localStorage.setItem(BOOKMARKS_KEY,JSON.stringify(bookmarks));}catch{}});}const toggle=document.querySelector('.nav-toggle');const nav=document.querySelector('.main-nav');if(toggle&&nav){toggle.addEventListener('click',()=>{const expanded=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',!expanded);nav.classList.toggle('open');});}})();</script></body></html>`;
 }
 
 /**
  * EN: Build blog from Markdown files (parse, generate HTML, RSS/Atom feeds)
- * RU: Сборка блога из Markdown файлов (парсинг, генерация HTML, RSS/Atom лент)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ Markdown пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTML, RSS/Atom пїЅпїЅпїЅпїЅ)
  */
 async function buildBlog(site){
   const contentDir = path.join(root,'content','blog');
@@ -246,7 +246,7 @@ async function buildBlog(site){
         refOrderMap[fid] = refIndex++;
       }
       const n = refOrderMap[fid];
-      return `<sup class=\"fn-ref\" id=\"fnref-${fid}\"><a href=\"#fn-${fid}\" aria-label=\"Сноска ${n}\">${n}</a></sup>`;
+      return `<sup class=\"fn-ref\" id=\"fnref-${fid}\"><a href=\"#fn-${fid}\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅ ${n}\">${n}</a></sup>`;
     });
     let htmlBodyWithFootnotes = marked.parse(workingBody);
     if(footnotes.length){
@@ -255,16 +255,16 @@ async function buildBlog(site){
         if(!n) {
           return '';
         }
-        return `<li id=\"fn-${fn.id}\"><p>${fn.text} <a href=\"#fnref-${fn.id}\" class=\"fn-back\" aria-label=\"Назад к тексту\">?</a></p></li>`;
+        return `<li id=\"fn-${fn.id}\"><p>${fn.text} <a href=\"#fnref-${fn.id}\" class=\"fn-back\" aria-label=\"пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\">?</a></p></li>`;
       }).filter(Boolean).join('');
       if(list){
-        htmlBodyWithFootnotes += `<section class=\"footnotes\" aria-label=\"Примечания\"><ol>${list}</ol></section>`;
+        htmlBodyWithFootnotes += `<section class=\"footnotes\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"><ol>${list}</ol></section>`;
       }
     }
     const tocItems = [];
     htmlBodyWithFootnotes = htmlBodyWithFootnotes.replace(/<h([23])>([^<]+)<\/h\1>/g, (full, level, text) => {
       const base = text.replace(/<[^>]+>/g,'').trim();
-      const hidRaw = base.toLowerCase().replace(/[^a-z0-9а-яё\-\s]+/gi,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+      const hidRaw = base.toLowerCase().replace(/[^a-z0-9пїЅ-пїЅпїЅ\-\s]+/gi,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
       let hid = hidRaw;
       let dupe = 1;
       while(tocItems.find(i => i.id===hid)) {
@@ -276,7 +276,7 @@ async function buildBlog(site){
     let tocHtml = '';
     if(tocItems.filter(i => i.level===2 || i.level===3).length >= 3){
       const tocList = tocItems.map(it => `<li class=\"toc-li lvl-${it.level}\"><a href=\"#${it.id}\">${it.title}</a></li>`).join('');
-      tocHtml = `<nav class=\"post-toc\" aria-label=\"Оглавление статьи\"><div class=\"toc-title\">Содержание</div><ol class=\"toc-list\">${tocList}</ol></nav>`;
+      tocHtml = `<nav class=\"post-toc\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\"><div class=\"toc-title\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</div><ol class=\"toc-list\">${tocList}</ol></nav>`;
     }
     let readingTime = 1;
     let wordCount = 0;
@@ -410,7 +410,7 @@ async function buildBlog(site){
       description: desc,
       image: jsonLdImage,
       mainEntityOfPage: site.replace(/\/$/,'')+`/blog/${slug}/`,
-      author: { '@type': 'Organization', name: 'Школа японского языка' },
+      author: { '@type': 'Organization', name: 'пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ' },
       articleSection: categories[0] || undefined,
       keywords: keywords,
       wordCount: wordCount,
@@ -430,8 +430,8 @@ async function buildBlog(site){
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Главная', item: site + '/' },
-        { '@type': 'ListItem', position: 2, name: 'Блог', item: site + '/blog/' },
+        { '@type': 'ListItem', position: 1, name: 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', item: site + '/' },
+        { '@type': 'ListItem', position: 2, name: 'пїЅпїЅпїЅпїЅ', item: site + '/blog/' },
         { '@type': 'ListItem', position: 3, name: title, item: site + `/blog/${slug}/` }
       ]
     });
@@ -471,9 +471,9 @@ async function buildBlog(site){
           return '';
         }
       })();
-      return `<li class=\"blog-list-item\"><a href=\"${it.slug}/\" class=\"blog-list-link\"><span class=\"b-meta\"><time datetime=\"${it.date}\">${dateShort}</time> · ${minutes} мин</span><span class=\"b-title\">${it.title}</span></a><p class=\"b-desc\">${it.description}</p></li>`;
+      return `<li class=\"blog-list-item\"><a href=\"${it.slug}/\" class=\"blog-list-link\"><span class=\"b-meta\"><time datetime=\"${it.date}\">${dateShort}</time> пїЅ ${minutes} пїЅпїЅпїЅ</span><span class=\"b-title\">${it.title}</span></a><p class=\"b-desc\">${it.description}</p></li>`;
     }).join('\n');
-    const idx = `<!DOCTYPE html><html lang=\"ru\" data-theme=\"dark\"><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/><title>Блог — Школа японского языка</title><meta name=\"description\" content=\"Статьи о японском языке, культуре и методиках обучения\"><meta property=\"og:url\" content=\"${site.replace(/\/$/,'')}/blog/\">__CANONICAL__<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/__RSS__\"/><link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"/__ATOM__\"/><link rel=\"stylesheet\" href=\"/${cssRef}\"/><script defer src=\"/${jsRef}\"></script><style>.blog-list-item{background:linear-gradient(150deg,var(--surface),var(--surface-alt));border:1px solid rgba(255 255 255 / .06);padding:1.15rem 1.25rem 1.25rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:transform .6s cubic-bezier(.19,1,.22,1),box-shadow .5s,border-color .5s}.blog-list-item:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-lg);border-color:rgba(var(--primary-rgb)/0.35)}.blog-list-link{text-decoration:none;display:block;color:inherit}.blog-list-item .b-meta{display:flex;gap:.45rem;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:.4rem}.blog-list-item .b-title{display:block;font-weight:600;font-family:var(--font-display);font-size:1.05rem;background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}.blog-list-item .b-desc{margin:.55rem 0 0;font-size:.8rem;line-height:1.45;color:var(--ink-dim);} [data-theme=\"light\"] .blog-list-item{border:1px solid rgba(0 0 0 / .08);box-shadow:var(--shadow);} [data-theme=\"light\"] .blog-list-item .b-title{background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(var(--bg-rgb)/.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255 255 255/.06)}.header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}.brand{font-family:'Playfair Display',serif;font-size:1.35rem;letter-spacing:.5px;color:var(--ink);display:flex;align-items:center;gap:.25rem;text-decoration:none}.brand span{color:var(--primary);font-weight:700}.site-footer{background:var(--surface);border-top:1px solid rgba(255 255 255/.08);padding:3rem 0 2rem}.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2.5rem;width:min(1240px,100% - 3rem);margin:0 auto}.foot-brand .brand.sm{font-size:1.15rem}.foot-tagline{margin-top:.5rem;font-size:.8rem;color:var(--ink-dim)}.foot-nav ul{list-style:none;padding:0;margin:0;display:grid;gap:.6rem}.foot-nav a{text-decoration:none;color:var(--ink-soft);font-size:.85rem;transition:color .25s}.foot-nav a:hover{color:var(--primary)}.foot-meta{font-size:.75rem;color:var(--ink-dim)}</style></head><body><header class=\"site-header\"><div class=\"header-inner\"><a href=\"/\" class=\"brand\">???<span>School</span></a><div class=\"header-actions\"><button id=\"themeToggle\" class=\"theme-toggle\" aria-label=\"Переключить тему\"></button></div></div></header><main class=\"container\" style=\"padding:7rem 0 4rem;max-width:860px\"><nav style=\"margin-bottom:1.5rem\"><a href=\"/\" style=\"text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)\">< Главная</a></nav><h1 style=\"margin-bottom:2.5rem\">Блог</h1><ul style=\"list-style:none;padding:0;display:grid;gap:1.75rem\">${formatted}</ul></main><footer class=\"site-footer\"><div class=\"footer-grid\"><div class=\"foot-brand\"><div class=\"brand sm\">???<span>School</span></div><p class=\"foot-tagline\">Японский язык как система мышления.</p></div><nav class=\"foot-nav\" aria-label=\"Дополнительные ссылки\"><ul><li><a href=\"/#programs\">Программы</a></li><li><a href=\"/#method\">Методика</a></li><li><a href=\"/#contact\">Контакты</a></li></ul></nav><div class=\"foot-meta\"><p>© ${new Date().getFullYear()} Школа японского языка. Все права защищены.</p></div></div></footer></body></html>`;
+    const idx = `<!DOCTYPE html><html lang=\"ru\" data-theme=\"dark\"><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/><title>пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</title><meta name=\"description\" content=\"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"><meta property=\"og:url\" content=\"${site.replace(/\/$/,'')}/blog/\">__CANONICAL__<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/__RSS__\"/><link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"/__ATOM__\"/><link rel=\"stylesheet\" href=\"/${cssRef}\"/><script defer src=\"/${jsRef}\"></script><style>.blog-list-item{background:linear-gradient(150deg,var(--surface),var(--surface-alt));border:1px solid rgba(255 255 255 / .06);padding:1.15rem 1.25rem 1.25rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:transform .6s cubic-bezier(.19,1,.22,1),box-shadow .5s,border-color .5s}.blog-list-item:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-lg);border-color:rgba(var(--primary-rgb)/0.35)}.blog-list-link{text-decoration:none;display:block;color:inherit}.blog-list-item .b-meta{display:flex;gap:.45rem;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:.4rem}.blog-list-item .b-title{display:block;font-weight:600;font-family:var(--font-display);font-size:1.05rem;background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}.blog-list-item .b-desc{margin:.55rem 0 0;font-size:.8rem;line-height:1.45;color:var(--ink-dim);} [data-theme=\"light\"] .blog-list-item{border:1px solid rgba(0 0 0 / .08);box-shadow:var(--shadow);} [data-theme=\"light\"] .blog-list-item .b-title{background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(var(--bg-rgb)/.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255 255 255/.06)}.header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}.brand{font-family:'Playfair Display',serif;font-size:1.35rem;letter-spacing:.5px;color:var(--ink);display:flex;align-items:center;gap:.25rem;text-decoration:none}.brand span{color:var(--primary);font-weight:700}.site-footer{background:var(--surface);border-top:1px solid rgba(255 255 255/.08);padding:3rem 0 2rem}.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2.5rem;width:min(1240px,100% - 3rem);margin:0 auto}.foot-brand .brand.sm{font-size:1.15rem}.foot-tagline{margin-top:.5rem;font-size:.8rem;color:var(--ink-dim)}.foot-nav ul{list-style:none;padding:0;margin:0;display:grid;gap:.6rem}.foot-nav a{text-decoration:none;color:var(--ink-soft);font-size:.85rem;transition:color .25s}.foot-nav a:hover{color:var(--primary)}.foot-meta{font-size:.75rem;color:var(--ink-dim)}</style></head><body><header class=\"site-header\"><div class=\"header-inner\"><a href=\"/\" class=\"brand\">???<span>School</span></a><div class=\"header-actions\"><button id=\"themeToggle\" class=\"theme-toggle\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ\"></button></div></div></header><main class=\"container\" style=\"padding:7rem 0 4rem;max-width:860px\"><nav style=\"margin-bottom:1.5rem\"><a href=\"/\" style=\"text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)\">< пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></nav><h1 style=\"margin-bottom:2.5rem\">пїЅпїЅпїЅпїЅ</h1><ul style=\"list-style:none;padding:0;display:grid;gap:1.75rem\">${formatted}</ul></main><footer class=\"site-footer\"><div class=\"footer-grid\"><div class=\"foot-brand\"><div class=\"brand sm\">???<span>School</span></div><p class=\"foot-tagline\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</p></div><nav class=\"foot-nav\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\"><ul><li><a href=\"/#programs\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href=\"/#method\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li><li><a href=\"/#contact\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a></li></ul></nav><div class=\"foot-meta\"><p>пїЅ ${new Date().getFullYear()} пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</p></div></div></footer></body></html>`;
     await fs.writeFile(path.join(outBase,'index.html'), idx, 'utf8');
   }
   return postsMeta;
@@ -481,11 +481,11 @@ async function buildBlog(site){
 
 /**
  * EN: Copy static files to dist (manifest, favicon, offline page, service worker, images)
- * RU: Копирование статических файлов в dist (manifest, favicon, offline страница, service worker, изображения)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ dist (manifest, favicon, offline пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, service worker, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
  */
 async function copyStatic(extras){
   /* EN: Copy static files from public/ folder
-     RU: Копирование статических файлов из папки public/ */
+     RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ public/ */
   const staticFiles = ['manifest.json','favicon.svg','offline.html','service-worker.js'];
   for(const f of staticFiles){
     try {
@@ -493,7 +493,7 @@ async function copyStatic(extras){
     } catch {}
   }
   /* EN: Copy images from src/assets/images/ folder
-     RU: Копирование изображений из папки src/assets/images/ */
+     RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ src/assets/images/ */
   const imagesDir = path.join(root,'src','assets','images');
   try {
     const files = await fs.readdir(imagesDir);
@@ -510,7 +510,7 @@ async function copyStatic(extras){
 
 /**
  * EN: Generate responsive images (AVIF/WebP/JPG) with placeholders and dominant colors
- * RU: Генерация адаптивных изображений (AVIF/WebP/JPG) с плейсхолдерами и доминантными цветами
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (AVIF/WebP/JPG) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 async function processImages(){
   const sizes = [320,480,640,800,1024];
@@ -524,7 +524,7 @@ async function processImages(){
     return null;
   }
   /* EN: Process images from src/assets/images/
-     RU: Обработка изображений из src/assets/images/ */
+     RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ src/assets/images/ */
   const imagesDir = path.join(root,'src','assets','images');
   let files = [];
   try {
@@ -586,15 +586,15 @@ async function processImages(){
 
 /**
  * EN: Convert string to URL-friendly slug
- * RU: Конвертация строки в URL-friendly slug
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ URL-friendly slug
  */
 function slugify(str){
-  return str.toLowerCase().replace(/[^a-z0-9а-яё\-\s]+/gi,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  return str.toLowerCase().replace(/[^a-z0-9пїЅ-пїЅпїЅ\-\s]+/gi,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
 }
 
 /**
  * EN: Find current hashed CSS or JS file in dist
- * RU: Найти текущий хешированный CSS или JS файл в dist
+ * RU: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ CSS пїЅпїЅпїЅ JS пїЅпїЅпїЅпїЅ пїЅ dist
  */
 async function findCurrent(type){
   const files = await fs.readdir(dist);
@@ -609,7 +609,7 @@ async function findCurrent(type){
 
 /**
  * EN: Patch index.html with hashed asset names and optimize loading
- * RU: Обновление index.html с хешированными именами ресурсов и оптимизация загрузки
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ index.html пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 function patchIndex(html, cssName, jsName, fontPreload){
   html = html.replace(/href="styles\.css"/g, `href="${cssName}"`);
@@ -631,7 +631,7 @@ function patchIndex(html, cssName, jsName, fontPreload){
 
 /**
  * EN: Minify HTML (remove extra whitespace and newlines)
- * RU: Минификация HTML (удаление лишних пробелов и переносов строк)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTML (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
  */
 function minifyHtml(html){
   try {
@@ -646,7 +646,7 @@ function minifyHtml(html){
 
 /**
  * EN: Update service worker with new asset names and bump version
- * RU: Обновление service worker с новыми именами ресурсов и повышение версии
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ service worker пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
  */
 async function updateServiceWorker(cssName, jsName){
   const swPath = path.join(dist,'service-worker.js');
@@ -663,11 +663,11 @@ async function updateServiceWorker(cssName, jsName){
 
 /**
  * EN: Main build orchestration function (CSS, JS, fonts, blog, images, sitemap, feeds)
- * RU: Главная функция оркестрации сборки (CSS, JS, шрифты, блог, изображения, sitemap, ленты)
+ * RU: пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (CSS, JS, пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, sitemap, пїЅпїЅпїЅпїЅпїЅ)
  */
 async function build(){
   await ensureDir(dist);
-  let siteConfig = { siteUrl: 'https://example.com', siteName: 'Школа японского языка' };
+  let siteConfig = { siteUrl: 'https://example.com', siteName: 'пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ' };
   try {
     const cfgRaw = await fs.readFile(path.join(root,'site.config.json'),'utf8');
     const parsed = JSON.parse(cfgRaw);
@@ -721,7 +721,7 @@ async function build(){
         }
       };
       const allCats = Array.from(new Set(sorted.flatMap(p => (p.categories||[])))).slice(0,12);
-      const catsToolbar = allCats.length ? `<div class="posts-cats" role="toolbar" aria-label="Фильтр по категориям">${['<button type=\"button\" class=\"cat-filter active\" data-cat=\"__all\" aria-pressed=\"true\">Все</button>', ...allCats.map(c => `<button type=\"button\" class=\"cat-filter\" data-cat=\"${c.replace(/"/g,'&quot;')}\" aria-pressed=\"false\">${c}</button>`)].join('')}</div>` : '';
+      const catsToolbar = allCats.length ? `<div class="posts-cats" role="toolbar" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ">${['<button type=\"button\" class=\"cat-filter active\" data-cat=\"__all\" aria-pressed=\"true\">пїЅпїЅпїЅ</button>', ...allCats.map(c => `<button type=\"button\" class=\"cat-filter\" data-cat=\"${c.replace(/"/g,'&quot;')}\" aria-pressed=\"false\">${c}</button>`)].join('')}</div>` : '';
       const cards = sorted.map((p,i) => {
         const cover = p.cover ? (p.cover.startsWith('http')?p.cover:`${site}/${p.cover.replace(/^\//,'')}`) : `${site}/og-image.png`;
         const relCover = cover.replace(site+'/', '');
@@ -729,9 +729,9 @@ async function build(){
         const cats = (p.categories||[]).map(c => `<span class=\"post-card-cat\">${c}</span>`).join('');
         const plc = p.placeholder ? p.placeholder : relCover;
         const accentStyle = p.accent ? ` style=\"--card-accent:${p.accent};\"` : '';
-        return `<article class=\"post-card fx-fade-up\" data-index=\"${i}\" data-delay=\"${Math.min((i+1)*70,420)}\" data-title=\"${p.title.replace(/"/g,'&quot;')}\" data-keywords=\"${(p.keywords||'').replace(/"/g,'&quot;')}\" data-desc=\"${(p.description||'').replace(/"/g,'&quot;')}\" data-cats=\"${(p.categories||[]).map(c => c.replace(/"/g,'&quot;')).join(',')}\">\n  ${badge}<a class=\"post-card-link\"${accentStyle} href=\"${site}/blog/${p.slug}/\">\n    <div class=\"post-card-media\" data-bg=\"${relCover}\" data-plc=\"${plc}\" data-state=\"loading\" style=\"background-image:url('${plc}');\"></div>\n    <div class=\"post-card-content\">\n      <div class=\"post-card-meta\"><time datetime=\"${p.date}\" class=\"post-card-date\">${formatDate(p.date)}</time><span class=\"sep\">·</span><span class=\"read-time\">${p.readingTime}&nbsp;мин</span></div>\n      <h3 class=\"post-card-title\">${p.title}</h3>\n      <p class=\"post-card-desc\">${(p.description||'').slice(0,140)}</p>\n      ${cats?`<div class=\\"post-card-cats\\">${cats}</div>`:''}\n      <button type=\"button\" class=\"share-btn\" data-share=\"${site}/blog/${p.slug}/\" aria-label=\"Скопировать ссылку на статью\" title=\"Скопировать ссылку\">?</button>\n    </div>\n  </a>\n</article>`;
+        return `<article class=\"post-card fx-fade-up\" data-index=\"${i}\" data-delay=\"${Math.min((i+1)*70,420)}\" data-title=\"${p.title.replace(/"/g,'&quot;')}\" data-keywords=\"${(p.keywords||'').replace(/"/g,'&quot;')}\" data-desc=\"${(p.description||'').replace(/"/g,'&quot;')}\" data-cats=\"${(p.categories||[]).map(c => c.replace(/"/g,'&quot;')).join(',')}\">\n  ${badge}<a class=\"post-card-link\"${accentStyle} href=\"${site}/blog/${p.slug}/\">\n    <div class=\"post-card-media\" data-bg=\"${relCover}\" data-plc=\"${plc}\" data-state=\"loading\" style=\"background-image:url('${plc}');\"></div>\n    <div class=\"post-card-content\">\n      <div class=\"post-card-meta\"><time datetime=\"${p.date}\" class=\"post-card-date\">${formatDate(p.date)}</time><span class=\"sep\">пїЅ</span><span class=\"read-time\">${p.readingTime}&nbsp;пїЅпїЅпїЅ</span></div>\n      <h3 class=\"post-card-title\">${p.title}</h3>\n      <p class=\"post-card-desc\">${(p.description||'').slice(0,140)}</p>\n      ${cats?`<div class=\\"post-card-cats\\">${cats}</div>`:''}\n      <button type=\"button\" class=\"share-btn\" data-share=\"${site}/blog/${p.slug}/\" aria-label=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\" title=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\">?</button>\n    </div>\n  </a>\n</article>`;
       }).join('\n');
-      const snippet = `\n<section id="latest-posts" class="section latest-posts" aria-labelledby="latestPostsTitle"><div class="container"><div class="section-head fx-fade-up"><h2 id="latestPostsTitle">Последние статьи</h2><p>Новые материалы из блога: методика, JLPT, практика.</p></div><div class="posts-toolbar fx-fade-up" data-delay="40"><div class="search-bar"><input id="postSearch" type="search" placeholder="Поиск по статьям..." aria-label="Поиск по статьям" /><button type="button" id="postSearchReset" class="search-reset" aria-label="Сбросить поиск" hidden>&times;</button><span id="postResultsCount" class="results-count" aria-live="polite"></span></div>${catsToolbar}</div><div class="post-cards">${cards}</div><div class="view-all-link fx-fade-up" data-delay="300"><a href="${site}/blog/" class="view-all-anchor">Смотреть все статьи ></a></div><div class="feed-callout fx-fade-up" data-delay="360"><div class="feed-callout-inner"><p class="feed-text">Подпишитесь: <a href="${site}/rss.xml">RSS</a> · <a href="${site}/atom.xml">Atom</a></p></div></div></div></section>\n`;
+      const snippet = `\n<section id="latest-posts" class="section latest-posts" aria-labelledby="latestPostsTitle"><div class="container"><div class="section-head fx-fade-up"><h2 id="latestPostsTitle">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</h2><p>пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, JLPT, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</p></div><div class="posts-toolbar fx-fade-up" data-delay="40"><div class="search-bar"><input id="postSearch" type="search" placeholder="пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ..." aria-label="пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" /><button type="button" id="postSearchReset" class="search-reset" aria-label="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ" hidden>&times;</button><span id="postResultsCount" class="results-count" aria-live="polite"></span></div>${catsToolbar}</div><div class="post-cards">${cards}</div><div class="view-all-link fx-fade-up" data-delay="300"><a href="${site}/blog/" class="view-all-anchor">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ></a></div><div class="feed-callout fx-fade-up" data-delay="360"><div class="feed-callout-inner"><p class="feed-text">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: <a href="${site}/rss.xml">RSS</a> пїЅ <a href="${site}/atom.xml">Atom</a></p></div></div></div></section>\n`;
       const galleryRegex = /(<section id="gallery"[\s\S]*?<\/section>)/;
       if(galleryRegex.test(idxHtml)){
         idxHtml = idxHtml.replace(galleryRegex, `$1${snippet}`);
@@ -778,13 +778,13 @@ async function build(){
         const cats = (p.categories||[]).map(c => `<category><![CDATA[${c}]]></category>`).join('');
         return `<item><title><![CDATA[${p.title}]]></title><link>${site}/blog/${p.slug}/</link><guid>${site}/blog/${p.slug}/</guid><pubDate>${new Date(p.date || p.modified || Date.now()).toUTCString()}</pubDate><description><![CDATA[${p.description}]]></description>${cats}</item>`;
       }).join('\n');
-      const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Блог — ${siteConfig.siteName}</title><link>${site}/blog/</link><description>Статьи ${siteConfig.siteName}</description><lastBuildDate>${new Date(updated).toUTCString()}</lastBuildDate>${rssItems}</channel></rss>`;
+      const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>пїЅпїЅпїЅпїЅ пїЅ ${siteConfig.siteName}</title><link>${site}/blog/</link><description>пїЅпїЅпїЅпїЅпїЅпїЅ ${siteConfig.siteName}</description><lastBuildDate>${new Date(updated).toUTCString()}</lastBuildDate>${rssItems}</channel></rss>`;
       await fs.writeFile(path.join(dist,'rss.xml'), rss, 'utf8');
       const atomEntries = postsMeta.map(p => {
         const cats = (p.categories||[]).map(c => `<category term="${c.replace(/"/g,'&quot;')}"/>`).join('');
         return `<entry><id>${site}/blog/${p.slug}/</id><title><![CDATA[${p.title}]]></title><link href="${site}/blog/${p.slug}/"/><updated>${(p.modified || p.date)}</updated><published>${p.date}</published>${cats}<summary type="html"><![CDATA[${p.description}]]></summary></entry>`;
       }).join('\n');
-      const atom = `<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><id>${site}/blog/</id><title>Блог — ${siteConfig.siteName}</title><updated>${updated}</updated><link href="${site}/atom.xml" rel="self"/><link href="${site}/blog/"/>${atomEntries}</feed>`;
+      const atom = `<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><id>${site}/blog/</id><title>пїЅпїЅпїЅпїЅ пїЅ ${siteConfig.siteName}</title><updated>${updated}</updated><link href="${site}/atom.xml" rel="self"/><link href="${site}/blog/"/>${atomEntries}</feed>`;
       await fs.writeFile(path.join(dist,'atom.xml'), atom, 'utf8');
       isDev && console.log('[feed] rss.xml & atom.xml generated');
     }
@@ -820,7 +820,7 @@ async function build(){
 
 /**
  * EN: Entry point - clean dist, run build, optional watch mode
- * RU: Точка входа - очистка dist, запуск сборки, опциональный режим отслеживания
+ * RU: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ dist, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 async function main(){
   if(isClean){
