@@ -14,11 +14,10 @@
   <link rel="preload" as="image" href="1507374093345.jpg" />
   <link rel="prefetch" as="image" href="1507374101244.jpg" />
   <link rel="preload" href="styles.css" as="style" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="styles.css" /></noscript>
   <style>
     /* Critical CSS (hero, layout skeleton) */
-    html{visibility:hidden;opacity:0}
-    html.ready{visibility:visible;opacity:1;transition:opacity 0.2s ease}
     body{margin:0;font-family:var(--font-sans, 'Inter', system-ui);background:var(--bg);color:var(--ink-soft);overflow-x:hidden}
     .site-header{position:fixed;top:0;left:0;right:0;z-index:50;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
     .header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}
@@ -54,12 +53,7 @@
   <meta name="twitter:image" content="og-image.png" />
   <meta property="og:locale" content="ru_RU" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script>
-    document.documentElement.classList.remove('no-js');
-    window.addEventListener('DOMContentLoaded', () => {
-      document.documentElement.classList.add('ready');
-    });
-  </script>
+  <script>document.documentElement.classList.remove('no-js');</script>
   <script type="application/ld+json">{
     "@context":"https://schema.org",
     "@type":"Organization",
@@ -122,7 +116,6 @@
             <li><a href="#programs">Программы</a></li>
             <li><a href="#method">Методика</a></li>
             <li><a href="#gallery">Галерея</a></li>
-            <li><a href="#latest-posts">Блог</a></li>
             <li><a href="#contact" class="cta-link">Запись</a></li>
         </ul>
       </nav>
@@ -351,74 +344,6 @@
             <div class="rev-dots" id="revDots" role="tablist" aria-label="Позиции слайдов"></div>
             <button class="rev-btn" data-dir="next" aria-label="Следующий отзыв">›</button>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="latest-posts" class="latest-posts section" aria-labelledby="latestPostsTitle">
-      <div class="container">
-        <div class="section-head fx-fade-up">
-          <h2 id="latestPostsTitle">Последние статьи</h2>
-          <p>Советы по изучению, культурные заметки и новости школы.</p>
-        </div>
-        <div class="posts-grid">
-          <article class="post-card fx-fade-up" data-delay="50">
-            <div class="post-thumbnail">
-              <span class="post-category">Методика</span>
-              <img src="1507374093345.jpg" alt="Эффективные методы запоминания кандзи" loading="lazy" />
-            </div>
-            <div class="post-content">
-              <div class="post-meta">
-                <span>15 сент 2024</span>
-                <span>Методика</span>
-              </div>
-              <h3><a href="/blog/kanji-memorization-techniques/">Эффективные методы запоминания кандзи</a></h3>
-              <p class="post-excerpt">Интервальное повторение, мнемотехника и визуализация: как учить иероглифы без зубрёжки.</p>
-              <div class="post-footer">
-                <a href="/blog/kanji-memorization-techniques/" class="read-more">Читать далее</a>
-                <span class="reading-time">5 мин</span>
-              </div>
-            </div>
-          </article>
-          <article class="post-card fx-fade-up" data-delay="100">
-            <div class="post-thumbnail">
-              <span class="post-category">Культура</span>
-              <img src="1507374101244.jpg" alt="Японский этикет в повседневной жизни" loading="lazy" />
-            </div>
-            <div class="post-content">
-              <div class="post-meta">
-                <span>8 сент 2024</span>
-                <span>Культура</span>
-              </div>
-              <h3><a href="/blog/japanese-etiquette/">Японский этикет в повседневной жизни</a></h3>
-              <p class="post-excerpt">Почему важны кэйго и как правильно использовать вежливые формы в разных ситуациях.</p>
-              <div class="post-footer">
-                <a href="/blog/japanese-etiquette/" class="read-more">Читать далее</a>
-                <span class="reading-time">7 мин</span>
-              </div>
-            </div>
-          </article>
-          <article class="post-card fx-fade-up" data-delay="150">
-            <div class="post-thumbnail">
-              <span class="post-category">JLPT</span>
-              <img src="i-XMW1h47xc.jpg" alt="Как подготовиться к JLPT N3 за 3 месяца" loading="lazy" />
-            </div>
-            <div class="post-content">
-              <div class="post-meta">
-                <span>1 сент 2024</span>
-                <span>JLPT</span>
-              </div>
-              <h3><a href="/blog/jlpt-n3-preparation/">Как подготовиться к JLPT N3 за 3 месяца</a></h3>
-              <p class="post-excerpt">Структурированный план подготовки: лексика, грамматика, аудирование и тестовые стратегии.</p>
-              <div class="post-footer">
-                <a href="/blog/jlpt-n3-preparation/" class="read-more">Читать далее</a>
-                <span class="reading-time">10 мин</span>
-              </div>
-            </div>
-          </article>
-        </div>
-        <div class="view-all-posts fx-fade-up" data-delay="200">
-          <a href="/blog/" class="btn ghost">Все статьи блога</a>
         </div>
       </div>
     </section>

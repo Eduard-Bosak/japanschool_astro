@@ -47,22 +47,22 @@
     "lighthouse:open": "npm run build && lhci autorun && open .lighthouseci/lhr-*.html"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.14.0",
+    "@lhci/cli": "^0.15.1",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
-    "cssnano": "^6.1.2",
-    "esbuild": "^0.23.0",
+    "cssnano": "^7.1.1",
+    "esbuild": "^0.25.10",
     "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.47",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^16.1.1",
     "prettier": "^3.3.3",
-    "sharp": "^0.33.4"
+    "sharp": "^0.34.4"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
-    "marked": "^12.0.2"
+    "marked": "^16.4.0"
   }
 }
