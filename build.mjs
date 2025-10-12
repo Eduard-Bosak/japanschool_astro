@@ -118,6 +118,28 @@ async function buildJS() {
 }
 
 /**
+ * EN: Build blog-post.js separately for article pages
+ * RU: Сборка blog-post.js отдельно для страниц статей
+ */
+async function buildBlogPostJS() {
+  const entry = path.join(root, 'src', 'scripts', 'blog-post.js');
+  const result = await esbuild.build({
+    entryPoints: [entry],
+    bundle: true,
+    minify: env === 'production',
+    sourcemap: env !== 'production',
+    target: 'es2018',
+    format: 'esm',
+    write: false
+  });
+  const outFile = result.outputFiles[0];
+  const hash = hashContent(outFile.contents);
+  const outName = `blog-post.${hash}.js`;
+  await fs.writeFile(path.join(dist, outName), outFile.contents);
+  return outName;
+}
+
+/**
  * EN: Self-host Google Fonts (download and serve locally)
  * RU: Самостоятельный хостинг Google Fonts (загрузка и локальная раздача)
  */
@@ -176,7 +198,7 @@ async function buildFonts() {
  * EN: Build blog from Markdown files (parse, generate HTML, RSS/Atom feeds)
  * RU: Сборка блога из Markdown файлов (парсинг, генерация HTML, RSS/Atom лент)
  */
-async function buildBlog(site) {
+async function buildBlog(site, cssRef, jsRef, blogPostJsRef) {
   const contentDir = path.join(root, 'content', 'blog');
   let entries = [];
   try {
@@ -188,8 +210,6 @@ async function buildBlog(site) {
   await ensureDir(outBase);
   const indexItems = [];
   const postsMeta = [];
-  const cssRef = await findCurrent('css');
-  const jsRef = await findCurrent('js');
   let imageManifest = null;
   try {
     const manifestRaw = await fs.readFile(path.join(dist, 'img-manifest.json'), 'utf8');
@@ -507,7 +527,7 @@ async function buildBlog(site) {
         { '@type': 'ListItem', position: 3, name: title, item: site + `/blog/${slug}/` }
       ]
     });
-    const page = `<!DOCTYPE html><html lang=\"ru\" data-theme=\"dark\"><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/><title>${title}</title><meta name=\"description\" content=\"${desc.replace(/\"/g, '&quot;')}\"><meta name=\"keywords\" content=\"${keywords}\"><meta property=\"og:type\" content=\"article\"/><meta property=\"og:title\" content=\"${title}\"/><meta property=\"og:description\" content=\"${desc.replace(/\"/g, '&quot;')}\"/>${ogImageMeta}<meta property=\"og:url\" content=\"${site.replace(/\/$/, '')}/blog/${slug}/\"/><meta property=\"article:published_time\" content=\"${isoDate}\"/><meta property=\"article:modified_time\" content=\"${dateModified || isoDate}\"/><meta property=\"og:updated_time\" content=\"${dateModified || isoDate}\"/>${twitterMeta}__CANONICAL__<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/__RSS__\"/><link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"/__ATOM__\"/><link rel=\"stylesheet\" href=\"../../${cssRef}\"/><script defer src=\"../../${jsRef}\"></script><style>.reading-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(255 255 255 / .08);z-index:300}.reading-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .15s}.post-cover{margin:1.5rem 0 2rem}.post-cover img{max-width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);} .post-meta-line{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;margin:.9rem 0 1.25rem;color:var(--ink-dim);} .post-meta-line .rt{background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600;} .post-cats{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.5rem;} .cat-pill{background:rgba(var(--primary-rgb)/0.18);padding:.35rem .6rem .4rem;border-radius:18px;font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary);border:1px solid rgba(var(--primary-rgb)/0.35);} .post-toc{position:relative;margin:1.75rem 0 2.25rem;padding:1rem 1rem 1.1rem;border:1px solid rgba(255 255 255 / .08);border-radius:var(--radius);background:linear-gradient(135deg,var(--surface),var(--surface-alt));box-shadow:var(--shadow-sm);font-size:.8rem;max-width:420px;} .post-toc .toc-title{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:.55rem;} .post-toc .toc-list{margin:0;padding:0;list-style:none;display:grid;gap:.35rem;} .post-toc a{text-decoration:none;color:var(--ink-soft);position:relative;padding-left:.25rem;display:inline-block;line-height:1.3;} .post-toc a:hover,.post-toc a:focus-visible{color:var(--primary);} .toc-li.lvl-3 a{padding-left:1rem;font-size:.72rem;opacity:.85;} .toc-li.active>a{color:var(--primary);font-weight:600;} .h-anchor{opacity:0;position:absolute;left:-1.2rem;transform:translateY(2px);font-weight:400;color:var(--primary);text-decoration:none;} h2:hover .h-anchor,h3:hover .h-anchor{opacity:1;} .footnotes{margin-top:3rem;font-size:.8rem;border-top:1px solid rgba(255 255 255 / .1);padding-top:1.5rem;} .footnotes ol{margin:0;padding-left:1.2rem;display:grid;gap:.6rem;} .footnotes a.fn-back{text-decoration:none;font-size:.7rem;margin-left:.35rem;color:var(--primary);} .fn-ref a{text-decoration:none;} </style><script type=\"application/ld+json\">${articleJson}</script><script type=\"application/ld+json\">${breadcrumbJson}</script></head><body><div class=\"reading-progress\" aria-hidden=\"true\"><span id=\"readingBar\"></span></div><main class=\"container rich-text\" style=\"padding:7rem 0 4rem;max-width:820px\"> <a href=\"../../index.html\" style=\"text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)\">← \u0413\u043b\u0430\u0432\u043d\u0430\u044f</a><h1 style=\"margin-top:1.5rem\">${title}</h1><p class=\"post-meta-line\"><time datetime=\"${isoDate}\">${localeDate}</time> · <span class=\"rt\">${readingTime} \u043c\u0438\u043d \u0447\u0442\u0435\u043d\u0438\u044f</span></p>${catsHtml}${coverFigure}${tocHtml}<article class=\"post-content\">${htmlBodyWithFootnotes}</article></main><script>(function(){const bar=document.getElementById('readingBar');function upd(){const el=document.querySelector('.post-content');if(!el)return;const max=el.offsetHeight - window.innerHeight;const y=window.scrollY - (el.offsetTop - 70);const ratio=max>0?Math.min(1, Math.max(0, y / max)):0;bar.style.width=(ratio*100).toFixed(2)+'%';}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('load',()=>{const el=document.querySelector('.post-content');if(el && el.offsetHeight < window.innerHeight*1.2){bar.parentElement.style.display='none';}upd();});})();(function(){const toc=document.querySelector('.post-toc');if(!toc) return;const links=[...toc.querySelectorAll('a[href^="#"]')];const map=new Map();links.forEach(a=>{const id=a.getAttribute('href').slice(1);const h=document.getElementById(id);if(h) map.set(h,a);});if(!map.size) return;let active=null;const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const link=map.get(e.target);if(link){if(active) active.parentElement.classList.remove('active');active=link;link.parentElement.classList.add('active');}}});},{ rootMargin:'-55% 0px -40% 0px', threshold:[0,1]});map.forEach((_,h)=>io.observe(h));})();</script></body></html>`;
+    const page = `<!DOCTYPE html><html lang=\"ru\" data-theme=\"dark\"><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/><title>${title}</title><meta name=\"description\" content=\"${desc.replace(/\"/g, '&quot;')}\"><meta name=\"keywords\" content=\"${keywords}\"><meta property=\"og:type\" content=\"article\"/><meta property=\"og:title\" content=\"${title}\"/><meta property=\"og:description\" content=\"${desc.replace(/\"/g, '&quot;')}\"/>${ogImageMeta}<meta property=\"og:url\" content=\"${site.replace(/\/$/, '')}/blog/${slug}/\"/><meta property=\"article:published_time\" content=\"${isoDate}\"/><meta property=\"article:modified_time\" content=\"${dateModified || isoDate}\"/><meta property=\"og:updated_time\" content=\"${dateModified || isoDate}\"/>${twitterMeta}__CANONICAL__<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/__RSS__\"/><link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"/__ATOM__\"/><link rel=\"stylesheet\" href=\"../../${cssRef}\"/><script defer src=\"../../${jsRef}\"></script><script type=\"module\" defer src=\"../../${blogPostJsRef}\"></script><style>.reading-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(255 255 255 / .08);z-index:300}.reading-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .15s}.post-cover{margin:1.5rem 0 2rem}.post-cover img{max-width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);} .post-meta-line{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;margin:.9rem 0 1.25rem;color:var(--ink-dim);} .post-meta-line .rt{background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600;} .post-cats{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.5rem;} .cat-pill{background:rgba(var(--primary-rgb)/0.18);padding:.35rem .6rem .4rem;border-radius:18px;font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary);border:1px solid rgba(var(--primary-rgb)/0.35);} .post-toc{position:relative;margin:1.75rem 0 2.25rem;padding:1rem 1rem 1.1rem;border:1px solid rgba(255 255 255 / .08);border-radius:var(--radius);background:linear-gradient(135deg,var(--surface),var(--surface-alt));box-shadow:var(--shadow-sm);font-size:.8rem;max-width:420px;} .post-toc .toc-title{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:.55rem;} .post-toc .toc-list{margin:0;padding:0;list-style:none;display:grid;gap:.35rem;} .post-toc a{text-decoration:none;color:var(--ink-soft);position:relative;padding-left:.25rem;display:inline-block;line-height:1.3;} .post-toc a:hover,.post-toc a:focus-visible{color:var(--primary);} .toc-li.lvl-3 a{padding-left:1rem;font-size:.72rem;opacity:.85;} .toc-li.active>a{color:var(--primary);font-weight:600;} .h-anchor{opacity:0;position:absolute;left:-1.2rem;transform:translateY(2px);font-weight:400;color:var(--primary);text-decoration:none;} h2:hover .h-anchor,h3:hover .h-anchor{opacity:1;} .footnotes{margin-top:3rem;font-size:.8rem;border-top:1px solid rgba(255 255 255 / .1);padding-top:1.5rem;} .footnotes ol{margin:0;padding-left:1.2rem;display:grid;gap:.6rem;} .footnotes a.fn-back{text-decoration:none;font-size:.7rem;margin-left:.35rem;color:var(--primary);} .fn-ref a{text-decoration:none;} </style><script type=\"application/ld+json\">${articleJson}</script><script type=\"application/ld+json\">${breadcrumbJson}</script></head><body><div class=\"reading-progress\" aria-hidden=\"true\"><span id=\"readingBar\"></span></div><main class=\"container rich-text\" style=\"padding:7rem 0 4rem;max-width:820px\"> <a href=\"../../index.html\" style=\"text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)\">← \u0413\u043b\u0430\u0432\u043d\u0430\u044f</a><h1 style=\"margin-top:1.5rem\">${title}</h1><p class=\"post-meta-line\"><time datetime=\"${isoDate}\">${localeDate}</time> · <span class=\"rt\">${readingTime} \u043c\u0438\u043d \u0447\u0442\u0435\u043d\u0438\u044f</span></p>${catsHtml}${coverFigure}${tocHtml}<article class=\"post-content\">${htmlBodyWithFootnotes}</article></main><script>(function(){const bar=document.getElementById('readingBar');function upd(){const el=document.querySelector('.post-content');if(!el)return;const max=el.offsetHeight - window.innerHeight;const y=window.scrollY - (el.offsetTop - 70);const ratio=max>0?Math.min(1, Math.max(0, y / max)):0;bar.style.width=(ratio*100).toFixed(2)+'%';}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('load',()=>{const el=document.querySelector('.post-content');if(el && el.offsetHeight < window.innerHeight*1.2){bar.parentElement.style.display='none';}upd();});})();(function(){const toc=document.querySelector('.post-toc');if(!toc) return;const links=[...toc.querySelectorAll('a[href^="#"]')];const map=new Map();links.forEach(a=>{const id=a.getAttribute('href').slice(1);const h=document.getElementById(id);if(h) map.set(h,a);});if(!map.size) return;let active=null;const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const link=map.get(e.target);if(link){if(active) active.parentElement.classList.remove('active');active=link;link.parentElement.classList.add('active');}}});},{ rootMargin:'-55% 0px -40% 0px', threshold:[0,1]});map.forEach((_,h)=>io.observe(h));})();</script></body></html>`;
     const outDir = path.join(outBase, slug);
     await ensureDir(outDir);
     await fs.writeFile(path.join(outDir, 'index.html'), page, 'utf8');
@@ -784,12 +804,16 @@ async function build() {
     siteConfig.siteUrl = argSite.split('=')[1];
   }
   siteConfig.siteUrl = siteConfig.siteUrl.replace(/\/$/, '');
-  const [cssName, jsName] = await Promise.all([buildCSS(), buildJS()]);
+  const [cssName, jsName, blogPostJsName] = await Promise.all([
+    buildCSS(),
+    buildJS(),
+    buildBlogPostJS()
+  ]);
   const fontMeta = await buildFonts();
-  await copyStatic([cssName, jsName]);
+  await copyStatic([cssName, jsName, blogPostJsName]);
   await processImages().catch((e) => console.warn('[images] pipeline error', e.message));
   const site = siteConfig.siteUrl.replace(/\/?$/, '');
-  const postsMeta = await buildBlog(site).catch((e) => {
+  const postsMeta = await buildBlog(site, cssName, jsName, blogPostJsName).catch((e) => {
     console.warn('[blog] build error', e.message);
     return [];
   });
