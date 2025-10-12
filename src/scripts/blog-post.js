@@ -35,7 +35,7 @@ function initReadingModes() {
 
   // Create reading mode panel if it doesn't exist
   // Создаём панель режимов чтения если её нет
-  if (!document.querySelector('.reading-mode-panel')) {
+  if (!document.querySelector('.reading-controls')) {
     createReadingModePanel();
   }
 }
@@ -46,29 +46,22 @@ function initReadingModes() {
  */
 function createReadingModePanel() {
   const panel = document.createElement('div');
-  panel.className = 'reading-mode-panel';
+  panel.className = 'reading-controls';
   panel.setAttribute('aria-label', 'Настройки чтения');
 
   panel.innerHTML = `
-    <div class="rm-section" data-section="size">
-      <div class="rm-section-title">Размер</div>
-      <button class="rm-btn" data-mode="small" aria-label="Уменьшить текст">A-</button>
-      <button class="rm-btn" data-mode="large" aria-label="Увеличить текст">A+</button>
-      <button class="rm-btn" data-mode="xlarge" aria-label="Очень крупный текст">A++</button>
-    </div>
-    <div class="rm-section" data-section="view">
-      <div class="rm-section-title">Вид</div>
-      <button class="rm-btn" data-mode="serif" aria-label="Шрифт с засечками">Aa</button>
-      <button class="rm-btn" data-mode="wide" aria-label="Широкая колонка">⇔</button>
-      <button class="rm-btn" data-mode="focus" aria-label="Режим фокуса">◉</button>
-      <button class="rm-btn" data-mode="contrast" aria-label="Высокий контраст">◐</button>
-    </div>
-    <div class="rm-section" data-section="actions">
-      <div class="rm-section-title">Действия</div>
-      <button class="rm-btn" data-action="print" aria-label="Печать">🖨</button>
-      <button class="rm-btn" data-action="share" aria-label="Поделиться">🔗</button>
-      <button class="rm-btn" data-action="bookmark" aria-label="Закладка">★</button>
-    </div>
+    <button class="reading-control-btn" data-mode="small" data-tooltip="A-" aria-label="Уменьшить текст">A-</button>
+    <button class="reading-control-btn" data-mode="large" data-tooltip="A+" aria-label="Увеличить текст">A+</button>
+    <button class="reading-control-btn" data-mode="xlarge" data-tooltip="A++" aria-label="Очень крупный текст">A++</button>
+    <div class="reading-controls-separator"></div>
+    <button class="reading-control-btn" data-mode="serif" data-tooltip="Шрифт" aria-label="Шрифт с засечками">Aa</button>
+    <button class="reading-control-btn" data-mode="wide" data-tooltip="Широко" aria-label="Широкая колонка">⇔</button>
+    <button class="reading-control-btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">◉</button>
+    <button class="reading-control-btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">◐</button>
+    <div class="reading-controls-separator"></div>
+    <button class="reading-control-btn" data-action="print" data-tooltip="Печать" aria-label="Печать">🖨</button>
+    <button class="reading-control-btn" data-action="share" data-tooltip="Поделиться" aria-label="Поделиться">🔗</button>
+    <button class="reading-control-btn" data-action="bookmark" data-tooltip="Закладка" aria-label="Закладка">★</button>
   `;
 
   document.body.appendChild(panel);
@@ -77,7 +70,7 @@ function createReadingModePanel() {
   // Подключаем обработчики событий
   panel.querySelectorAll('[data-mode]').forEach((btn) => {
     const mode = btn.dataset.mode;
-    const section = btn.closest('[data-section]').dataset.section;
+    const isSizeMode = ['small', 'large', 'xlarge'].includes(mode);
 
     // Restore active state
     // Восстанавливаем активное состояние
@@ -86,10 +79,10 @@ function createReadingModePanel() {
     }
 
     btn.addEventListener('click', () => {
-      if (section === 'size') {
+      if (isSizeMode) {
         // Size modes are mutually exclusive
         // Режимы размера взаимоисключающие
-        panel.querySelectorAll('[data-section="size"] [data-mode]').forEach((b) => {
+        panel.querySelectorAll('[data-mode="small"], [data-mode="large"], [data-mode="xlarge"]').forEach((b) => {
           document.body.classList.remove(`reading-mode-${b.dataset.mode}`);
           b.classList.remove('active');
         });
@@ -178,7 +171,10 @@ function updateTimeIndicator(indicator, totalMinutes) {
   const scrollTop = window.scrollY;
   const contentTop = content.offsetTop;
 
-  const progress = Math.max(0, Math.min(1, (scrollTop - contentTop + windowHeight) / contentHeight));
+  const progress = Math.max(
+    0,
+    Math.min(1, (scrollTop - contentTop + windowHeight) / contentHeight)
+  );
 
   if (progress > 0.98) {
     // Finished reading
