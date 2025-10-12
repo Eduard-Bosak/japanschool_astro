@@ -16,27 +16,30 @@
 Можно использовать AI-генераторы изображений:
 
 1. **DALL-E 3** (через ChatGPT Plus)
-2. **Midjourney** 
+2. **Midjourney**
 3. **Stable Diffusion**
 4. **Leonardo.ai** (бесплатно 150 кредитов/день)
 
 ### Промпты для статей
 
 #### Для статьи про JLPT N3:
+
 ```
-Japanese language study scene, modern minimalist style, notebook with hiragana and kanji characters, 
+Japanese language study scene, modern minimalist style, notebook with hiragana and kanji characters,
 coffee cup, natural lighting, soft pastel colors, top-down view, high quality, photorealistic
 ```
 
 #### Для статьи про кандзи:
+
 ```
-Beautiful Japanese calligraphy, brush writing kanji characters, traditional ink and paper, 
+Beautiful Japanese calligraphy, brush writing kanji characters, traditional ink and paper,
 artistic composition, warm lighting, elegant and peaceful atmosphere, high quality
 ```
 
 #### Для статьи про этикет:
+
 ```
-Japanese traditional tea ceremony setting, hands performing respectful gestures, 
+Japanese traditional tea ceremony setting, hands performing respectful gestures,
 minimalist zen aesthetic, soft natural light, cultural authenticity, serene mood
 ```
 
@@ -59,7 +62,8 @@ minimalist zen aesthetic, soft natural light, cultural authenticity, serene mood
 
 ### Оптимизация изображений
 
-Проект автоматически генерирует адаптивные версии через `processImages()` в `build.mjs`:
+Проект автоматически генерирует адаптивные версии через `processImages()` в
+`build.mjs`:
 
 - Создаются размеры: 320, 480, 640, 800, 1024px
 - Форматы: AVIF, WebP, JPG
@@ -67,10 +71,8 @@ minimalist zen aesthetic, soft natural light, cultural authenticity, serene mood
 
 ## Текущее состояние
 
-✅ Все 4 статьи имеют контент
-✅ Все статьи имеют cover изображения
-✅ Изображения оптимизируются автоматически
-✅ Блог работает корректно
+✅ Все 4 статьи имеют контент ✅ Все статьи имеют cover изображения ✅
+Изображения оптимизируются автоматически ✅ Блог работает корректно
 
 ## Если нужны новые изображения
 
