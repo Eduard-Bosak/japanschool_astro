@@ -82,10 +82,12 @@ function createReadingModePanel() {
       if (isSizeMode) {
         // Size modes are mutually exclusive
         // Режимы размера взаимоисключающие
-        panel.querySelectorAll('[data-mode="small"], [data-mode="large"], [data-mode="xlarge"]').forEach((b) => {
-          document.body.classList.remove(`reading-mode-${b.dataset.mode}`);
-          b.classList.remove('active');
-        });
+        panel
+          .querySelectorAll('[data-mode="small"], [data-mode="large"], [data-mode="xlarge"]')
+          .forEach((b) => {
+            document.body.classList.remove(`reading-mode-${b.dataset.mode}`);
+            b.classList.remove('active');
+          });
       }
 
       // Toggle mode
