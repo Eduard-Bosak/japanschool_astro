@@ -1,0 +1,293 @@
+/* =============================================
+   Interactive Elements Styles
+   Стили интерактивных элементов
+   ============================================= */
+
+/* Tooltips */
+.tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 10000;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  border: 6px solid transparent;
+}
+
+.tooltip-top::before {
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-bottom::before {
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-left::before {
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-right::before {
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-top:active {
+  transform: translateY(-2px);
+}
+
+/* Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Copy Button States */
+[data-copy] {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+[data-copy].copied {
+  background-color: #10b981 !important;
+  transform: scale(0.95);
+}
+
+/* Lazy Loading Images */
+img[data-src] {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+img[data-src].loaded {
+  opacity: 1;
+}
+
+/* Mobile Menu Enhancements */
+@media (max-width: 860px) {
+  .main-nav ul[data-open='true'] {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  /* Overlay when menu is open */
+  body.nav-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Focus Styles for Accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to Content Link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  z-index: 10001;
+  transition: top 0.3s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Print Styles */
+@media print {
+  .back-to-top,
+  .nav-toggle,
+  .tooltip,
+  button[data-print] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+/* Smooth Transitions for All Interactive Elements */
+button,
+a,
+input,
+select,
+textarea {
+  transition: all 0.2s ease;
+}
+
+/* Hover Effects for Interactive Elements */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-copy] {
+  cursor: pointer;
+}
+
+/* Disabled State */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Selection Color */
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .tooltip,
+  .back-to-top,
+  .spinner,
+  [data-copy],
+  img[data-src],
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition: none !important;
+    animation: none !important;
+  }
+}

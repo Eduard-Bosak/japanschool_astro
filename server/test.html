@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backend Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+      }
+      #output {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+        white-space: pre-wrap;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎌 Backend API Test</h1>
+
+    <button onclick="testHealth()">Test /health</button>
+    <button onclick="testSubmitForm()">Test /api/submit-form</button>
+    <button onclick="testGetSubmissions()">Test /api/submissions</button>
+
+    <div id="output"></div>
+
+    <script>
+      const API_BASE = 'http://localhost:3000';
+      const output = document.getElementById('output');
+
+      function log(message, type = 'info') {
+        const className = type === 'error' ? 'error' : 'success';
+        output.innerHTML += `<div class="${className}">${message}</div>\n`;
+      }
+
+      async function testHealth() {
+        output.innerHTML = '';
+        log('Testing /health endpoint...');
+
+        try {
+          const response = await fetch(`${API_BASE}/health`);
+          const data = await response.json();
+          log(`✅ Success: ${JSON.stringify(data, null, 2)}`, 'success');
+        } catch (error) {
+          log(`❌ Error: ${error.message}`, 'error');
+        }
+      }
+
+      async function testSubmitForm() {
+        output.innerHTML = '';
+        log('Testing /api/submit-form endpoint...');
+
+        const testData = {
+          name: 'Тест Тестов',
+          email: 'test@example.com',
+          phone: '+79991234567',
+          level: 'N5',
+          message: 'Это тестовое сообщение',
+          formType: 'hero'
+        };
+
+        try {
+          const response = await fetch(`${API_BASE}/api/submit-form`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(testData)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            log(`✅ Success: ${JSON.stringify(data, null, 2)}`, 'success');
+          } else {
+            log(`❌ Error: ${JSON.stringify(data, null, 2)}`, 'error');
+          }
+        } catch (error) {
+          log(`❌ Error: ${error.message}`, 'error');
+        }
+      }
+
+      async function testGetSubmissions() {
+        output.innerHTML = '';
+        log('Testing /api/submissions endpoint...');
+
+        try {
+          const response = await fetch(`${API_BASE}/api/submissions`);
+          const data = await response.json();
+          log(`✅ Success: ${JSON.stringify(data, null, 2)}`, 'success');
+        } catch (error) {
+          log(`❌ Error: ${error.message}`, 'error');
+        }
+      }
+    </script>
+  </body>
+</html>

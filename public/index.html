@@ -11,8 +11,8 @@
   <meta name="color-scheme" content="dark light" />
   <link rel="canonical" href="https://example.com/" />
   <link rel="apple-touch-icon" href="favicon.svg" />
-  <link rel="preload" as="image" href="1507374093345.jpg" />
-  <link rel="prefetch" as="image" href="1507374101244.jpg" />
+  <link rel="preload" as="image" href="images/1507374093345.jpg" />
+  <link rel="prefetch" as="image" href="images/1507374101244.jpg" />
   <link rel="preload" href="styles.css" as="style" />
   <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="styles.css" /></noscript>
@@ -99,6 +99,10 @@
       </div>
       <div class="preloader-brand">日本語<span>School</span></div>
       <p class="preloader-tag">Загрузка атмосферы…</p>
+      <div class="preloader-progress" aria-label="Прогресс загрузки">
+        <span id="preloaderPercent">0%</span>
+        <div class="preloader-bar"><span id="preloaderBarFill"></span></div>
+      </div>
     </div>
   </div>
   <div id="scrollProgress" class="scroll-progress" aria-hidden="true"><span></span></div>
@@ -156,14 +160,14 @@
         <div class="hero-visual fx-scale-in" data-delay="300">
           <div class="photo-stack">
             <picture>
-              <!-- future webp source: <source srcset="1507374093345.webp" type="image/webp" /> -->
-              <source srcset="1507374093345.jpg" type="image/jpeg" />
-              <img src="1507374093345.jpg" alt="Основатель школы" loading="eager" width="600" height="750" />
+              <source srcset="images/1507374093345.webp" type="image/webp" />
+              <source srcset="images/1507374093345.jpg" type="image/jpeg" />
+              <img src="images/1507374093345.jpg" alt="Основатель школы" loading="eager" width="600" height="750" />
             </picture>
             <picture class="offset">
-              <!-- future webp source: <source srcset="1507374101244.webp" type="image/webp" /> -->
-              <source srcset="1507374101244.jpg" type="image/jpeg" />
-              <img src="1507374101244.jpg" alt="Фото из образовательной поездки" loading="lazy" width="600" height="750" />
+              <source srcset="images/1507374101244.webp" type="image/webp" />
+              <source srcset="images/1507374101244.jpg" type="image/jpeg" />
+              <img src="images/1507374101244.jpg" alt="Фото из образовательной поездки" loading="lazy" width="600" height="750" />
             </picture>
           </div>
         </div>
@@ -201,7 +205,7 @@
     <section id="founder" class="founder section" aria-labelledby="founderTitle">
       <div class="container founder-inner">
         <div class="founder-photo fx-fade-up">
-          <img src="PicsArt_11-13-01.54.52.jpg" alt="Основатель школы — преподаватель японского языка" loading="lazy" />
+          <img src="PicsArt_11-13-01.54.52.jpg" alt="Основатель школы — преподаватель японского языка" loading="lazy" width="600" height="750" />
         </div>
         <div class="founder-content fx-fade-up" data-delay="100">
           <h2 id="founderTitle">Основатель</h2>
@@ -297,10 +301,10 @@
           <p>Моменты, которые формируют путь обучения.</p>
         </div>
         <div class="gallery-grid" id="galleryGrid">
-          <figure class="fx-fade-up" data-delay="50"><img src="1507374093345.jpg" alt="Учебный процесс" loading="lazy" /><figcaption>Учебная динамика</figcaption></figure>
-          <figure class="fx-fade-up" data-delay="100"><img src="1507374101244.jpg" alt="Опыт в Японии" loading="lazy" /><figcaption>Культурный опыт</figcaption></figure>
-          <figure class="fx-fade-up" data-delay="150"><img src="i-XMW1h47xc.jpg" alt="Атмосфера занятий" loading="lazy" /><figcaption>Атмосфера</figcaption></figure>
-          <figure class="fx-fade-up" data-delay="200"><img src="PicsArt_11-13-01.54.52.jpg" alt="Преподаватель" loading="lazy" /><figcaption>Преподаватель</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="50"><img src="images/1507374093345.jpg" alt="Учебный процесс" loading="lazy" width="600" height="750" /><figcaption>Учебная динамика</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="100"><img src="images/1507374101244.jpg" alt="Опыт в Японии" loading="lazy" width="600" height="750" /><figcaption>Культурный опыт</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="150"><img src="i-XMW1h47xc.jpg" alt="Атмосфера занятий" loading="lazy" width="600" height="750" /><figcaption>Атмосфера</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="200"><img src="PicsArt_11-13-01.54.52.jpg" alt="Преподаватель" loading="lazy" width="600" height="750" /><figcaption>Преподаватель</figcaption></figure>
         </div>
       </div>
     </section>
@@ -372,6 +376,60 @@
           <div class="form-row split">
             <div>
               <label for="leadGoal">Цель</label>
+            <!-- DEV/SAFE FALLBACK SCRIPTS -->
+            <!--
+              EN: In production (dist/) the build injects hashed bundle (main.*.js). During dev we served public/index.html WITHOUT any JS tag,
+              so the preloader never hid because main initialization didn’t run. We add:
+                1) Module script pointing to source entry (esbuild watcher resolves it)
+                2) Ultra‑robust fallback that guarantees preloader removal after 1500ms even if JS bundle fails.
+              RU: В production (dist/) билд добавляет main.*.js. В dev public/index.html не имел script, поэтому прелоадер не исчезал.
+              Добавляем:
+                1) Подключение module-скрипта на исходный entry
+                2) Fallback, который гарантированно скрывает прелоадер через 1500мс даже при ошибке загрузки.
+            -->
+            <script type="module" src="/src/scripts/main.js"></script>
+            <script>
+              (function() {
+                // Dynamic fallback windows (dev only): if main bundle fails completely.
+                const KILL_TIMEOUT = 5000; // Hard kill after 5s if nothing happened
+                const REVEAL_FALLBACK_DELAY = 5200; // Ensure reveal after forced kill
+                let revealDone = false;
+                function hide() {
+                  const p = document.getElementById('preloader');
+                  if (!p || p.__hidden) return;
+                  p.__hidden = true;
+                  // Ensure fade-out class exists; if not, create minimal style
+                  if (!document.getElementById('preloader-fade-style')) {
+                    const st = document.createElement('style');
+                    st.id = 'preloader-fade-style';
+                    st.textContent = '.preloader.fade-out{opacity:0;transition:opacity .6s ease}';
+                    document.head.appendChild(st);
+                  }
+                  requestAnimationFrame(()=>{
+                    p.classList.add('fade-out');
+                    setTimeout(()=>{ p.style.display='none'; }, 650);
+                  });
+                }
+                function forceReveal() {
+                  if (revealDone) return;
+                  if (window.__appInitialized) return; // real init ran
+                  revealDone = true;
+                  document.querySelectorAll('.fx-fade-up, .fx-scale-in').forEach(el => {
+                    el.classList.add('animate-in');
+                  });
+                }
+                // Hard stop after timeout (dynamic preloader has its own logic; this is last resort)
+                setTimeout(hide, KILL_TIMEOUT);
+                // Also attempt on window load (in case resources are fast)
+                window.addEventListener('load', hide);
+                // Safety: hide if document already loaded and user waited > timeout
+                if (document.readyState === 'complete') {
+                  setTimeout(hide, 50);
+                }
+                // Emergency content reveal (no main init)
+                setTimeout(forceReveal, REVEAL_FALLBACK_DELAY);
+              })();
+            </script>
               <select id="leadGoal" name="goal" required aria-describedby="errGoal"><option value="">Выберите...</option><option>JLPT</option><option>Путешествия</option><option>Работа</option><option>Переезд</option><option>Хобби</option></select>
               <small class="field-error" id="errGoal" hidden>Выберите цель</small>
             </div>
@@ -422,12 +480,16 @@
           <div class="faq-group" data-group="jlpt">
             <h3 class="faq-group-title">JLPT и уровни</h3>
             <div class="faq-item fx-fade-up" data-delay="50" data-cat="jlpt">
-              <h4>
+              <h3>
                 <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-1" id="faq-trigger-1">
                   <span class="faq-trigger-text">Сколько нужно времени чтобы пройти уровень N5?</span>
-                  <span class="faq-icon" aria-hidden="true"></span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z"/>
+                    </svg>
+                  </span>
                 </button>
-              </h4>
+              </h3>
               <div id="faq-panel-1" class="faq-panel" role="region" aria-labelledby="faq-trigger-1" hidden>
                 <div class="faq-panel-inner">
                   <p>В среднем 3–4 месяца при 2 занятиях в неделю и регулярной самостоятельной практике.</p>
@@ -435,12 +497,16 @@
               </div>
             </div>
             <div class="faq-item fx-fade-up" data-delay="90" data-cat="jlpt">
-              <h4>
+              <h3>
                 <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">
                   <span class="faq-trigger-text">Можно ли сразу готовиться к N3, минуя N4 у вас?</span>
-                  <span class="faq-icon" aria-hidden="true"></span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z"/>
+                    </svg>
+                  </span>
                 </button>
-              </h4>
+              </h3>
               <div id="faq-panel-2" class="faq-panel" role="region" aria-labelledby="faq-trigger-2" hidden>
                 <div class="faq-panel-inner">
                   <p>Да, перед стартом проведём мини-оценку: базовая грамматика и ~800 слов должны быть усвоены.</p>
@@ -451,12 +517,16 @@
           <div class="faq-group" data-group="format">
             <h3 class="faq-group-title">Формат и занятия</h3>
             <div class="faq-item fx-fade-up" data-delay="130" data-cat="format">
-              <h4>
+              <h3>
                 <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
                   <span class="faq-trigger-text">Есть ли разговорные клубы?</span>
-                  <span class="faq-icon" aria-hidden="true"></span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z"/>
+                    </svg>
+                  </span>
                 </button>
-              </h4>
+              </h3>
               <div id="faq-panel-3" class="faq-panel" role="region" aria-labelledby="faq-trigger-3" hidden>
                 <div class="faq-panel-inner">
                   <p>Да, модуль «Разговор + Культура» с тематическими сценариями и аудированием.</p>
@@ -467,12 +537,16 @@
           <div class="faq-group" data-group="support">
             <h3 class="faq-group-title">Поддержка</h3>
             <div class="faq-item fx-fade-up" data-delay="170" data-cat="support">
-              <h4>
+              <h3>
                 <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-4" id="faq-trigger-4">
                   <span class="faq-trigger-text">Поддерживаете ли между занятиями?</span>
-                  <span class="faq-icon" aria-hidden="true"></span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z"/>
+                    </svg>
+                  </span>
                 </button>
-              </h4>
+              </h3>
               <div id="faq-panel-4" class="faq-panel" role="region" aria-labelledby="faq-trigger-4" hidden>
                 <div class="faq-panel-inner">
                   <p>Да, проверка домашнего и ответы на уточняющие вопросы включены.</p>

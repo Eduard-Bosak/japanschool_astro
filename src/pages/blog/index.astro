@@ -1,0 +1,55 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import { collectMeta, sortByDateDesc } from '../../lib/blog';
+
+const entries = await getCollection('blog', ({ data }) => !data.draft);
+const posts = sortByDateDesc(entries).map(collectMeta);
+
+const pageTitle = 'Блог школы японского языка';
+const description = 'Статьи о японском языке, подготовке к JLPT, методике и культурных заметках.';
+---
+<MainLayout pageTitle={pageTitle} description={description} canonical="/blog/">
+  <Fragment slot="head">
+    <style is:global>
+      .blog-header{text-align:center;margin-bottom:3.5rem}
+      .blog-header h1{font-family:var(--font-display);font-size:2.75rem;margin-bottom:1rem;background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+      .blog-header p{color:var(--ink-dim);font-size:1.1rem;max-width:620px;margin:0 auto}
+      .blog-list{list-style:none;padding:0;display:grid;gap:1.75rem;margin:0}
+      .blog-list-item{background:linear-gradient(150deg,var(--surface),var(--surface-alt));border:1px solid rgba(255, 255, 255, 0.06);padding:1.15rem 1.25rem 1.25rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:transform .6s cubic-bezier(.19,1,.22,1),box-shadow .5s,border-color .5s}
+      .blog-list-item:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-lg);border-color:rgba(var(--primary-rgb)/0.35)}
+      .blog-list-link{text-decoration:none;display:block;color:inherit}
+      .blog-list-item .b-meta{display:flex;gap:.45rem;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:.4rem}
+      .blog-list-item .b-title{display:block;font-weight:600;font-family:var(--font-display);font-size:1.05rem;background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}
+      .blog-list-item .b-desc{margin:.55rem 0 0;font-size:.8rem;line-height:1.45;color:var(--ink-dim)}
+      [data-theme="light"] .blog-list-item{border:1px solid rgba(0, 0, 0, 0.08);box-shadow:var(--shadow)}
+      [data-theme="light"] .blog-list-item .b-title{background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}
+    </style>
+  </Fragment>
+  <main class="container" style="padding:7rem 0 4rem;max-width:860px">
+    <a href="/" style="text-decoration:none;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">← Главная</a>
+    <header class="blog-header">
+      <h1>{pageTitle}</h1>
+      <p>{description}</p>
+    </header>
+    {posts.length ? (
+      <ul class="blog-list">
+        {posts.map((post) => (
+          <li class="blog-list-item" data-slug={post.slug}>
+            <a class="blog-list-link" href={`/blog/${post.slug}/`}>
+              <span class="b-meta">
+                <time datetime={post.isoDate}>{post.date}</time>
+                <span aria-hidden="true">·</span>
+                <span>{post.readingTime} мин</span>
+              </span>
+              <span class="b-title">{post.title}</span>
+            </a>
+            <p class="b-desc">{post.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>Статей пока нет — загляните позже.</p>
+    )}
+  </main>
+</MainLayout>

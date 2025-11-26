@@ -27,18 +27,28 @@ function setupRevealAnimations() {
 
   /* EN: Observe all elements with animation classes
      RU: Наблюдение за всеми элементами с классами анимации */
-  document.querySelectorAll('.fx-fade-up, .fx-scale-in').forEach((el) => {
+  const animated = document.querySelectorAll('.fx-fade-up, .fx-scale-in');
+  animated.forEach((el) => {
     observer.observe(el);
   });
 
-  /* EN: Refined stagger using data-index if present
-     RU: Уточнённая задержка с использованием data-index если присутствует */
-  document.querySelectorAll('.post-card.fx-fade-up').forEach((el) => {
-    const idx = parseInt(el.getAttribute('data-index') || '0', 10);
-    if (!isNaN(idx)) {
-      el.style.transitionDelay = `calc(var(--stagger-step) * ${idx})`;
-    }
-  });
+  // EN: Instantly reveal elements within initial viewport when preloader is about to hide
+  // RU: Мгновенно показать элементы в стартовой области видимости когда прелоадер скрывается
+  function revealInitialViewport() {
+    const vh = window.innerHeight;
+    animated.forEach((el) => {
+      if (el.getBoundingClientRect().top < vh * 0.92) {
+        // Apply delay if specified
+        const delay = el.dataset.delay || 0;
+        el.style.transitionDelay = `${delay}ms`;
+        el.classList.add('animate-in');
+        observer.unobserve(el);
+      }
+    });
+  }
+
+  // Export for immediate call
+  return revealInitialViewport;
 }
 
 /**
@@ -70,39 +80,64 @@ function setupMicroAnimations() {
  * RU: Настройка анимации подсчёта для метрик
  */
 function setupCountUpAnimations() {
-  const metricObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const numEl = entry.target;
-          const targetVal = parseInt(numEl.dataset.count, 10) || 0;
-          const duration = 1400;
-          const start = performance.now();
+  const nums = document.querySelectorAll('.metric .num');
+  if (!nums.length) {
+    console.log('[Animations] No metric numbers found');
+    return;
+  }
 
-          /* EN: Animation tick function
-           RU: Функция тика анимации */
-          function tick(now) {
-            const progress = Math.min(1, (now - start) / duration);
-            const eased = 1 - Math.pow(1 - progress, 3); // EN: Ease-out cubic | RU: Ease-out кубический
-            numEl.textContent = Math.round(targetVal * eased).toString();
-            if (progress < 1) {
-              requestAnimationFrame(tick);
-            }
+  console.log('[Animations] Found', nums.length, 'metric numbers');
+
+  const runAnimation = (el) => {
+    const targetVal = parseInt(el.dataset.count, 10) || 0;
+    console.log('[Animations] Starting count-up animation for', targetVal);
+
+    let startTimestamp = null;
+    const duration = 2000;
+
+    function step(timestamp) {
+      if (!startTimestamp) {
+        startTimestamp = timestamp;
+      }
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(targetVal * eased);
+      el.textContent = current;
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        el.textContent = targetVal;
+        console.log('[Animations] Count-up completed:', targetVal);
+      }
+    }
+    window.requestAnimationFrame(step);
+  };
+
+  if ('IntersectionObserver' in window) {
+    const metricObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            console.log('[Animations] Metric visible, starting animation');
+            runAnimation(entry.target);
+            metricObserver.unobserve(entry.target);
           }
-
-          requestAnimationFrame(tick);
-          metricObserver.unobserve(numEl);
-        }
-      });
-    },
-    { threshold: 0.4 }
-  );
-
-  /* EN: Observe all metric numbers
-     RU: Наблюдение за всеми метриками */
-  document.querySelectorAll('.metric .num').forEach((el) => {
-    metricObserver.observe(el);
-  });
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+    nums.forEach((el) => {
+      console.log('[Animations] Observing metric:', el.dataset.count);
+      metricObserver.observe(el);
+    });
+  } else {
+    // Fallback
+    console.log('[Animations] IntersectionObserver not supported, using fallback');
+    nums.forEach((el) => {
+      el.textContent = el.dataset.count;
+    });
+  }
 }
 
 /**
@@ -194,7 +229,14 @@ function setupSpotlightCursor() {
  * RU: Инициализация всех систем анимации
  */
 export function init() {
-  setupRevealAnimations();
+  const revealInitial = setupRevealAnimations();
+
+  // EN: Immediately reveal visible elements to prevent flash when no-js is removed
+  // RU: Мгновенно показываем видимые элементы, чтобы предотвратить мигание при удалении no-js
+  if (revealInitial) {
+    revealInitial();
+  }
+
   setupMicroAnimations();
   setupCountUpAnimations();
   setupHeroParallax();

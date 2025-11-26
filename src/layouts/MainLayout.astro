@@ -1,0 +1,104 @@
+---
+import '../styles.css';
+
+interface Props {
+  pageTitle: string;
+  description: string;
+  keywords?: string;
+  canonical?: string;
+  preloadImages?: string[];
+  prefetchImages?: string[];
+}
+
+const {
+  pageTitle,
+  description,
+  keywords = 'японский язык, школа японского языка, JLPT, японская культура',
+  canonical,
+  preloadImages = [],
+  prefetchImages = []
+} = Astro.props;
+
+const siteOrigin = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://example.com';
+const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined);
+---
+<!DOCTYPE html>
+<html lang="ru" class="no-js" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    {preloadImages.map((img) => (
+      <link rel="preload" as="image" href={img} />
+    ))}
+    {prefetchImages.map((img) => (
+      <link rel="prefetch" as="image" href={img} />
+    ))}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl || `${siteOrigin}/`} />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:image:alt" content="Школа японского языка — погружение в язык и культуру" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/og-image.png" />
+    <style>
+      body{margin:0;font-family:var(--font-sans,'Inter',system-ui);background:var(--bg);color:var(--ink-soft);overflow-x:hidden}
+      .site-header{position:fixed;top:0;left:0;right:0;z-index:50;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+      .header-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;width:min(1240px,100% - 3rem);margin:0 auto}
+      .brand{font-family:'Playfair Display',serif;font-size:1.35rem;letter-spacing:.5px;color:var(--ink);display:flex;align-items:center;gap:.25rem}
+      .brand span{color:var(--primary);font-weight:700}
+      .hero{position:relative;padding-top:clamp(8rem,18vh,12rem);padding-bottom:6rem;min-height:100dvh;display:flex;align-items:center}
+      .hero-inner{position:relative;z-index:2;display:grid;gap:3.5rem;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:center;width:min(1240px,100% - 3rem);margin:0 auto}
+      h1{font-family:'Playfair Display',serif;margin:0;font-weight:600;line-height:1.15;font-size:clamp(2.3rem,5vw,3.65rem);background:linear-gradient(90deg,var(--ink),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent}
+      .lead{font-size:1.1rem;margin:1rem 0 1.75rem;color:var(--ink-dim);max-width:620px}
+      .hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+      .btn{display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem;letter-spacing:.5px;padding:.95rem 1.3rem 1rem;border-radius:6px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:.25s cubic-bezier(.4,0,.2,1);background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+      .btn.ghost{background:rgba(var(--primary-rgb)/.15);color:var(--primary);border:1px solid rgba(var(--primary-rgb)/.4);box-shadow:none}
+      .photo-stack{position:relative;width:clamp(260px,40vw,420px);aspect-ratio:4/5}
+      .photo-stack img{position:absolute;width:100%;height:100%;object-fit:cover;border-radius:22px;box-shadow:0 12px 42px -6px rgba(0 0 0/.65),0 4px 18px -4px rgba(0 0 0/.5);outline:1px solid rgba(255 255 255/.1)}
+      .photo-stack img.offset{top:8%;left:8%;transform:rotate(5deg)}
+      .preloader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:250}
+      .scroll-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(var(--primary-rgb)/.15);z-index:120}
+      .scroll-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent))}
+      .skip-link{position:fixed;top:-50px;left:0;background:var(--accent);color:#000;padding:.75rem 1rem;font-weight:600;z-index:300;transition:top .4s}
+      .skip-link:focus{top:0}
+    </style>
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      if('serviceWorker' in navigator){
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+        });
+      }
+    </script>
+    <script>
+      import '@scripts/main.js';
+    </script>
+    <slot name="body-end" />
+  </body>
+</html>

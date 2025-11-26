@@ -207,6 +207,29 @@
   flex: 1;
 }
 
+.post-card-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.post-card-cat {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb) / 0.12);
+  color: var(--primary);
+  border: 1px solid rgba(var(--primary-rgb) / 0.4);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
 .post-thumbnail img {
   width: 100%;
   height: 100%;
@@ -225,8 +248,8 @@
   left: 1rem;
   padding: 0.4rem 0.8rem;
   background: rgba(0 0 0 / 0.75);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;

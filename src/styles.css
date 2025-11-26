@@ -27,6 +27,8 @@
 @import 'styles/components/modal.css';
 @import 'styles/components/gallery.css';
 @import 'styles/components/footer.css';
+@import 'styles/components/enhanced-animations.css';
+@import 'styles/components/interactive.css';
 
 /* Utilities | Утилиты */
 @import 'styles/components/utilities.css';

@@ -175,28 +175,37 @@ function setupScrollProgress() {
  * RU: Восстановление позиции прокрутки из session storage
  */
 function setupScrollRestore() {
-  /* EN: Restore scroll position on load
-     RU: Восстановление позиции прокрутки при загрузке */
-  window.addEventListener('load', () => {
+  const STORAGE_KEY = 'scroll:restore';
+
+  const restore = () => {
     try {
-      const saved = sessionStorage.getItem('scroll:restore');
-      if (saved) {
-        const { path, y } = JSON.parse(saved);
-        if (path === window.location.pathname) {
-          window.scrollTo(0, y);
-        }
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        return;
+      }
+
+      const { path, y } = JSON.parse(saved);
+      if (path === window.location.pathname) {
+        window.scrollTo(0, y);
       }
     } catch (_) {
       /* EN: Ignore errors | RU: Игнорировать ошибки */
     }
+  };
+
+  /* EN: Restore scroll position on load and BFCache return
+     RU: Восстановление позиции при загрузке и возврате из BFCache */
+  window.addEventListener('load', restore);
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      restore();
+    }
   });
 
-  /* EN: Save scroll position before unload
-     RU: Сохранение позиции прокрутки перед выгрузкой */
-  window.addEventListener('beforeunload', () => {
+  const save = () => {
     try {
       sessionStorage.setItem(
-        'scroll:restore',
+        STORAGE_KEY,
         JSON.stringify({
           path: window.location.pathname,
           y: window.scrollY
@@ -204,6 +213,15 @@ function setupScrollRestore() {
       );
     } catch (_) {
       /* EN: Ignore errors | RU: Игнорировать ошибки */
+    }
+  };
+
+  /* EN: Use pagehide/visibilitychange to stay BFCache-friendly
+     RU: Используем pagehide/visibilitychange для совместимости с BFCache */
+  window.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      save();
     }
   });
 }

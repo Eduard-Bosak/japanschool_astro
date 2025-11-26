@@ -93,30 +93,63 @@ body.reading-mode-serif .post-content {
 }
 
 /* Font size controls */
-body.reading-mode-small .post-content {
-  font-size: 0.9rem;
-  line-height: 1.7;
+/* Font size modes - multiple levels */
+/* Size 0 - Extra small */
+body.reading-mode-size-0 .post-content {
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
-body.reading-mode-small .post-content h2 {
-  font-size: 1.5rem;
+body.reading-mode-size-0 .post-content h2 {
+  font-size: 1.4rem;
 }
 
-body.reading-mode-small .post-content h3 {
+body.reading-mode-size-0 .post-content h3 {
+  font-size: 1.1rem;
+}
+
+/* Size 1 - Small */
+body.reading-mode-size-1 .post-content {
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+body.reading-mode-size-1 .post-content h2 {
+  font-size: 1.6rem;
+}
+
+body.reading-mode-size-1 .post-content h3 {
   font-size: 1.2rem;
 }
 
-body.reading-mode-large .post-content {
+/* Size 2 - Default (no class needed) */
+
+/* Size 3 - Large */
+body.reading-mode-size-3 .post-content {
   font-size: 1.15rem;
   line-height: 1.8;
 }
 
-body.reading-mode-large .post-content h2 {
+body.reading-mode-size-3 .post-content h2 {
   font-size: 2rem;
 }
 
-body.reading-mode-large .post-content h3 {
+body.reading-mode-size-3 .post-content h3 {
   font-size: 1.5rem;
+}
+
+/* Size 4 - Extra large */
+body.reading-mode-size-4 .post-content {
+  font-size: 1.3rem;
+  line-height: 1.9;
+}
+
+body.reading-mode-size-4 .post-content h2 {
+  font-size: 2.2rem;
+}
+
+body.reading-mode-size-4 .post-content h3 {
+  font-size: 1.7rem;
 }
 
 /* Wide mode - fix to work properly */
@@ -153,8 +186,51 @@ body.reading-mode-contrast {
   --surface-alt: #121212;
 }
 
+/* Sepia mode - vintage reading experience */
+body.reading-mode-sepia {
+  --bg: #f4f1e8;
+  --surface: #ebe4d5;
+  --surface-alt: #e8e0cf;
+  background: #f4f1e8;
+}
+
+body.reading-mode-sepia .post-content {
+  color: #2a1f1a;
+  background: #fdfbf7;
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(139, 105, 20, 0.08);
+}
+
+body.reading-mode-sepia .post-content h1,
+body.reading-mode-sepia .post-content h2,
+body.reading-mode-sepia .post-content h3 {
+  color: #1a1310;
+  font-weight: 600;
+}
+
+body.reading-mode-sepia .post-content a {
+  color: #a05a00;
+  text-decoration-color: rgba(160, 90, 0, 0.3);
+}
+
+body.reading-mode-sepia .post-content a:hover {
+  color: #7a4300;
+  text-decoration-color: #7a4300;
+}
+
+body.reading-mode-sepia .post-content strong {
+  color: #1a1310;
+}
+
+body.reading-mode-sepia .post-content code {
+  background: #f0e9dc;
+  color: #4a3528;
+  border-color: #d9cdb8;
+}
+
 /* Reading time estimate - minimalist */
-.reading-time-estimate {
+.time-indicator {
   position: fixed;
   bottom: 1.5rem;
   left: 1.5rem;
@@ -173,29 +249,56 @@ body.reading-mode-contrast {
     transform 0.3s;
 }
 
-.reading-time-estimate.hidden {
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
+.time-indicator .time-label {
+  margin-right: 0.3rem;
 }
 
-.reading-time-value {
+.time-indicator .time-value {
   color: var(--primary);
   font-weight: 600;
 }
 
-/* Special button styles */
-.reading-control-btn.print-btn:hover {
-  background: rgba(76, 175, 80, 0.15);
-  color: #4caf50;
+/* Notification toast */
+.notification-toast {
+  position: fixed;
+  bottom: 5rem;
+  right: 2rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0 0 0 / 0.25);
+  border: 1px solid rgba(255 255 255 / 0.08);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
 }
 
-.reading-control-btn.share-btn:hover {
+.notification-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification-toast.success {
+  border-left: 3px solid var(--primary);
+}
+
+.notification-toast.error {
+  border-left: 3px solid #ef5350;
+  color: #ef5350;
+}
+
+/* Special button styles */
+.reading-control-btn[data-action='share']:hover {
   background: rgba(33, 150, 243, 0.15);
   color: #2196f3;
 }
 
-.reading-control-btn.bookmark-btn.active {
+.reading-control-btn[data-action='bookmark'].active {
   background: #ffc107;
   color: #000;
 }
@@ -218,18 +321,26 @@ body.reading-mode-contrast {
     font-size: 0.85rem;
   }
 
-  .reading-time-estimate {
+  .time-indicator {
     bottom: 1rem;
     left: 1rem;
     font-size: 0.65rem;
     padding: 0.4rem 0.65rem;
+  }
+
+  .notification-toast {
+    right: 1rem;
+    bottom: 3rem;
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
   }
 }
 
 /* Print: hide controls */
 @media print {
   .reading-controls,
-  .reading-time-estimate {
+  .time-indicator,
+  .notification-toast {
     display: none;
   }
 }

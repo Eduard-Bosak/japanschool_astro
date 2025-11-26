@@ -108,6 +108,9 @@
   "overrides": [
     {
       "files": ["build.mjs", "og.js"],
+      "env": {
+        "node": true
+      },
       "rules": {
         "no-empty": "off",
         "no-useless-escape": "off",
@@ -115,6 +118,15 @@
         "no-unused-vars": "off",
         "max-len": "off",
         "no-inner-declarations": "off"
+      }
+    },
+    {
+      "files": ["astro.config.mjs"],
+      "rules": {
+        "no-console": "off"
+      },
+      "parserOptions": {
+        "ecmaVersion": 2024
       }
     },
     {

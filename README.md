@@ -32,19 +32,16 @@
 
 ## ✨ Особенности
 
-🎯 **Модульная архитектура** — 27 независимых модулей (16 CSS + 11 JS)  
-🌐 **Билингвальные комментарии** — EN/RU для международных команд  
-⚡ **Производительность** — Lighthouse Score 95+  
-♿ **Доступность (A11y)** — ARIA, keyboard navigation, screen readers  
-📱 **Полностью адаптивный** — Mobile-first дизайн  
-🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn, Winter,
-Sakura)  
-🖼️ **Адаптивные изображения** — AVIF/WebP/JPG в 5 размерах  
-📝 **Статический блог** — Markdown → HTML с RSS/Atom  
-🌸 **Canvas анимации** — Падающие лепестки сакуры  
-🚀 **PWA Support** — Offline-first с Service Worker  
-🔍 **SEO-оптимизация** — Sitemap, JSON-LD, OpenGraph  
-🎭 **Анимации** — IntersectionObserver, parallax, count-up
+🎯 **Модульная архитектура** — 27 независимых модулей (16 CSS + 11 JS) 🌐
+**Билингвальные комментарии** — EN/RU для международных команд ⚡
+**Производительность** — Lighthouse Score 95+ ♿ **Доступность (A11y)** — ARIA,
+keyboard navigation, screen readers 📱 **Полностью адаптивный** — Mobile-first
+дизайн 🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn,
+Winter, Sakura) 🖼️ **Адаптивные изображения** — AVIF/WebP/JPG в 5 размерах 📝
+**Статический блог** — Markdown → HTML с RSS/Atom 🌸 **Canvas анимации** —
+Падающие лепестки сакуры 🚀 **PWA Support** — Offline-first с Service Worker 🔍
+**SEO-оптимизация** — Sitemap, JSON-LD, OpenGraph 🎭 **Анимации** —
+IntersectionObserver, parallax, count-up
 
 ---
 
@@ -77,9 +74,10 @@ npm run build
 ### Доступные команды
 
 ```bash
-npm run dev      # Режим разработки с hot-reload (http://localhost:5173)
-npm run build    # Production сборка → dist/
-npm run clean    # Очистка папки dist/
+npm run dev:stable   # Режим разработки с Live Reload (http://localhost:5173)
+npm run build        # Production сборка → dist/
+npm run preview      # Просмотр production сборки
+npm run clean        # Очистка папки dist/
 
 # 🎨 Code Quality
 npm run lint           # Проверка JavaScript с ESLint
@@ -87,10 +85,17 @@ npm run lint:fix       # Автоисправление проблем ESLint
 npm run format         # Форматирование всего кода с Prettier
 npm run format:check   # Проверка форматирования без изменений
 
-# 🚀 Performance
+# 🚀 Deployment
+npm run deploy:check   # Полная предеплойная проверка
+npm run deploy         # Production build с инструкциями
+
+# 📊 Performance
 npm run lighthouse       # Запуск Lighthouse CI аудита
 npm run lighthouse:open  # Запуск аудита и открытие отчёта
 ```
+
+**✨ Новое:** WebSocket Live Reload — браузер автоматически обновляется при
+изменении файлов!
 
 ---
 
@@ -1072,9 +1077,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## 📞 Контакты
 
-**Автор:** Eduard Bosak  
-**GitHub:** [@Eduard-Bosak](https://github.com/Eduard-Bosak)  
-**Репозиторий:** [japanschool](https://github.com/Eduard-Bosak/japanschool)
+**Автор:** Eduard Bosak **GitHub:**
+[@Eduard-Bosak](https://github.com/Eduard-Bosak) **Репозиторий:**
+[japanschool](https://github.com/Eduard-Bosak/japanschool)
 
 ---
 

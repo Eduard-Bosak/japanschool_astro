@@ -1,0 +1,678 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import { collectMeta, sortByDateDesc } from '../lib/blog';
+
+import ResponsiveImage from '../components/ResponsiveImage.astro';
+import heroImg1 from '../assets/images/1507374093345.jpg';
+import heroImg2 from '../assets/images/1507374101244.jpg';
+import founderImg from '../assets/images/PicsArt_11-13-01.54.52.jpg';
+import galleryImg3 from '../assets/images/i-XMW1h47xc.jpg';
+import { getImage } from 'astro:assets';
+
+const pageTitle = 'Школа японского языка — Погружение в культуру Японии';
+const pageDescription =
+  'Школа японского языка: подготовка к JLPT, разговорная практика, культура Японии. Индивидуальные и групповые занятия. Запишитесь на бесплатную консультацию.';
+
+const optimizedHero1 = await getImage({src: heroImg1, format: 'webp', width: 600});
+const optimizedHero2 = await getImage({src: heroImg2, format: 'webp', width: 600});
+
+const preloadImages = [optimizedHero1.src];
+const prefetchImages = [optimizedHero2.src];
+
+const rawPosts = await getCollection('blog', ({ data }) => !data.draft);
+const mappedPosts = sortByDateDesc(rawPosts).map(collectMeta);
+const latestPosts = mappedPosts.slice(0, 6);
+const categoriesToolbar = Array.from(new Set(mappedPosts.flatMap((post) => post.categories))).slice(0, 12);
+const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://example.com';
+---
+<MainLayout
+  pageTitle={pageTitle}
+  description={pageDescription}
+  preloadImages={preloadImages}
+  prefetchImages={prefetchImages}
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json">{
+      "@context":"https://schema.org",
+      "@type":"Organization",
+      "name":"Школа японского языка",
+      "url":"https://example.com",
+      "logo":"/logo.png",
+      "sameAs":[],
+      "founder":{
+        "@type":"Person",
+        "name":"Основатель школы",
+        "description":"Преподаватель японского языка, стипендиат MEXT, опыт обучения в TUFS.",
+        "alumniOf":"Токийский университет иностранных языков"
+      }
+    }</script>
+    <script is:inline type="application/ld+json">{
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity":[
+        {"@type":"Question","name":"Сколько нужно времени чтобы пройти уровень N5?","acceptedAnswer":{"@type":"Answer","text":"В среднем 3–4 месяца при 2 занятиях в неделю и регулярной домашней практике."}},
+        {"@type":"Question","name":"Можно ли готовиться к JLPT N3 без прохождения N4 у вас?","acceptedAnswer":{"@type":"Answer","text":"Да, если базовая грамматика и около 700–800 слов уже усвоены — мы проведём мини-оценку и дадим рекомендации."}},
+        {"@type":"Question","name":"Есть ли разговорные клубы?","acceptedAnswer":{"@type":"Answer","text":"Да, разговор + культура — отдельный модуль с тематическими сценариями и аудированием."}},
+        {"@type":"Question","name":"Даете ли вы домашнюю поддержку?","acceptedAnswer":{"@type":"Answer","text":"Да, проверка заданий и ответы на уточняющие вопросы между занятиями входят в программу."}}
+      ]
+    }</script>
+    <script is:inline type="application/ld+json">{
+      "@context":"https://schema.org",
+      "@type":"Course",
+      "name":"Интенсив подготовки JLPT N3–N2",
+      "provider":{"@type":"EducationalOrganization","name":"Школа японского языка","url":"https://example.com"},
+      "description":"Структурированная подготовка JLPT N3–N2: грамматика, лексика, чтение, аудирование, модули тестирования.",
+      "courseCode":"JLPT-N3-N2-INT",
+      "inLanguage":["ja","ru"],
+      "educationalLevel":"Intermediate",
+      "timeRequired":"P4M"
+    }</script>
+  </Fragment>
+
+  <a class="skip-link" href="#hero">Пропустить к содержимому</a>
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-ring">
+        <span class="dots"><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="preloader-brand">日本語<span>School</span></div>
+      <p class="preloader-tag">Загрузка атмосферы…</p>
+      <div class="preloader-progress" aria-label="Прогресс загрузки">
+        <span id="preloaderPercent">0%</span>
+        <div class="preloader-bar"><span id="preloaderBarFill"></span></div>
+      </div>
+    </div>
+  </div>
+  <div id="scrollProgress" class="scroll-progress" aria-hidden="true"><span></span></div>
+  <canvas id="sakura-canvas" aria-hidden="true"></canvas>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <div class="brand">日本語<span>School</span></div>
+      <nav class="main-nav" aria-label="Главная навигация">
+        <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="Меню"><span></span></button>
+        <ul id="navMenu">
+          <li><a href="#hero">Главная</a></li>
+          <li><a href="#about">О школе</a></li>
+          <li><a href="#founder">Основатель</a></li>
+          <li><a href="#achievements">Достижения</a></li>
+          <li><a href="#programs">Программы</a></li>
+          <li><a href="#method">Методика</a></li>
+          <li><a href="#gallery">Галерея</a></li>
+          <li><a href="#contact" class="cta-link">Запись</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button id="themeToggle" class="theme-toggle" aria-label="Переключить тему"></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero" class="hero" aria-labelledby="heroTitle">
+      <div class="hero-bg-layer"></div>
+      <div class="hero-blob" aria-hidden="true">
+        <svg viewBox="0 0 600 600" width="600" height="600" role="presentation">
+          <path id="blobPath" fill="url(#gradBlob)" d="M421 308Q406 366 362.5 412.5Q319 459 255.5 456.5Q192 454 148 409.5Q104 365 84 302.5Q64 240 96 182Q128 124 187 89Q246 54 307.5 82.5Q369 111 406.5 155.5Q444 200 436 250Q428 300 421 308Z" />
+          <defs>
+            <linearGradient id="gradBlob" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.85" />
+              <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.65" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <h1 id="heroTitle" class="fx-fade-up">Погружение в японский язык и культуру</h1>
+          <p class="lead fx-fade-up" data-delay="100">Индивидуальные и групповые занятия. Подготовка к JLPT. Методика на основе академического и культурного опыта в Японии.</p>
+          <div class="hero-cta fx-fade-up" data-delay="200">
+            <a href="#contact" class="btn primary">Записаться</a>
+            <a href="#programs" class="btn ghost">Программы</a>
+          </div>
+          <div class="hero-meta fx-fade-up" data-delay="300">
+            <span>Стипендия MEXT</span>
+            <span>Опыт обучения в TUFS</span>
+            <span>Сертификат JLPT N2</span>
+          </div>
+        </div>
+        <div class="hero-visual fx-scale-in" data-delay="300">
+          <div class="photo-stack">
+            <ResponsiveImage src={heroImg1} alt="Основатель школы" loading="eager" width={600} height={750} />
+            <ResponsiveImage src={heroImg2} alt="Фото из образовательной поездки" class="offset" width={600} height={750} />
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator" aria-hidden="true">↓</div>
+    </section>
+
+    <section id="about" class="about section" aria-labelledby="aboutTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="aboutTitle">О школе</h2>
+          <p>Мы соединяем язык и живую культуру Японии: традиции, современность, контекст. Не просто слова — мышление.</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-card fx-fade-up" data-delay="100">
+            <h3>Подготовка JLPT</h3>
+            <p>Структурированные программы N5–N2. Грамматика, лексика, чтение, аудирование.</p>
+          </div>
+          <div class="about-card fx-fade-up" data-delay="150">
+            <h3>Коммуникация</h3>
+            <p>Практика живых диалогов и отработка речевых моделей в культурных сценариях.</p>
+          </div>
+          <div class="about-card fx-fade-up" data-delay="200">
+            <h3>Культура</h3>
+            <p>Академический и практический опыт из Японии — фестивали, быт, социальные нормы.</p>
+          </div>
+          <div class="about-card fx-fade-up" data-delay="250">
+            <h3>Индивидуальный путь</h3>
+            <p>Адаптация темпа и акцентов под цели: экзамены, путешествия, работа.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="founder" class="founder section" aria-labelledby="founderTitle">
+      <div class="container founder-inner">
+        <div class="founder-photo fx-fade-up">
+          <ResponsiveImage src={founderImg} alt="Основатель школы — преподаватель японского языка" width={600} height={750} />
+        </div>
+        <div class="founder-content fx-fade-up" data-delay="100">
+          <h2 id="founderTitle">Основатель</h2>
+          <div class="bio rich-text">
+            <p>Я имею высшее образование по специальности «Зарубежное регионоведение (азиатские исследования)» от НГТУ, где я изучала японский язык с 2014 по 2018 годы. В 2017 году я успешно сдала экзамены в посольстве Японии в Москве на программу Никкенсей (Японский язык и культура Японии) и обучалась по стипендии MEXT в Токийском университете иностранных языков с 2017 по 2018 годы. На данный момент я имею сертификат на знание японского языка N2.</p>
+            <p>За время обучения в НГТУ я достигла следующих результатов:</p>
+            <ul>
+              <li>Победитель в XI, XII и XIV региональных конкурсах устных выступлений на японском языке среди студентов вузов Западной Сибири «Сибирский Калейдоскоп» в 2016, 2017 и 2019 годах.</li>
+              <li>Победитель в V региональной студенческой научно-практической конференции на иностранных языках с международным участием «Актуальные вопросы региональных и международных исследований (секция на японском языке), НГТУ, 2018 год.</li>
+              <li>Стажировка в Японии по программе Никкенсей с 2017 по 2018 годы, где я изучала японский язык и культуру на продвинутом уровне, а также участвовала в различных культурных и образовательных мероприятиях.</li>
+            </ul>
+          </div>
+          <div class="highlight-metrics">
+            <div class="metric"><span class="num" data-count="8">0</span><span class="label">Лет опыта</span></div>
+            <div class="metric"><span class="num" data-count="3">0</span><span class="label">JLPT уровней</span></div>
+            <div class="metric"><span class="num" data-count="100">0</span><span class="label">+ часов практики</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="achievements" class="achievements section" aria-labelledby="achievementsTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="achievementsTitle">Достижения</h2>
+        </div>
+        <ol class="timeline" role="list">
+          <li class="timeline-item fx-fade-up" data-delay="50"><div class="time">2016</div><div class="content">Победа в конкурсе «Сибирский Калейдоскоп»</div></li>
+          <li class="timeline-item fx-fade-up" data-delay="100"><div class="time">2017</div><div class="content">Победа «Сибирский Калейдоскоп» + поступление на стипендию MEXT</div></li>
+          <li class="timeline-item fx-fade-up" data-delay="150"><div class="time">2017–2018</div><div class="content">Обучение в Токийском университете иностранных языков (программа Никкенсей)</div></li>
+          <li class="timeline-item fx-fade-up" data-delay="200"><div class="time">2018</div><div class="content">Победа в конференции НГТУ (секция японского языка)</div></li>
+          <li class="timeline-item fx-fade-up" data-delay="250"><div class="time">2019</div><div class="content">Очередная победа «Сибирский Калейдоскоп»</div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="programs" class="programs section" aria-labelledby="programsTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="programsTitle">Программы</h2>
+          <p>Фокус — результат: комбинируем грамматику, лексику, и живую речь.</p>
+        </div>
+        <div class="program-cards">
+          <article class="program-card fx-tilt" tabindex="0">
+            <h3>N5–N4 База</h3>
+            <p>Азбуки, базовая грамматика, фундамент речи. Темп — комфортный.</p>
+            <ul class="mini-list"><li>Группы 4–7</li><li>2 раза/нед.</li><li>Домашняя поддержка</li></ul>
+            <button class="btn subtle" data-intent="request" data-program="base">Интересно</button>
+          </article>
+          <article class="program-card fx-tilt" tabindex="0">
+            <h3>N3–N2 Интенсив</h3>
+            <p>Структурная отработка, словарь, тексты, аудио — подготовка к экзамену.</p>
+            <ul class="mini-list"><li>Гибрид: офлайн/онлайн</li><li>Разбор ошибок</li><li>Модульные тесты</li></ul>
+            <button class="btn subtle" data-intent="request" data-program="intensive">Интересно</button>
+          </article>
+          <article class="program-card fx-tilt" tabindex="0">
+            <h3>Разговор + Культура</h3>
+            <p>Темы повседневности, этикет, социальные контексты, культурные реалии.</p>
+            <ul class="mini-list"><li>Практика диалогов</li><li>Сценарии</li><li>Культурные заметки</li></ul>
+            <button class="btn subtle" data-intent="request" data-program="culture">Интересно</button>
+          </article>
+          <article class="program-card fx-tilt" tabindex="0">
+            <h3>Индивидуальные</h3>
+            <p>Персональные цели: переезд, бизнес, стажировка, ускоренное прохождение уровней.</p>
+            <ul class="mini-list"><li>Гибкий график</li><li>Целевая программа</li><li>Отчёты прогресса</li></ul>
+            <button class="btn subtle" data-intent="request" data-program="personal">Интересно</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" class="method section" aria-labelledby="methodTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="methodTitle">Методика</h2>
+          <p>Синтез академической строгости и живого погружения.</p>
+        </div>
+        <div class="method-grid">
+          <div class="method-item fx-fade-up" data-delay="50"><h3>Модульность</h3><p>Короткие концентрированные блоки знаний.</p></div>
+          <div class="method-item fx-fade-up" data-delay="100"><h3>Интервальное повторение</h3><p>Укрепление лексики в долговременной памяти.</p></div>
+          <div class="method-item fx-fade-up" data-delay="150"><h3>Контекст</h3><p>Ситуации: магазин, университет, деловая встреча.</p></div>
+          <div class="method-item fx-fade-up" data-delay="200"><h3>Микроаудирование</h3><p>Частые короткие звуковые фрагменты.</p></div>
+          <div class="method-item fx-fade-up" data-delay="250"><h3>Обратная связь</h3><p>Разбор ошибок — сразу.</p></div>
+          <div class="method-item fx-fade-up" data-delay="300"><h3>Метрики</h3><p>Диаграммы прогресса (в будущем LMS).</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="gallery section" aria-labelledby="galleryTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="galleryTitle">Галерея</h2>
+          <p>Моменты, которые формируют путь обучения.</p>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+          <figure class="fx-fade-up" data-delay="50"><ResponsiveImage src={heroImg1} alt="Учебный процесс" width={600} height={750} /><figcaption>Учебная динамика</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="100"><ResponsiveImage src={heroImg2} alt="Опыт в Японии" width={600} height={750} /><figcaption>Культурный опыт</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="150"><ResponsiveImage src={galleryImg3} alt="Атмосфера занятий" width={600} height={750} /><figcaption>Атмосфера</figcaption></figure>
+          <figure class="fx-fade-up" data-delay="200"><ResponsiveImage src={founderImg} alt="Преподаватель" width={600} height={750} /><figcaption>Преподаватель</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    {latestPosts.length ? (
+      <section id="latest-posts" class="section latest-posts" aria-labelledby="latestPostsTitle">
+        <div class="container">
+          <div class="section-head fx-fade-up">
+            <h2 id="latestPostsTitle">Последние статьи</h2>
+            <p>Новые материалы из блога: методика, JLPT, практика.</p>
+          </div>
+          <div class="posts-toolbar fx-fade-up" data-delay="40">
+            <div class="search-bar">
+              <input
+                id="postSearch"
+                type="search"
+                placeholder="Поиск по статьям..."
+                aria-label="Поиск по статьям"
+              />
+              <button type="button" id="postSearchReset" class="search-reset" aria-label="Сбросить поиск" hidden>
+                &times;
+              </button>
+              <span id="postResultsCount" class="results-count" aria-live="polite"></span>
+            </div>
+            {categoriesToolbar.length ? (
+              <div class="posts-cats" role="toolbar" aria-label="Фильтр по категориям">
+                <button type="button" class="cat-filter active" data-cat="__all" aria-pressed="true">
+                  Все
+                </button>
+                {categoriesToolbar.map((cat) => (
+                  <button type="button" class="cat-filter" data-cat={cat} aria-pressed="false">
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          <div class="post-cards">
+            {latestPosts.map((post, index) => {
+              const cover = post.cover
+                ? post.cover.startsWith('http')
+                  ? post.cover
+                  : `/${post.cover.replace(/^\/+/u, '')}`
+                : '/og-image.png';
+              const shareUrl = `${siteOrigin}/blog/${post.slug}/`;
+              return (
+                <article
+                  class="post-card fx-fade-up"
+                  data-index={index}
+                  data-delay={Math.min((index + 1) * 70, 420)}
+                  data-title={post.title}
+                  data-desc={post.description}
+                  data-keywords={post.keywords}
+                  data-cats={post.categories.join(',')}
+                >
+                  <a class="post-card-link" href={`/blog/${post.slug}/`}>
+                    <div
+                      class="post-card-media"
+                      data-bg={cover}
+                      data-plc={cover}
+                      data-state="loading"
+                      style={`background-image:url('${cover}')`}
+                    ></div>
+                    <div class="post-card-content">
+                      <div class="post-card-meta">
+                        <time datetime={post.isoDate} class="post-card-date">
+                          {post.date}
+                        </time>
+                        <span class="sep" aria-hidden="true">
+                          ·
+                        </span>
+                        <span class="read-time">{post.readingTime}&nbsp;мин</span>
+                      </div>
+                      <h3 class="post-card-title">{post.title}</h3>
+                      <p class="post-card-desc">{post.description}</p>
+                      {post.categories.length ? (
+                        <div class="post-card-cats">
+                          {post.categories.map((cat) => (
+                            <span class="post-card-cat">{cat}</span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    class="share-btn"
+                    data-share={shareUrl}
+                    aria-label="Скопировать ссылку на статью"
+                    title="Скопировать ссылку"
+                  >
+                    ⤴
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+          <div class="view-all-link fx-fade-up" data-delay="300">
+            <a href="/blog/" class="view-all-anchor">Смотреть все статьи →</a>
+          </div>
+          <div class="feed-callout fx-fade-up" data-delay="360">
+            <div class="feed-callout-inner">
+              <p class="feed-text">
+                Подпишитесь: <a href="/rss.xml">RSS</a> · <a href="/atom.xml">Atom</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    ) : null}
+
+    <section id="reviews" class="reviews section" aria-labelledby="reviewsTitle" aria-roledescription="carousel">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="reviewsTitle">Отзывы</h2>
+          <p>Слова студентов о процессе и результате.</p>
+        </div>
+        <div class="reviews-carousel" role="region" aria-label="Слайдер отзывов">
+          <p id="reviewsStatus" class="visually-hidden" aria-live="polite"></p>
+          <div class="reviews-track" id="reviewsTrack">
+            <article class="review-card" aria-label="Отзыв 1">
+              <blockquote>
+                <p>За полгода перешла с полного нуля к чтению простых манга и понимаю речь в учебных аудио. Очень системный подход и постоянная поддержка.</p>
+              </blockquote>
+              <div class="review-meta"><span class="avatar">あ</span><span class="name">Алина</span><span class="tag">N5→N4</span></div>
+            </article>
+            <article class="review-card" aria-label="Отзыв 2">
+              <blockquote>
+                <p>Главное отличие — контекст. Мы не зубрим, а погружаемся: диалоги, ситуации, культурные заметки. Это ускоряет говорение.</p>
+              </blockquote>
+              <div class="review-meta"><span class="avatar">K</span><span class="name">Кирилл</span><span class="tag">Разговор</span></div>
+            </article>
+            <article class="review-card" aria-label="Отзыв 3">
+              <blockquote>
+                <p>Подготовка к JLPT N3 прошла структурно: списки лексики, мини-тесты, отслеживание ошибок. Сдала с запасом по баллам.</p>
+              </blockquote>
+              <div class="review-meta"><span class="avatar">M</span><span class="name">Мария</span><span class="tag">JLPT N3</span></div>
+            </article>
+            <article class="review-card" aria-label="Отзыв 4">
+              <blockquote>
+                <p>Формат «микроаудирования» и регулярной обратной связи вывел восприятие речи на новый уровень. Рекомендую.</p>
+              </blockquote>
+              <div class="review-meta"><span class="avatar">D</span><span class="name">Денис</span><span class="tag">Аудирование</span></div>
+            </article>
+          </div>
+          <div class="reviews-controls">
+            <button class="rev-btn" data-dir="prev" aria-label="Предыдущий отзыв">‹</button>
+            <div class="rev-dots" id="revDots" role="tablist" aria-label="Позиции слайдов"></div>
+            <button class="rev-btn" data-dir="next" aria-label="Следующий отзыв">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact section" aria-labelledby="contactTitle">
+      <div class="container contact-inner">
+        <div class="contact-info fx-fade-up">
+          <h2 id="contactTitle">Записаться</h2>
+          <p>Оставьте заявку — мы свяжемся и подберём формат.</p>
+          <ul class="contact-list">
+            <li><strong>Email:</strong> <a href="mailto:info@example.com">info@example.com</a></li>
+            <li><strong>Telegram:</strong> <a href="#" rel="noopener">@japanese_school</a></li>
+          </ul>
+        </div>
+        <form class="contact-form fx-fade-up" data-delay="100" id="leadForm" novalidate>
+          <div class="form-row">
+            <label for="leadName">Имя</label>
+            <input id="leadName" type="text" name="name" required placeholder="Ваше имя" aria-describedby="errName" />
+            <small class="field-error" id="errName" hidden>Введите имя (мин. 2 символа)</small>
+          </div>
+          <div class="form-row">
+            <label for="leadEmail">Email</label>
+            <input id="leadEmail" type="email" name="email" required placeholder="you@example.com" aria-describedby="errEmail" />
+            <small class="field-error" id="errEmail" hidden>Введите корректный email</small>
+          </div>
+          <div class="form-row split">
+            <div>
+              <label for="leadGoal">Цель</label>
+              <select id="leadGoal" name="goal" required aria-describedby="errGoal">
+                <option value="">Выберите...</option>
+                <option>JLPT</option>
+                <option>Путешествия</option>
+                <option>Работа</option>
+                <option>Переезд</option>
+                <option>Хобби</option>
+              </select>
+              <small class="field-error" id="errGoal" hidden>Выберите цель</small>
+            </div>
+            <div>
+              <label for="leadLevel">Уровень</label>
+              <select id="leadLevel" name="level" required aria-describedby="errLevel">
+                <option value="">Уровень...</option>
+                <option>N5</option>
+                <option>N4</option>
+                <option>N3</option>
+                <option>N2</option>
+                <option>N1</option>
+              </select>
+              <small class="field-error" id="errLevel" hidden>Укажите текущий уровень</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="leadMsg">Сообщение</label>
+            <textarea id="leadMsg" name="message" rows="4" placeholder="Коротко о запросе"></textarea>
+          </div>
+          <button type="submit" class="btn primary wide">Отправить</button>
+          <p class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="faq" class="section" aria-labelledby="faqTitle">
+      <div class="container">
+        <div class="section-head fx-fade-up">
+          <h2 id="faqTitle">FAQ — ответы сразу</h2>
+          <p>Быстрые уточнения по подготовке, формату и поддержке.</p>
+        </div>
+        <div class="faq-controls fx-fade-up" data-delay="20" aria-label="Поиск и фильтр FAQ">
+          <div class="faq-search-wrap">
+            <input id="faqSearch" type="search" placeholder="Поиск вопроса..." autocomplete="off" aria-describedby="faqResults" />
+            <button type="button" id="faqSearchReset" class="faq-reset" aria-label="Сбросить поиск" hidden>✕</button>
+            <div class="faq-results small" id="faqResults" aria-live="polite" aria-atomic="true"></div>
+          </div>
+          <div class="faq-filters" role="toolbar" aria-label="Категории FAQ">
+            <button type="button" class="faq-filter active" data-cat="__all" aria-pressed="true">Все</button>
+            <button type="button" class="faq-filter" data-cat="jlpt" aria-pressed="false">JLPT</button>
+            <button type="button" class="faq-filter" data-cat="format" aria-pressed="false">Формат</button>
+            <button type="button" class="faq-filter" data-cat="support" aria-pressed="false">Поддержка</button>
+          </div>
+          <div class="faq-bulk">
+            <button type="button" class="mini-link" id="faqExpandAll" data-action="expand-all">Раскрыть все</button>
+            <span class="sep" aria-hidden="true">·</span>
+            <button type="button" class="mini-link" id="faqCollapseAll" data-action="collapse-all">Свернуть</button>
+          </div>
+        </div>
+        <div class="faq-progress fx-fade-up" data-delay="30" aria-live="polite" aria-atomic="true">
+          <div class="faq-progress-bar"><span></span></div>
+          <div class="faq-progress-meta small"><strong id="faqProgressOpened">0</strong>/<span id="faqProgressTotal">0</span> раскрыто · <span id="faqProgressVisible">0</span> видно</div>
+        </div>
+        <div class="faq-list" id="faqList" data-mode="multi">
+          <div class="faq-group" data-group="jlpt">
+            <h3 class="faq-group-title">JLPT и уровни</h3>
+            <div class="faq-item fx-fade-up" data-delay="50" data-cat="jlpt">
+              <h3>
+                <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-1" id="faq-trigger-1">
+                  <span class="faq-trigger-text">Сколько нужно времени чтобы пройти уровень N5?</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
+                    </svg>
+                  </span>
+                </button>
+              </h3>
+              <div id="faq-panel-1" class="faq-panel" role="region" aria-labelledby="faq-trigger-1" hidden>
+                <div class="faq-panel-inner">
+                  <p>В среднем 3–4 месяца при 2 занятиях в неделю и регулярной самостоятельной практике.</p>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item fx-fade-up" data-delay="90" data-cat="jlpt">
+              <h3>
+                <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">
+                  <span class="faq-trigger-text">Можно ли сразу готовиться к N3, минуя N4 у вас?</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
+                    </svg>
+                  </span>
+                </button>
+              </h3>
+              <div id="faq-panel-2" class="faq-panel" role="region" aria-labelledby="faq-trigger-2" hidden>
+                <div class="faq-panel-inner">
+                  <p>Да, перед стартом проведём мини-оценку: базовая грамматика и ~800 слов должны быть усвоены.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="faq-group" data-group="format">
+            <h3 class="faq-group-title">Формат и занятия</h3>
+            <div class="faq-item fx-fade-up" data-delay="130" data-cat="format">
+              <h3>
+                <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
+                  <span class="faq-trigger-text">Есть ли разговорные клубы?</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
+                    </svg>
+                  </span>
+                </button>
+              </h3>
+              <div id="faq-panel-3" class="faq-panel" role="region" aria-labelledby="faq-trigger-3" hidden>
+                <div class="faq-panel-inner">
+                  <p>Да, модуль «Разговор + Культура» с тематическими сценариями и аудированием.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="faq-group" data-group="support">
+            <h3 class="faq-group-title">Поддержка</h3>
+            <div class="faq-item fx-fade-up" data-delay="170" data-cat="support">
+              <h3>
+                <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-4" id="faq-trigger-4">
+                  <span class="faq-trigger-text">Поддерживаете ли между занятиями?</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
+                    </svg>
+                  </span>
+                </button>
+              </h3>
+              <div id="faq-panel-4" class="faq-panel" role="region" aria-labelledby="faq-trigger-4" hidden>
+                <div class="faq-panel-inner">
+                  <p>Да, проверка домашнего и ответы на уточняющие вопросы включены.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="foot-brand">
+        <div class="brand sm">日本語<span>School</span></div>
+        <p class="foot-tagline">Японский язык как система мышления.</p>
+      </div>
+      <nav class="foot-nav" aria-label="Дополнительные ссылки">
+        <ul>
+          <li><a href="#programs">Программы</a></li>
+          <li><a href="#method">Методика</a></li>
+          <li><a href="#contact">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="foot-meta">
+        <p>© <span id="year"></span> Школа японского языка. Все права защищены.</p>
+        <p class="small muted">Дизайн и разработка – внутренний проект.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="programModal" hidden role="dialog" aria-modal="true" aria-labelledby="programModalTitle">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog">
+      <button class="modal-close" data-close aria-label="Закрыть"></button>
+      <h3 id="programModalTitle">Заявка на программу</h3>
+      <p class="modal-desc">Оставьте контакты — отправим детали.</p>
+      <form id="programForm" class="mini-form" novalidate>
+        <input type="hidden" name="program" />
+        <label>Email<input type="email" name="email" required placeholder="you@example.com" /></label>
+        <button class="btn primary" type="submit">Получить</button>
+        <p class="mini-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <Fragment slot="body-end">
+    <!-- DEV/SAFE FALLBACK SCRIPTS -->
+    <script is:inline>
+      (function() {
+        const KILL_TIMEOUT = 5000;
+        const REVEAL_FALLBACK_DELAY = 5200;
+        let revealDone = false;
+        function hide() {
+          const p = document.getElementById('preloader');
+          if (!p || p.__hidden) return;
+          p.__hidden = true;
+          if (!document.getElementById('preloader-fade-style')) {
+            const st = document.createElement('style');
+            st.id = 'preloader-fade-style';
+            st.textContent = '.preloader.fade-out{opacity:0;transition:opacity .6s ease}';
+            document.head.appendChild(st);
+          }
+          requestAnimationFrame(() => {
+            p.classList.add('fade-out');
+            setTimeout(() => {
+              p.style.display = 'none';
+            }, 650);
+          });
+        }
+        function forceReveal() {
+          if (revealDone) return;
+          if (window.__appInitialized) return;
+          revealDone = true;
+          document.querySelectorAll('.fx-fade-up, .fx-scale-in').forEach((el) => {
+            el.classList.add('animate-in');
+          });
+        }
+        setTimeout(hide, KILL_TIMEOUT);
+        window.addEventListener('load', hide);
+        if (document.readyState === 'complete') {
+          setTimeout(hide, 50);
+        }
+        setTimeout(forceReveal, REVEAL_FALLBACK_DELAY);
+      })();
+    </script>
+  </Fragment>
+</MainLayout>

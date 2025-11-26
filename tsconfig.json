@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["astro/client"],
+    "paths": {
+      "@scripts/*": ["src/scripts/*"],
+      "@styles/*": ["src/styles/*"],
+      "@assets/*": ["src/assets/*"]
+    }
+  },
+  "include": ["src", "content", "astro.config.mjs", "site.config.json"]
+}

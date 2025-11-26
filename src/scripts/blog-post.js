@@ -50,17 +50,16 @@ function createReadingModePanel() {
   panel.setAttribute('aria-label', 'Настройки чтения');
 
   panel.innerHTML = `
-    <button class="reading-control-btn" data-mode="small" data-tooltip="A-" aria-label="Уменьшить текст">A-</button>
-    <button class="reading-control-btn" data-mode="large" data-tooltip="A+" aria-label="Увеличить текст">A+</button>
-    <button class="reading-control-btn" data-mode="xlarge" data-tooltip="A++" aria-label="Очень крупный текст">A++</button>
+    <button class="reading-control-btn" data-mode="size" data-size="decrease" data-tooltip="Меньше" aria-label="Уменьшить текст">A-</button>
+    <button class="reading-control-btn" data-mode="size" data-size="reset" data-tooltip="Сбросить" aria-label="Сбросить размер">A</button>
+    <button class="reading-control-btn" data-mode="size" data-size="increase" data-tooltip="Больше" aria-label="Увеличить текст">A+</button>
     <div class="reading-controls-separator"></div>
     <button class="reading-control-btn" data-mode="serif" data-tooltip="Шрифт" aria-label="Шрифт с засечками">Aa</button>
-    <button class="reading-control-btn" data-mode="wide" data-tooltip="Широко" aria-label="Широкая колонка">⇔</button>
+    <button class="reading-control-btn" data-mode="sepia" data-tooltip="Сепия" aria-label="Режим сепия">◑</button>
     <button class="reading-control-btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">◉</button>
     <button class="reading-control-btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">◐</button>
     <div class="reading-controls-separator"></div>
-    <button class="reading-control-btn" data-action="print" data-tooltip="Печать" aria-label="Печать">🖨</button>
-    <button class="reading-control-btn" data-action="share" data-tooltip="Поделиться" aria-label="Поделиться">🔗</button>
+    <button class="reading-control-btn" data-action="share" data-tooltip="Ссылка" aria-label="Поделиться">🔗</button>
     <button class="reading-control-btn" data-action="bookmark" data-tooltip="Закладка" aria-label="Закладка">★</button>
   `;
 
@@ -70,39 +69,55 @@ function createReadingModePanel() {
   // Подключаем обработчики событий
   panel.querySelectorAll('[data-mode]').forEach((btn) => {
     const mode = btn.dataset.mode;
-    const isSizeMode = ['small', 'large', 'xlarge'].includes(mode);
+    const isSizeControl = mode === 'size';
 
-    // Restore active state
-    // Восстанавливаем активное состояние
-    if (document.body.classList.contains(`reading-mode-${mode}`)) {
+    // Restore active state for non-size modes
+    // Восстанавливаем активное состояние для не-размерных режимов
+    if (!isSizeControl && document.body.classList.contains(`reading-mode-${mode}`)) {
       btn.classList.add('active');
     }
 
     btn.addEventListener('click', () => {
-      if (isSizeMode) {
-        // Size modes are mutually exclusive
-        // Режимы размера взаимоисключающие
-        panel
-          .querySelectorAll('[data-mode="small"], [data-mode="large"], [data-mode="xlarge"]')
-          .forEach((b) => {
-            document.body.classList.remove(`reading-mode-${b.dataset.mode}`);
-            b.classList.remove('active');
-          });
+      if (isSizeControl) {
+        // Handle size increase/decrease/reset
+        const sizeAction = btn.dataset.size;
+        const currentSize = parseInt(localStorage.getItem('readingMode-fontSize') || '2', 10);
+        let newSize = currentSize;
+
+        if (sizeAction === 'increase' && currentSize < 4) {
+          newSize = currentSize + 1;
+        } else if (sizeAction === 'decrease' && currentSize > 0) {
+          newSize = currentSize - 1;
+        } else if (sizeAction === 'reset') {
+          newSize = 2;
+        }
+
+        if (newSize !== currentSize) {
+          // Remove all size classes
+          for (let i = 0; i <= 4; i++) {
+            document.body.classList.remove(`reading-mode-size-${i}`);
+          }
+          // Add new size class (2 is default, no class needed)
+          if (newSize !== 2) {
+            document.body.classList.add(`reading-mode-size-${newSize}`);
+          }
+          localStorage.setItem('readingMode-fontSize', newSize);
+        }
+      } else {
+        // Toggle mode
+        // Переключаем режим
+        const modeClass = `reading-mode-${mode}`;
+        const isActive = document.body.classList.toggle(modeClass);
+        btn.classList.toggle('active', isActive);
+
+        // Save to localStorage
+        // Сохраняем в localStorage
+        const modes = [];
+        panel.querySelectorAll('[data-mode]:not([data-size]).active').forEach((b) => {
+          modes.push(b.dataset.mode);
+        });
+        localStorage.setItem('readingModes', JSON.stringify(modes));
       }
-
-      // Toggle mode
-      // Переключаем режим
-      const modeClass = `reading-mode-${mode}`;
-      const isActive = document.body.classList.toggle(modeClass);
-      btn.classList.toggle('active', isActive);
-
-      // Save to localStorage
-      // Сохраняем в localStorage
-      const modes = [];
-      panel.querySelectorAll('[data-mode].active').forEach((b) => {
-        modes.push(b.dataset.mode);
-      });
-      localStorage.setItem('readingModes', JSON.stringify(modes));
     });
   });
 
@@ -111,15 +126,28 @@ function createReadingModePanel() {
   panel.querySelectorAll('[data-action]').forEach((btn) => {
     const action = btn.dataset.action;
     btn.addEventListener('click', () => {
-      if (action === 'print') {
-        window.print();
-      } else if (action === 'share') {
+      if (action === 'share') {
         handleShare();
       } else if (action === 'bookmark') {
         handleBookmark(btn);
       }
     });
   });
+
+  // Restore saved modes from localStorage
+  // Восстанавливаем сохранённые режимы из localStorage
+  const savedModes = JSON.parse(localStorage.getItem('readingModes') || '[]');
+  savedModes.forEach((mode) => {
+    const modeClass = `reading-mode-${mode}`;
+    document.body.classList.add(modeClass);
+    panel.querySelector(`[data-mode="${mode}"]:not([data-size])`)?.classList.add('active');
+  });
+
+  // Restore font size
+  const savedSize = parseInt(localStorage.getItem('readingMode-fontSize') || '2', 10);
+  if (savedSize !== 2) {
+    document.body.classList.add(`reading-mode-size-${savedSize}`);
+  }
 }
 
 /**

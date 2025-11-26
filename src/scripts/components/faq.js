@@ -28,20 +28,37 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  * @returns {number} - Height in pixels | Высота в пикселях
  */
 function measure(panel) {
+  // EN: Robust measurement
+  // RU: Надежное измерение
   const wasHidden = panel.hasAttribute('hidden');
+  const prevDisplay = panel.style.display;
+  const prevVis = panel.style.visibility;
+  const prevPos = panel.style.position;
+  const prevMax = panel.style.maxHeight;
+
   if (wasHidden) {
     panel.removeAttribute('hidden');
   }
 
+  // Force visible state for measurement
+  panel.style.display = 'block';
+  panel.style.visibility = 'hidden';
+  panel.style.position = 'absolute'; // Prevent layout shift
   panel.style.maxHeight = 'none';
-  const inner = panel.querySelector('.faq-panel-inner');
-  const h = (inner ? inner.getBoundingClientRect().height : panel.scrollHeight) + 24;
-  panel.style.maxHeight = '';
+
+  const h = panel.scrollHeight;
+
+  // Restore
+  panel.style.display = prevDisplay;
+  panel.style.visibility = prevVis;
+  panel.style.position = prevPos;
+  panel.style.maxHeight = prevMax;
 
   if (wasHidden) {
     panel.setAttribute('hidden', '');
   }
-  return h;
+
+  return h + 30; // Increased Buffer
 }
 
 /**
@@ -60,16 +77,25 @@ function open(trigger, silent = false) {
     return;
   }
 
+  // 1. Unhide and measure
   panel.removeAttribute('hidden');
+  panel.style.maxHeight = '0px';
+
+  // Force reflow
+  void panel.offsetHeight;
+
   const h = measure(panel);
   panel.style.setProperty('--panel-max', h + 'px');
 
+  // 2. Animate
   requestAnimationFrame(() => {
-    item.classList.add('open');
+    requestAnimationFrame(() => {
+      item.classList.add('open');
+      panel.style.maxHeight = h + 'px';
+    });
   });
 
   trigger.setAttribute('aria-expanded', 'true');
-
   if (!silent) {
     track('faq_open', { id });
   }
@@ -484,7 +510,7 @@ export function init() {
       return;
     }
 
-    const _h = measure(panel);
+    measure(panel); // Pre-measure for smoother animation
     panel.style.setProperty('--panel-max', '0px');
     panel.setAttribute('hidden', '');
   });

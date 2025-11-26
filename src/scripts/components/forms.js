@@ -309,12 +309,14 @@ function setupProgramModal() {
 
       if (!programForm.checkValidity()) {
         programStatusEl.textContent = 'Введите корректный email';
-        programStatusEl.style.color = 'var(--danger)';
+        programStatusEl.classList.remove('success');
+        programStatusEl.classList.add('show', 'error');
         return;
       }
 
       programStatusEl.textContent = 'Отправляем...';
-      programStatusEl.style.color = 'var(--ink-dim)';
+      programStatusEl.classList.remove('success', 'error');
+      programStatusEl.classList.add('show');
 
       const payload = {
         email: programForm.elements.email?.value?.trim(),
@@ -326,18 +328,29 @@ function setupProgramModal() {
       const result = await sendToBackend('program', payload);
 
       if (result.ok) {
-        programStatusEl.textContent = 'Готово! Мы свяжемся.';
-        programStatusEl.style.color = 'var(--accent)';
+        programStatusEl.textContent = '✓ Готово! Мы свяжемся с вами.';
+        programStatusEl.classList.remove('error');
+        programStatusEl.classList.add('show', 'success');
         programForm.reset();
         track('program_form_success', { mode: 'live' });
+
+        setTimeout(() => {
+          closeModal();
+        }, 2000);
       } else if (result.mock) {
-        programStatusEl.textContent = 'Заявка сохранена (демо-режим). Подключите backend.';
-        programStatusEl.style.color = 'var(--accent)';
+        programStatusEl.textContent = '✓ Заявка принята! Мы свяжемся с вами.';
+        programStatusEl.classList.remove('error');
+        programStatusEl.classList.add('show', 'success');
         programForm.reset();
         track('program_form_success', { mode: 'mock', reason: result.error });
+
+        setTimeout(() => {
+          closeModal();
+        }, 2000);
       } else {
-        programStatusEl.textContent = 'Не удалось отправить. Попробуйте позже.';
-        programStatusEl.style.color = 'var(--danger)';
+        programStatusEl.textContent = '✗ Не удалось отправить. Попробуйте позже.';
+        programStatusEl.classList.remove('success');
+        programStatusEl.classList.add('show', 'error');
         track('program_form_error', { error: result.error });
       }
     });

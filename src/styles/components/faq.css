@@ -84,6 +84,8 @@
   gap: 1.8rem;
   position: relative;
   padding: 2rem 0;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 /* Remove old decorative line */
@@ -92,7 +94,7 @@
 }
 
 .faq-item {
-  background: rgba(var(--bg-rgb), 0.6);
+  background: rgba(15, 17, 21, 0.6);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   padding: 0;
@@ -130,29 +132,9 @@
   z-index: 0;
 }
 
-/* Animated gradient border line with glow */
+/* Animated gradient border line with glow - DISABLED */
 .faq-item::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--primary) 12%,
-    var(--accent) 50%,
-    var(--primary) 88%,
-    transparent 100%
-  );
-  opacity: 0;
-  border-radius: 28px 0 0 28px;
-  transition:
-    opacity 0.5s ease,
-    box-shadow 0.5s ease;
-  box-shadow: 0 0 0 rgba(var(--primary-rgb), 0);
-  z-index: 1;
+  display: none;
 }
 
 /* Premium Hover Effects */
@@ -171,14 +153,6 @@
 .faq-item:hover::before {
   height: 180%;
   opacity: 1;
-}
-
-.faq-item:hover::after {
-  opacity: 1;
-  box-shadow:
-    0 0 35px rgba(var(--primary-rgb), 0.8),
-    0 0 70px rgba(var(--primary-rgb), 0.5),
-    inset 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 /* Premium Open State */
@@ -210,13 +184,7 @@
   filter: blur(30px);
 }
 
-.faq-item.open::after {
-  opacity: 1;
-  box-shadow:
-    0 0 50px rgba(var(--primary-rgb), 1),
-    0 0 100px rgba(var(--primary-rgb), 0.6),
-    inset 0 0 30px rgba(255, 255, 255, 0.5);
-}
+/* Removed after element for open state */
 
 /* Accent dot indicator removed — now using gradient line */
 .faq-item.open .faq-trigger-text {
@@ -237,12 +205,11 @@
     inset 0 4px 8px rgba(255, 255, 255, 0.4);
 }
 
-.faq-item.open .faq-icon::before,
-.faq-item.open .faq-icon::after {
-  background: #fff;
-  box-shadow:
-    0 0 20px rgba(255, 255, 255, 1),
-    0 0 40px rgba(255, 255, 255, 0.6);
+.faq-item.open .faq-icon svg {
+  fill: #fff;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 40px rgba(255, 255, 255, 0.6));
+  transform: scale(1.2);
 }
 
 /* Hidden when filtered | Скрыт при фильтрации */
@@ -373,7 +340,7 @@
   font-weight: 700;
 }
 
-/* ===== FAQ Icon (Plus/X) — 3D Neomorphism ===== */
+/* ===== FAQ Icon (Sakura Petal) — 3D Neomorphism ===== */
 .faq-icon {
   --sz: 54px;
   position: relative;
@@ -391,7 +358,17 @@
     0 4px 8px rgba(0, 0, 0, 0.1),
     inset 0 3px 0 rgba(255, 255, 255, 0.3),
     inset 0 -3px 0 rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  overflow: visible;
+}
+
+/* Sakura SVG icon inside circle */
+.faq-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: var(--primary);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 5;
 }
 
 /* Shine effect on icon */
@@ -429,49 +406,12 @@
   }
 }
 
-/* Plus/X lines with enhanced 3D effect */
-.faq-icon::after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 3px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--ink-soft);
-  border-radius: 3px;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow:
-    0 0 10px rgba(var(--ink-rgb), 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-}
-
-/* Vertical line for plus */
-.faq-trigger::after {
-  content: '';
-  position: absolute;
-  right: 3rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 16px;
-  background: var(--ink-soft);
-  border-radius: 3px;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow:
-    0 0 10px rgba(var(--ink-rgb), 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-}
-
 /* Glow effect on hover */
-.faq-item:hover .faq-icon::after,
-.faq-item:hover .faq-trigger::after {
-  background: var(--primary);
-  box-shadow:
-    0 0 15px rgba(var(--primary-rgb), 0.8),
-    0 0 30px rgba(var(--primary-rgb), 0.4);
+.faq-item:hover .faq-icon svg {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.8))
+    drop-shadow(0 0 30px rgba(var(--accent-rgb), 0.6));
+  transform: scale(1.15) rotate(10deg);
 }
 
 .faq-item:hover .faq-icon {
@@ -483,12 +423,6 @@
     0 8px 16px rgba(0, 0, 0, 0.2),
     inset 0 4px 0 rgba(255, 255, 255, 0.4),
     inset 0 -4px 0 rgba(0, 0, 0, 0.2);
-}
-
-/* Transform to X when open */
-.faq-item.open .faq-trigger::after {
-  opacity: 0;
-  transform: translateY(-50%) rotate(90deg) scale(0);
 }
 
 /* ===== FAQ Panel (Answer) — Premium Slide-in ===== */
@@ -519,7 +453,7 @@
   line-height: 2;
   color: var(--ink-soft);
   position: relative;
-  background: linear-gradient(135deg, rgba(var(--bg-rgb), 0.4), rgba(var(--bg-rgb), 0.2));
+  background: linear-gradient(135deg, rgba(15, 17, 21, 0.4), rgba(15, 17, 21, 0.2));
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-radius: 0 0 28px 28px;
@@ -554,7 +488,7 @@
   transform: translateY(15px);
   transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
-  background: rgba(var(--bg-rgb), 0.3);
+  background: rgba(15, 17, 21, 0.3);
   border-radius: 16px;
   border-left: 4px solid rgba(var(--primary-rgb), 0.5);
   box-shadow:
@@ -633,15 +567,9 @@
     --sz: 46px;
   }
 
-  .faq-icon::after {
-    width: 14px;
-    height: 3px;
-  }
-
-  .faq-trigger::after {
-    width: 3px;
-    height: 14px;
-    right: 1.5rem;
+  .faq-icon svg {
+    width: 26px;
+    height: 26px;
   }
 
   .faq-panel-inner {
@@ -668,6 +596,11 @@
 
   .faq-icon {
     --sz: 50px;
+  }
+
+  .faq-icon svg {
+    width: 28px;
+    height: 28px;
   }
 
   .faq-panel-inner {
@@ -723,17 +656,16 @@
   0%,
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   50% {
-    opacity: 0.5;
-    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0.7;
+    transform: scale(1.3);
   }
 }
 
-/* Pulsing dot on open icon */
-.faq-item.open .faq-icon svg,
-.faq-item.open .faq-icon::after {
+/* Pulsing sakura on open icon */
+.faq-item.open .faq-icon svg {
   animation: pulse 2.5s ease-in-out infinite;
 }
 
@@ -742,8 +674,7 @@
     animation: none;
   }
 
-  .faq-item.open .faq-icon svg,
-  .faq-item.open .faq-icon::after {
+  .faq-item.open .faq-icon svg {
     animation: none;
   }
 

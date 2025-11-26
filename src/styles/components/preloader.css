@@ -8,7 +8,15 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 30% 20%, rgba(var(--primary-rgb) / 0.3), transparent 70%), var(--bg);
+    radial-gradient(circle at 30% 20%, rgba(var(--primary-rgb) / 0.35), transparent 72%),
+    radial-gradient(circle at 70% 65%, rgba(var(--accent-rgb) / 0.25), transparent 75%),
+    linear-gradient(
+      140deg,
+      var(--bg) 0%,
+      rgba(var(--primary-rgb) / 0.08) 40%,
+      rgba(var(--accent-rgb) / 0.06) 100%
+    ),
+    var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,6 +65,60 @@
   text-transform: uppercase;
   color: var(--ink-dim);
   margin-top: 0.75rem;
+}
+
+/* Progress percent | Процент прогресса */
+.preloader-progress {
+  margin-top: 0.85rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  color: var(--primary);
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  align-items: baseline;
+  position: relative;
+  flex-direction: column;
+}
+
+.preloader-progress span {
+  font-variant-numeric: tabular-nums;
+  z-index: 2;
+}
+
+/* Progress bar container */
+.preloader-bar {
+  --bar-h: 4px;
+  width: 180px;
+  height: var(--bar-h);
+  background: rgba(var(--primary-rgb) / 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 0.55rem;
+  box-shadow:
+    0 0 0 1px rgba(var(--primary-rgb) / 0.15),
+    0 2px 4px -1px rgba(0 0 0 / 0.4);
+}
+
+.preloader-bar span {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background-size: 200% 100%;
+  animation: barShift 3.2s linear infinite;
+  transition: width 0.35s cubic-bezier(0.4, 0.8, 0.4, 1);
+}
+
+@keyframes barShift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Loading ring animation | Анимация кольца загрузки */
