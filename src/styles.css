@@ -21,7 +21,9 @@
 @import 'styles/components/faq.css';
 @import 'styles/components/sections.css';
 @import 'styles/components/reviews.css';
-@import 'styles/components/blog-posts.css';
+@import 'styles/components/blog-card.css';
+@import 'styles/components/blog-feed.css';
+@import 'styles/components/blog-post.css';
 @import 'styles/components/rich-text.css';
 @import 'styles/components/reading-mode.css';
 @import 'styles/components/modal.css';

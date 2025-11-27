@@ -4,7 +4,8 @@
    ============================================= */
 
 /* Form container | Контейнер формы */
-.contact-form {
+/* Form container | Контейнер формы */
+.form {
   background: var(--surface);
   padding: 1.75rem 1.5rem 2rem;
   border-radius: var(--radius);
@@ -13,7 +14,7 @@
 }
 
 /* Form row (field wrapper) | Строка формы (обёртка поля) */
-.form-row {
+.form__row {
   margin-bottom: 1.1rem;
   display: flex;
   flex-direction: column;
@@ -21,17 +22,17 @@
 }
 
 /* Split row (two columns) | Разделённая строка (два столбца) */
-.form-row.split {
+.form__row--split {
   flex-direction: row;
   gap: 1rem;
 }
 
-.form-row.split label {
+.form__row--split .form__label {
   flex: 1;
 }
 
 /* Label styles | Стили меток */
-label {
+.form__label {
   font-size: 0.75rem;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -43,9 +44,9 @@ label {
 }
 
 /* Input, textarea, select base styles | Базовые стили полей ввода */
-input,
-textarea,
-select {
+.form__input,
+.form__textarea,
+.form__select {
   font: inherit;
   background: var(--bg-soft);
   border: 1px solid rgba(255 255 255 / 0.1);
@@ -59,22 +60,22 @@ select {
 }
 
 /* Focus state | Состояние фокуса */
-input:focus,
-textarea:focus,
-select:focus {
+.form__input:focus,
+.form__textarea:focus,
+.form__select:focus {
   outline: none;
   border-color: var(--primary);
   background: var(--surface-alt);
 }
 
 /* Form status message | Сообщение о статусе формы */
-.form-status {
+.form__status {
   font-size: 0.75rem;
   min-height: 1.2rem;
 }
 
 /* Field error message | Сообщение об ошибке поля */
-.field-error {
+.form__error {
   display: block;
   margin-top: 0.35rem;
   font-size: 0.62rem;
@@ -83,29 +84,29 @@ select:focus {
   text-transform: uppercase;
 }
 
-.field-error[hidden] {
+.form__error[hidden] {
   display: none !important;
 }
 
 /* Invalid field state | Состояние невалидного поля */
-input.invalid,
-select.invalid,
-textarea.invalid {
+.form__input.invalid,
+.form__select.invalid,
+.form__textarea.invalid {
   border-color: var(--danger, #ff4d61) !important;
   box-shadow: 0 0 0 2px rgba(255 77 97 / 0.25);
 }
 
 /* Mini form (in modals) | Мини-форма (в модалках) */
-.mini-form {
+.form--mini {
   display: grid;
   gap: 1rem;
 }
 
-.mini-form input {
+.form--mini .form__input {
   width: 100%;
 }
 
-.mini-status {
+.form__status--mini {
   font-size: 0.7rem;
   min-height: 1rem;
 }

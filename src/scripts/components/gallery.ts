@@ -4,6 +4,7 @@
    ============================================= */
 
 import { track } from '../utils/analytics';
+import { eventBus } from '../utils/events';
 
 /* EN: Lightbox state
   RU: Состояние лайтбокса */
@@ -109,14 +110,14 @@ function createLightbox(): void {
   lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
   lightbox.innerHTML = `
-    <div class="lightbox-inner" role="dialog" aria-modal="true" aria-label="Просмотр изображения">
-      <div class="lightbox-figure">
-        <button class="lightbox-nav prev" aria-label="Предыдущее изображение">‹</button>
+    <div class="lightbox__inner" role="dialog" aria-modal="true" aria-label="Просмотр изображения">
+      <div class="lightbox__figure">
+        <button class="lightbox__nav prev" aria-label="Предыдущее изображение">‹</button>
         <img alt="" />
-        <button class="lightbox-nav next" aria-label="Следующее изображение">›</button>
-        <button class="lightbox-close" aria-label="Закрыть">✕</button>
+        <button class="lightbox__nav next" aria-label="Следующее изображение">›</button>
+        <button class="lightbox__close" aria-label="Закрыть">✕</button>
       </div>
-      <p class="lightbox-caption" aria-live="polite"></p>
+      <p class="lightbox__caption" aria-live="polite"></p>
     </div>
   `;
 
@@ -125,10 +126,10 @@ function createLightbox(): void {
   /* EN: Get lightbox elements
      RU: Получение элементов лайтбокса */
   imgEl = lightbox.querySelector<HTMLImageElement>('img');
-  caption = lightbox.querySelector<HTMLParagraphElement>('.lightbox-caption');
-  closeBtn = lightbox.querySelector<HTMLButtonElement>('.lightbox-close');
-  prevNav = lightbox.querySelector<HTMLButtonElement>('.lightbox-nav.prev');
-  nextNav = lightbox.querySelector<HTMLButtonElement>('.lightbox-nav.next');
+  caption = lightbox.querySelector<HTMLParagraphElement>('.lightbox__caption');
+  closeBtn = lightbox.querySelector<HTMLButtonElement>('.lightbox__close');
+  prevNav = lightbox.querySelector<HTMLButtonElement>('.lightbox__nav.prev');
+  nextNav = lightbox.querySelector<HTMLButtonElement>('.lightbox__nav.next');
 }
 
 /**
@@ -189,14 +190,14 @@ function setupGalleryImages(): void {
  * RU: Инициализация компонента галереи с лайтбоксом
  */
 export function init(): void {
-  const gallery = document.querySelector<HTMLElement>('.gallery-grid');
+  const gallery = document.querySelector<HTMLElement>('.gallery');
   if (!gallery) {
     return;
   }
 
   /* EN: Get all gallery images
      RU: Получение всех изображений галереи */
-  const figures = Array.from(gallery.querySelectorAll('figure'));
+  const figures = Array.from(gallery.querySelectorAll('.gallery__item'));
   images = figures
     .map((f) => f.querySelector('img'))
     .filter((img): img is HTMLImageElement => img instanceof HTMLImageElement);
@@ -212,3 +213,13 @@ export function init(): void {
   setupKeyboard();
   setupGalleryImages();
 }
+
+/* EN: Subscribe to images:ready event for proper initialization timing
+   RU: Подписка на событие images:ready для правильного времени инициализации */
+eventBus.on('images:ready', () => {
+  try {
+    init();
+  } catch (e) {
+    console.error('Gallery init failed', e);
+  }
+});

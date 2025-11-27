@@ -129,7 +129,7 @@ function setupLeadForm(): void {
     return;
   }
 
-  leadStatusEl = leadForm.querySelector('.form-status');
+  leadStatusEl = leadForm.querySelector('.form__status');
 
   /* EN: Real-time validation on input/change/blur
      RU: Валидация в реальном времени при input/change/blur */
@@ -279,7 +279,7 @@ function setupProgramModal(): void {
   }
 
   programForm = document.getElementById('programForm') as HTMLFormElement;
-  programStatusEl = programForm?.querySelector('.mini-status');
+  programStatusEl = programForm?.querySelector('.form__status--mini');
   hiddenProgramInput = programForm?.querySelector('input[name="program"]') as HTMLInputElement;
 
   /* EN: Open modal buttons

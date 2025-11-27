@@ -4,23 +4,27 @@
    ============================================= */
 
 /* EN: Import all component modules
-  RU: Импорт всех модулей компонентов */
+   RU: Импорт всех модулей компонентов */
 import * as theme from './components/theme.ts';
 import * as preloader from './components/preloader.ts';
 import * as navigation from './components/navigation.ts';
 import * as animations from './components/animations.ts';
 import * as enhancedAnimations from './components/enhanced-animations.ts';
 import * as interactive from './components/interactive.ts';
-import * as sakura from './components/sakura.ts';
+/* EN: Lazy-loaded modules (imported dynamically)
+   RU: Ленивая загрузка модулей (динамический импорт) */
+// import * as sakura from './components/sakura.ts'; // Lazy loaded
+// import * as gallery from './components/gallery.ts'; // Lazy loaded
 import * as faq from './components/faq.ts';
 import * as carousel from './components/carousel.ts';
-import * as gallery from './components/gallery.ts';
 import * as forms from './components/forms.ts';
 import * as blog from './components/blog.ts';
 
 /* EN: Import utilities
   RU: Импорт утилит */
 import { track } from './utils/analytics';
+import { eventBus } from './utils/events';
+import { initPerformanceMonitoring } from './utils/performance';
 
 /* EN: Import API configuration
   RU: Импорт конфигурации API */
@@ -38,12 +42,12 @@ type AppModules = {
   preloader: typeof preloader;
   navigation: typeof navigation;
   animations: typeof animations;
-  sakura: typeof sakura;
   faq: typeof faq;
   carousel: typeof carousel;
-  gallery: typeof gallery;
   forms: typeof forms;
   track: typeof track;
+  eventBus: typeof eventBus;
+  // sakura and gallery are lazy-loaded
 };
 
 /**
@@ -101,16 +105,25 @@ function initComponents(): void {
   } catch (e) {
     console.error('Interactive init failed', e);
   }
-  try {
-    sakura.init();
-  } catch (e) {
-    console.error('Sakura init failed', e);
+
+  /* EN: Lazy load sakura if canvas exists
+     RU: Ленивая загрузка сакуры если существует canvas */
+  if (document.getElementById('sakura-canvas')) {
+    import('./components/sakura.ts')
+      .then((m) => {
+        try {
+          m.init();
+        } catch (e) {
+          console.error('Sakura init failed', e);
+        }
+      })
+      .catch((e) => console.error('Failed to load sakura module', e));
   }
 
   /* EN: Interactive components
      RU: Интерактивные компоненты */
   try {
-    faq.init();
+    faq.initFAQ();
   } catch (e) {
     console.error('FAQ init failed', e);
   }
@@ -128,14 +141,20 @@ function initComponents(): void {
   /* EN: Additional features
       RU: Дополнительные функции */
   void setupResponsiveImages().then(() => {
-    /* EN: Initialize gallery AFTER images are processed
-       RU: Инициализация галереи ПОСЛЕ обработки изображений */
-    try {
-      gallery.init();
-    } catch (e) {
-      console.error('Gallery init failed', e);
-    }
+    /* EN: Emit event when images are ready, gallery will subscribe if loaded
+       RU: Отправка события когда изображения готовы, галерея подпишется если загружена */
+    eventBus.emit('images:ready');
   });
+
+  /* EN: Lazy load gallery if grid exists
+     RU: Ленивая загрузка галереи если существует сетка */
+  if (document.querySelector('.gallery')) {
+    import('./components/gallery.ts')
+      .then(() => {
+        // Gallery auto-initializes on 'images:ready' event
+      })
+      .catch((e) => console.error('Failed to load gallery module', e));
+  }
 
   // Initialize blog section interactions
   try {
@@ -155,6 +174,14 @@ function initComponents(): void {
     });
   } catch (e) {
     console.error('Analytics failed', e);
+  }
+
+  /* EN: Initialize performance monitoring
+     RU: Инициализация мониторинга производительности */
+  try {
+    initPerformanceMonitoring();
+  } catch (e) {
+    console.error('Performance monitoring failed', e);
   }
 
   // EN: Mark global init flag so fallback (public/index.html) knows app booted
@@ -269,12 +296,12 @@ if (typeof window !== 'undefined') {
     preloader,
     navigation,
     animations,
-    sakura,
     faq,
     carousel,
-    gallery,
     forms,
-    track
+    track,
+    eventBus
+    // sakura and gallery are lazy-loaded and added dynamically
   };
 }
 

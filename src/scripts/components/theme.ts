@@ -4,6 +4,7 @@
    ============================================= */
 
 import { track } from '../utils/analytics';
+import { store } from '../utils/store';
 
 /* EN: Root element and theme order
    RU: Корневой элемент и порядок тем */
@@ -17,7 +18,7 @@ type Theme = 'light' | 'dark';
  */
 export function initTheme(): void {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const storedTheme = localStorage.getItem('theme') as Theme | null;
+  const storedTheme = store.get('theme');
 
   if (storedTheme && (storedTheme === 'light' || storedTheme === 'dark')) {
     root.setAttribute('data-theme', storedTheme);
@@ -37,7 +38,7 @@ export function cycleTheme(): void {
   const next: Theme = current === 'dark' ? 'light' : 'dark';
 
   root.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
+  store.set('theme', next);
 
   /* EN: Track theme change
      RU: Отслеживание смены темы */
@@ -51,7 +52,7 @@ export function cycleTheme(): void {
 export function setTheme(theme: Theme): void {
   if (theme === 'light' || theme === 'dark') {
     root.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    store.set('theme', theme);
     track('theme_set', { to: theme });
   }
 }

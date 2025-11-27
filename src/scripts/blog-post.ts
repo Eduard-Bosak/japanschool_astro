@@ -3,14 +3,16 @@
    Режим чтения и улучшения для статей блога
    ============================================= */
 
+import { store } from './utils/store';
+
 type ToggleMode = 'serif' | 'sepia' | 'focus' | 'contrast';
 type SizeAction = 'increase' | 'decrease' | 'reset';
 type NotificationType = 'success' | 'error';
 type ShareActionButton = 'share' | 'bookmark';
 
 const READING_MODES_KEY = 'readingModes';
-const FONT_SIZE_KEY = 'readingMode-fontSize';
-const BOOKMARKS_KEY = 'blogBookmarks';
+const FONT_SIZE_KEY = 'blog.fontSize' as const;
+const BOOKMARKS_KEY = 'blog.bookmarks' as const;
 const DEFAULT_FONT_SIZE = 2;
 const MIN_FONT_SIZE = 0;
 const MAX_FONT_SIZE = 4;
@@ -20,7 +22,7 @@ const MAX_FONT_SIZE = 4;
  * RU: Запускает все улучшения страницы статьи
  */
 export function init(): void {
-  if (!document.querySelector('.post-content')) {
+  if (!document.querySelector('.blog-post')) {
     return;
   }
 
@@ -57,17 +59,17 @@ function createReadingModePanel(): void {
   panel.setAttribute('aria-label', 'Настройки чтения');
 
   panel.innerHTML = `
-    <button class="reading-control-btn" data-mode="size" data-size="decrease" data-tooltip="Меньше" aria-label="Уменьшить текст">A-</button>
-    <button class="reading-control-btn" data-mode="size" data-size="reset" data-tooltip="Сбросить" aria-label="Сбросить размер">A</button>
-    <button class="reading-control-btn" data-mode="size" data-size="increase" data-tooltip="Больше" aria-label="Увеличить текст">A+</button>
-    <div class="reading-controls-separator"></div>
-    <button class="reading-control-btn" data-mode="serif" data-tooltip="Шрифт" aria-label="Шрифт с засечками">Aa</button>
-    <button class="reading-control-btn" data-mode="sepia" data-tooltip="Сепия" aria-label="Режим сепия">◑</button>
-    <button class="reading-control-btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">◉</button>
-    <button class="reading-control-btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">◐</button>
-    <div class="reading-controls-separator"></div>
-    <button class="reading-control-btn" data-action="share" data-tooltip="Ссылка" aria-label="Поделиться">🔗</button>
-    <button class="reading-control-btn" data-action="bookmark" data-tooltip="Закладка" aria-label="Закладка">★</button>
+    <button class="reading-controls__btn" data-mode="size" data-size="decrease" data-tooltip="Меньше" aria-label="Уменьшить текст">A-</button>
+    <button class="reading-controls__btn" data-mode="size" data-size="reset" data-tooltip="Сбросить" aria-label="Сбросить размер">A</button>
+    <button class="reading-controls__btn" data-mode="size" data-size="increase" data-tooltip="Больше" aria-label="Увеличить текст">A+</button>
+    <div class="reading-controls__separator"></div>
+    <button class="reading-controls__btn" data-mode="serif" data-tooltip="Шрифт" aria-label="Шрифт с засечками">Aa</button>
+    <button class="reading-controls__btn" data-mode="sepia" data-tooltip="Сепия" aria-label="Режим сепия">◑</button>
+    <button class="reading-controls__btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">◉</button>
+    <button class="reading-controls__btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">◐</button>
+    <div class="reading-controls__separator"></div>
+    <button class="reading-controls__btn" data-action="share" data-tooltip="Ссылка" aria-label="Поделиться">🔗</button>
+    <button class="reading-controls__btn" data-action="bookmark" data-tooltip="Закладка" aria-label="Закладка">★</button>
   `;
 
   document.body.appendChild(panel);
@@ -105,7 +107,8 @@ function createReadingModePanel(): void {
               modes.push(activeMode);
             }
           });
-        saveStringArray(READING_MODES_KEY, modes);
+        // Keep READING_MODES_KEY in localStorage (not critical data)
+        localStorage.setItem(READING_MODES_KEY, JSON.stringify(modes));
       }
     });
   });
@@ -141,7 +144,7 @@ function createReadingModePanel(): void {
  * RU: Добавляет индикатор оставшегося времени чтения
  */
 function initTimeIndicator(): void {
-  const metaLine = document.querySelector<HTMLElement>('.post-meta-line');
+  const metaLine = document.querySelector<HTMLElement>('.blog-post__meta');
   if (!metaLine || !metaLine.textContent) {
     return;
   }
@@ -183,7 +186,7 @@ function initTimeIndicator(): void {
  * RU: Пересчитывает оставшееся время чтения по прогрессу скролла
  */
 function updateTimeIndicator(indicator: HTMLDivElement, totalMinutes: number): void {
-  const content = document.querySelector<HTMLElement>('.post-content');
+  const content = document.querySelector<HTMLElement>('.blog-post');
   if (!content) {
     return;
   }
@@ -387,7 +390,7 @@ function setFontSize(size: number): void {
     document.body.classList.add(`reading-mode-size-${size}`);
   }
 
-  localStorage.setItem(FONT_SIZE_KEY, size.toString());
+  store.set(FONT_SIZE_KEY, size);
 }
 
 /**
@@ -395,13 +398,12 @@ function setFontSize(size: number): void {
  * RU: Считывает сохранённый размер текста и валидирует диапазон
  */
 function getStoredFontSize(): number {
-  const raw = localStorage.getItem(FONT_SIZE_KEY);
-  const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN;
-  if (!Number.isFinite(parsed)) {
+  const size = store.get(FONT_SIZE_KEY);
+  if (!size || !Number.isFinite(size)) {
     return DEFAULT_FONT_SIZE;
   }
 
-  return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, parsed));
+  return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, size));
 }
 
 /**
@@ -409,7 +411,7 @@ function getStoredFontSize(): number {
  * RU: Возвращает список сохранённых путей статей
  */
 function getBookmarks(): string[] {
-  return getStoredStringArray(BOOKMARKS_KEY);
+  return store.get(BOOKMARKS_KEY) || [];
 }
 
 /**
@@ -435,8 +437,8 @@ function getStoredStringArray(key: string): string[] {
  * EN: Persist массив строк в localStorage
  * RU: Сохраняет массив строковых значений в localStorage
  */
-function saveStringArray(key: string, values: string[]): void {
-  localStorage.setItem(key, JSON.stringify(values));
+function saveStringArray(key: typeof BOOKMARKS_KEY, values: string[]): void {
+  store.set(key, values);
 }
 
 if (document.readyState === 'loading') {

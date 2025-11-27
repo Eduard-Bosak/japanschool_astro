@@ -181,13 +181,13 @@
   position: relative;
 }
 
-.section-head {
+.section__header {
   max-width: 780px;
   margin: 0 auto 3.5rem;
   text-align: center;
 }
 
-.section-head p {
+.section__header p {
   margin-top: 0.75rem;
   font-size: 1.05rem;
 }

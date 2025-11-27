@@ -194,7 +194,7 @@
   .container {
     padding: 0 1rem;
   }
-  .section-head {
+  .section__header {
     margin-bottom: 2.5rem;
   }
 }

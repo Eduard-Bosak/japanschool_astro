@@ -3,6 +3,8 @@
    Модуль утилиты API
    ============================================= */
 
+import { store } from './store';
+
 export type BackendResponse =
   | { ok: true; status: number; data: unknown; mock?: false }
   | { ok: false; mock: true; error: string; status?: number }
@@ -28,7 +30,7 @@ const API_ENDPOINTS: ApiEndpoints = apiWindow.__API_ENDPOINTS || {
 };
 
 const API_TIMEOUT = 6500;
-const LOCAL_QUEUE_KEY = 'japanschool.pendingForms';
+const LOCAL_QUEUE_KEY = 'api.queue' as const;
 
 /**
  * EN: Persist request for retry when network unavailable
@@ -36,16 +38,16 @@ const LOCAL_QUEUE_KEY = 'japanschool.pendingForms';
  */
 function queuePending(type: string, payload: Payload): void {
   try {
-    const current = JSON.parse(localStorage.getItem(LOCAL_QUEUE_KEY) || '[]') as PendingRequest[];
+    const current = store.get(LOCAL_QUEUE_KEY) || [];
     current.push({ type, payload, ts: Date.now() });
 
     if (current.length > 20) {
       current.shift();
     }
 
-    localStorage.setItem(LOCAL_QUEUE_KEY, JSON.stringify(current));
+    store.set(LOCAL_QUEUE_KEY, current);
   } catch {
-    /* swallow localStorage errors */
+    /* swallow store errors */
   }
 }
 
@@ -117,7 +119,7 @@ export async function sendToBackend(type: string, payload: Payload): Promise<Bac
  */
 export function getPendingRequests(): PendingRequest[] {
   try {
-    return JSON.parse(localStorage.getItem(LOCAL_QUEUE_KEY) || '[]') as PendingRequest[];
+    return store.get(LOCAL_QUEUE_KEY) || [];
   } catch {
     return [];
   }
@@ -129,9 +131,9 @@ export function getPendingRequests(): PendingRequest[] {
  */
 export function clearPendingRequests(): void {
   try {
-    localStorage.removeItem(LOCAL_QUEUE_KEY);
+    store.remove(LOCAL_QUEUE_KEY);
   } catch {
-    /* swallow localStorage errors */
+    /* swallow store errors */
   }
 }
 

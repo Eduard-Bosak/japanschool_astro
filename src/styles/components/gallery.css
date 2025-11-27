@@ -26,7 +26,7 @@
 }
 
 /* Lightbox inner wrapper | Внутренний контейнер */
-.lightbox-inner {
+.lightbox__inner {
   position: relative;
   max-width: 95%;
   max-height: 90vh;
@@ -36,7 +36,7 @@
 }
 
 /* Lightbox figure container | Контейнер фигуры */
-.lightbox-figure {
+.lightbox__figure {
   position: relative;
   display: flex;
   align-items: center;
@@ -56,14 +56,14 @@
 }
 
 /* Gallery grid layout */
-.gallery-grid {
+.gallery {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 /* Gallery figure styling */
-.gallery-grid figure {
+.gallery__item {
   margin: 0;
   position: relative;
   border-radius: var(--radius-lg);
@@ -73,7 +73,7 @@
 }
 
 /* Gallery image styling */
-.gallery-grid figure img {
+.gallery__image {
   width: 100%;
   height: auto;
   display: block;
@@ -83,24 +83,24 @@
 
 /* Responsive for mobile */
 @media (max-width: 600px) {
-  .gallery-grid {
+  .gallery {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 }
 
-.lightbox-close:hover {
+.lightbox__close:hover {
   background: rgba(255 255 255 / 0.25);
   transform: scale(1.15);
   border-color: rgba(255 255 255 / 0.4);
 }
 
-.lightbox-close:active {
+.lightbox__close:active {
   transform: scale(0.95);
 }
 
 /* Navigation buttons | Кнопки навигации */
-.lightbox-nav {
+.lightbox__nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -119,26 +119,26 @@
   transition: all 0.25s ease;
 }
 
-.lightbox-nav:hover {
+.lightbox__nav:hover {
   background: rgba(255 255 255 / 0.25);
   transform: translateY(-50%) scale(1.15);
   border-color: rgba(255 255 255 / 0.4);
 }
 
-.lightbox-nav:active {
+.lightbox__nav:active {
   transform: translateY(-50%) scale(0.95);
 }
 
-.lightbox-nav.prev {
+.lightbox__nav.prev {
   left: -80px;
 }
 
-.lightbox-nav.next {
+.lightbox__nav.next {
   right: -80px;
 }
 
 /* Caption | Подпись изображения */
-.lightbox-caption {
+.lightbox__caption {
   margin-top: 1.5rem;
   text-align: center;
   color: rgba(255 255 255 / 0.9);
@@ -150,12 +150,12 @@
 
 /* Responsive adjustments | Адаптивные настройки */
 @media (max-width: 768px) {
-  .lightbox-figure img {
+  .lightbox__figure img {
     max-width: 95vw;
     max-height: 80vh;
   }
 
-  .lightbox-close {
+  .lightbox__close {
     top: 10px;
     right: 10px;
     width: 38px;
@@ -163,21 +163,21 @@
     font-size: 1.5rem;
   }
 
-  .lightbox-nav {
+  .lightbox__nav {
     width: 46px;
     height: 46px;
     font-size: 2rem;
   }
 
-  .lightbox-nav.prev {
+  .lightbox__nav.prev {
     left: 10px;
   }
 
-  .lightbox-nav.next {
+  .lightbox__nav.next {
     right: 10px;
   }
 
-  .lightbox-caption {
+  .lightbox__caption {
     margin-top: 1rem;
     font-size: 0.9rem;
     max-width: 90%;
