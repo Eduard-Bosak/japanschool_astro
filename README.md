@@ -32,16 +32,19 @@
 
 ## ✨ Особенности
 
-🎯 **Модульная архитектура** — 27 независимых модулей (16 CSS + 11 JS) 🌐
-**Билингвальные комментарии** — EN/RU для международных команд ⚡
-**Производительность** — Lighthouse Score 95+ ♿ **Доступность (A11y)** — ARIA,
-keyboard navigation, screen readers 📱 **Полностью адаптивный** — Mobile-first
-дизайн 🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn,
-Winter, Sakura) 🖼️ **Адаптивные изображения** — AVIF/WebP/JPG в 5 размерах 📝
-**Статический блог** — Markdown → HTML с RSS/Atom 🌸 **Canvas анимации** —
-Падающие лепестки сакуры 🚀 **PWA Support** — Offline-first с Service Worker 🔍
-**SEO-оптимизация** — Sitemap, JSON-LD, OpenGraph 🎭 **Анимации** —
-IntersectionObserver, parallax, count-up
+- 🎯 **Модульная архитектура** — 27 независимых модулей (16 CSS + 11 JS)
+- 🌐 **Билингвальные комментарии** — EN/RU для международных команд
+- ⚡ **Производительность** — Lighthouse Score 95+
+- ♿ **Доступность (A11y)** — ARIA, keyboard navigation, screen readers
+- 📱 **Полностью адаптивный** — Mobile-first дизайн
+- 🎨 **6 тем оформления** — Dark, Light + 4 сезонные (Spring, Autumn, Winter,
+  Sakura)
+- 🖼️ **Адаптивные изображения** — AVIF/WebP/JPG в 5 размерах
+- 📝 **Статический блог** — Markdown → HTML с RSS/Atom
+- 🌸 **Canvas анимации** — Падающие лепестки сакуры
+- 🚀 **PWA Support** — Offline-first с Service Worker
+- 🔍 **SEO-оптимизация** — Sitemap, JSON-LD, OpenGraph
+- 🎭 **Анимации** — IntersectionObserver, parallax, count-up
 
 ---
 
