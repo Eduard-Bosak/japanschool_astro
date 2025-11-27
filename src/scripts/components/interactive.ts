@@ -7,14 +7,18 @@
  * EN: Initialize tooltips for elements with data-tooltip attribute
  * RU: Инициализация подсказок для элементов с атрибутом data-tooltip
  */
-export function initTooltips() {
-  const tooltipElements = document.querySelectorAll('[data-tooltip]');
+export function initTooltips(): void {
+  const tooltipElements = document.querySelectorAll<HTMLElement>('[data-tooltip]');
 
   tooltipElements.forEach((element) => {
     const tooltipText = element.getAttribute('data-tooltip');
     const position = element.getAttribute('data-tooltip-position') || 'top';
 
-    // Create tooltip element
+    if (!tooltipText) {
+      return;
+    }
+
+    // EN: Build detached tooltip once per element | RU: Создаём один tooltip на элемент
     const tooltip = document.createElement('div');
     tooltip.className = `tooltip tooltip-${position}`;
     tooltip.textContent = tooltipText;
@@ -22,7 +26,7 @@ export function initTooltips() {
     tooltip.style.pointerEvents = 'none';
     document.body.appendChild(tooltip);
 
-    // Show tooltip on mouseenter
+    // EN: On hover calculate coordinates against viewport | RU: На hover вычисляем координаты относительно вьюпорта
     element.addEventListener('mouseenter', () => {
       const rect = element.getBoundingClientRect();
       let top;
@@ -55,7 +59,7 @@ export function initTooltips() {
       tooltip.style.opacity = '1';
     });
 
-    // Hide tooltip on mouseleave
+    // EN: Smoothly hide without DOM removals | RU: Плавно скрываем без удаления узла
     element.addEventListener('mouseleave', () => {
       tooltip.style.opacity = '0';
     });
@@ -66,28 +70,31 @@ export function initTooltips() {
  * EN: Smooth scroll to anchor links
  * RU: Плавная прокрутка к якорным ссылкам
  */
-export function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
+export function initSmoothScroll(): void {
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e: MouseEvent) => {
+      const href = anchor.getAttribute('href');
 
-      if (href === '#' || href === '#!') {
+      if (!href || href === '#' || href === '#!') {
         return;
       }
 
       e.preventDefault();
-      const target = document.querySelector(href);
-
-      if (target) {
-        const headerHeight = document.querySelector('.main-header')?.offsetHeight || 0;
-        const targetPosition =
-          target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
-
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
+      const target = document.querySelector<HTMLElement>(href);
+      if (!target) {
+        return;
       }
+
+      /* EN: Offset target by header height so anchor is not hidden
+        RU: Смещаем цель на высоту хедера чтобы якорь не перекрывался */
+      const headerHeight = document.querySelector<HTMLElement>('.main-header')?.offsetHeight || 0;
+      const targetPosition =
+        target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
     });
   });
 }
@@ -96,7 +103,7 @@ export function initSmoothScroll() {
  * EN: Back to top button
  * RU: Кнопка "Наверх"
  */
-export function initBackToTop() {
+export function initBackToTop(): void {
   const backToTop = document.createElement('button');
   backToTop.className = 'back-to-top';
   backToTop.innerHTML = '↑';
@@ -127,10 +134,10 @@ export function initBackToTop() {
  * EN: Enhanced mobile menu with slide animation
  * RU: Улучшенное мобильное меню с анимацией
  */
-export function initMobileMenu() {
-  const menuToggle = document.querySelector('.nav-toggle');
-  const mobileMenu = document.querySelector('.main-nav ul');
-  const menuLinks = document.querySelectorAll('.main-nav a');
+export function initMobileMenu(): void {
+  const menuToggle = document.querySelector<HTMLElement>('.nav-toggle');
+  const mobileMenu = document.querySelector<HTMLElement>('.main-nav ul');
+  const menuLinks = document.querySelectorAll<HTMLAnchorElement>('.main-nav a');
 
   if (!menuToggle || !mobileMenu) {
     return;
@@ -148,10 +155,11 @@ export function initMobileMenu() {
   });
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', (e: MouseEvent) => {
     if (
       window.innerWidth <= 860 &&
       mobileMenu.getAttribute('data-open') === 'true' &&
+      e.target instanceof Node &&
       !mobileMenu.contains(e.target) &&
       !menuToggle.contains(e.target)
     ) {
@@ -162,6 +170,8 @@ export function initMobileMenu() {
   });
 
   // Prevent body scroll when menu is open
+  /* EN: Observe open/close attribute to lock scroll
+     RU: Следим за атрибутом открытия чтобы блокировать скролл */
   const observer = new MutationObserver(() => {
     if (mobileMenu.getAttribute('data-open') === 'true') {
       document.body.style.overflow = 'hidden';
@@ -177,7 +187,7 @@ export function initMobileMenu() {
  * EN: Loading indicator for forms
  * RU: Индикатор загрузки для форм
  */
-export function showLoadingIndicator(button) {
+export function showLoadingIndicator(button: HTMLButtonElement | null): (() => void) | void {
   if (!button) {
     return;
   }
@@ -198,22 +208,22 @@ export function showLoadingIndicator(button) {
  * EN: Copy to clipboard functionality
  * RU: Функция копирования в буфер обмена
  */
-export function initCopyToClipboard() {
-  document.querySelectorAll('[data-copy]').forEach((button) => {
-    button.addEventListener('click', async function () {
-      const textToCopy = this.getAttribute('data-copy');
+export function initCopyToClipboard(): void {
+  document.querySelectorAll<HTMLElement>('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const textToCopy = button.getAttribute('data-copy') || '';
 
       try {
         await navigator.clipboard.writeText(textToCopy);
 
         // Show feedback
-        const originalText = this.textContent;
-        this.textContent = '✓ Скопировано!';
-        this.classList.add('copied');
+        const originalText = button.textContent;
+        button.textContent = '✓ Скопировано!';
+        button.classList.add('copied');
 
         setTimeout(() => {
-          this.textContent = originalText;
-          this.classList.remove('copied');
+          button.textContent = originalText;
+          button.classList.remove('copied');
         }, 2000);
       } catch (err) {
         console.error('Failed to copy:', err);
@@ -226,16 +236,19 @@ export function initCopyToClipboard() {
  * EN: Lazy loading images with Intersection Observer
  * RU: Ленивая загрузка изображений с Intersection Observer
  */
-export function initLazyLoading() {
-  const lazyImages = document.querySelectorAll('img[data-src]');
+export function initLazyLoading(): void {
+  const lazyImages = document.querySelectorAll<HTMLImageElement>('img[data-src]');
 
   if ('IntersectionObserver' in window) {
     const imageObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.classList.add('loaded');
+          const img = entry.target as HTMLImageElement;
+          const src = img.dataset.src;
+          if (src) {
+            img.src = src;
+            img.classList.add('loaded');
+          }
           imageObserver.unobserve(img);
         }
       });
@@ -245,7 +258,10 @@ export function initLazyLoading() {
   } else {
     // Fallback for browsers without IntersectionObserver
     lazyImages.forEach((img) => {
-      img.src = img.dataset.src;
+      const src = img.dataset.src;
+      if (src) {
+        img.src = src;
+      }
     });
   }
 }
@@ -254,19 +270,19 @@ export function initLazyLoading() {
  * EN: Keyboard navigation improvements
  * RU: Улучшение навигации с клавиатуры
  */
-export function initKeyboardNavigation() {
+export function initKeyboardNavigation(): void {
   // ESC key to close modals
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       // Close any open modals
-      document.querySelectorAll('.modal').forEach((modal) => {
+      document.querySelectorAll<HTMLElement>('.modal').forEach((modal) => {
         if (modal.style.display === 'block') {
           modal.style.display = 'none';
         }
       });
 
       // Close mobile menu
-      const mobileMenu = document.querySelector('.main-nav ul');
+      const mobileMenu = document.querySelector<HTMLElement>('.main-nav ul');
       if (mobileMenu && mobileMenu.getAttribute('data-open') === 'true') {
         mobileMenu.setAttribute('data-open', 'false');
         document.body.classList.remove('nav-open');
@@ -275,14 +291,20 @@ export function initKeyboardNavigation() {
   });
 
   // Tab trap for modals
-  document.querySelectorAll('.modal').forEach((modal) => {
-    modal.addEventListener('keydown', (e) => {
+  document.querySelectorAll<HTMLElement>('.modal').forEach((modal) => {
+    modal.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
-        const focusableElements = modal.querySelectorAll(
+        /* EN: Trap focus between first/last elements
+           RU: Цепляем фокус между первым и последним элементами */
+        const focusableElements = modal.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
+        if (!focusableElements.length) {
+          return;
+        }
         const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
+        const lastIndex = focusableElements.length - 1;
+        const lastElement = focusableElements[lastIndex];
 
         if (e.shiftKey && document.activeElement === firstElement) {
           e.preventDefault();
@@ -300,8 +322,8 @@ export function initKeyboardNavigation() {
  * EN: Print page functionality
  * RU: Функция печати страницы
  */
-export function initPrintButton() {
-  document.querySelectorAll('[data-print]').forEach((button) => {
+export function initPrintButton(): void {
+  document.querySelectorAll<HTMLElement>('[data-print]').forEach((button) => {
     button.addEventListener('click', () => {
       window.print();
     });
@@ -312,7 +334,7 @@ export function initPrintButton() {
  * EN: Initialize all interactive elements
  * RU: Инициализация всех интерактивных элементов
  */
-export function init() {
+export function init(): void {
   initTooltips();
   initSmoothScroll();
   initBackToTop();

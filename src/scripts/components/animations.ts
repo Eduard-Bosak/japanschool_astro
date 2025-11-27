@@ -7,15 +7,15 @@
  * EN: Setup intersection observer for fade-up and scale-in animations
  * RU: Настройка Intersection Observer для анимаций появления
  */
-function setupRevealAnimations() {
+function setupRevealAnimations(): (() => void) | undefined {
   /* EN: Observer for animated elements
      RU: Observer для анимированных элементов */
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target;
-          const delay = el.dataset.delay || 0;
+          const el = entry.target as HTMLElement;
+          const delay = el.dataset.delay || '0';
           el.style.transitionDelay = `${delay}ms`;
           el.classList.add('animate-in');
           observer.unobserve(el);
@@ -27,19 +27,19 @@ function setupRevealAnimations() {
 
   /* EN: Observe all elements with animation classes
      RU: Наблюдение за всеми элементами с классами анимации */
-  const animated = document.querySelectorAll('.fx-fade-up, .fx-scale-in');
+  const animated = document.querySelectorAll<HTMLElement>('.fx-fade-up, .fx-scale-in');
   animated.forEach((el) => {
     observer.observe(el);
   });
 
   // EN: Instantly reveal elements within initial viewport when preloader is about to hide
   // RU: Мгновенно показать элементы в стартовой области видимости когда прелоадер скрывается
-  function revealInitialViewport() {
+  function revealInitialViewport(): void {
     const vh = window.innerHeight;
     animated.forEach((el) => {
       if (el.getBoundingClientRect().top < vh * 0.92) {
         // Apply delay if specified
-        const delay = el.dataset.delay || 0;
+        const delay = el.dataset.delay || '0';
         el.style.transitionDelay = `${delay}ms`;
         el.classList.add('animate-in');
         observer.unobserve(el);
@@ -55,7 +55,7 @@ function setupRevealAnimations() {
  * EN: Setup micro observer for reveal-on-scroll elements
  * RU: Настройка micro observer для элементов reveal-on-scroll
  */
-function setupMicroAnimations() {
+function setupMicroAnimations(): void {
   const microObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -79,36 +79,33 @@ function setupMicroAnimations() {
  * EN: Setup count-up animation for metric numbers
  * RU: Настройка анимации подсчёта для метрик
  */
-function setupCountUpAnimations() {
-  const nums = document.querySelectorAll('.metric .num');
+function setupCountUpAnimations(): void {
+  const nums = document.querySelectorAll<HTMLElement>('.metric .num');
   if (!nums.length) {
-    console.log('[Animations] No metric numbers found');
     return;
   }
 
-  console.log('[Animations] Found', nums.length, 'metric numbers');
+  const runAnimation = (el: HTMLElement) => {
+    const targetVal = parseInt(el.dataset.count || '0', 10) || 0;
 
-  const runAnimation = (el) => {
-    const targetVal = parseInt(el.dataset.count, 10) || 0;
-    console.log('[Animations] Starting count-up animation for', targetVal);
-
-    let startTimestamp = null;
+    let startTimestamp: number | null = null;
     const duration = 2000;
 
-    function step(timestamp) {
+    function step(timestamp: number) {
       if (!startTimestamp) {
         startTimestamp = timestamp;
       }
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      /* EN: Cubic easing for smoother finish
+         RU: Кубическое плавное замедление к финалу */
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.floor(targetVal * eased);
-      el.textContent = current;
+      el.textContent = current.toString();
 
       if (progress < 1) {
         window.requestAnimationFrame(step);
       } else {
-        el.textContent = targetVal;
-        console.log('[Animations] Count-up completed:', targetVal);
+        el.textContent = targetVal.toString();
       }
     }
     window.requestAnimationFrame(step);
@@ -119,8 +116,7 @@ function setupCountUpAnimations() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log('[Animations] Metric visible, starting animation');
-            runAnimation(entry.target);
+            runAnimation(entry.target as HTMLElement);
             metricObserver.unobserve(entry.target);
           }
         });
@@ -128,14 +124,12 @@ function setupCountUpAnimations() {
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
     nums.forEach((el) => {
-      console.log('[Animations] Observing metric:', el.dataset.count);
       metricObserver.observe(el);
     });
   } else {
     // Fallback
-    console.log('[Animations] IntersectionObserver not supported, using fallback');
     nums.forEach((el) => {
-      el.textContent = el.dataset.count;
+      el.textContent = el.dataset.count || '0';
     });
   }
 }
@@ -144,29 +138,29 @@ function setupCountUpAnimations() {
  * EN: Setup hero parallax effect on scroll
  * RU: Настройка эффекта параллакса героя при прокрутке
  */
-function setupHeroParallax() {
+function setupHeroParallax(): void {
   /* EN: Skip if reduced motion preference
      RU: Пропустить если предпочтение уменьшенного движения */
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return;
   }
 
-  const hero = document.querySelector('.hero');
+  const hero = document.querySelector<HTMLElement>('.hero');
   if (!hero) {
     return;
   }
 
   /* EN: Parallax scroll handler
      RU: Обработчик параллакс-прокрутки */
-  function updateParallax() {
+  function updateParallax(): void {
     const scrollY = window.scrollY;
-    const heroHeight = hero.offsetHeight;
+    const heroHeight = hero!.offsetHeight;
 
     /* EN: Only apply parallax if hero is in viewport
        RU: Применять параллакс только если герой в области просмотра */
     if (scrollY < heroHeight) {
       const offset = scrollY * 0.4;
-      hero.style.transform = `translateY(${offset}px)`;
+      hero!.style.transform = `translateY(${offset}px)`;
     }
   }
 
@@ -177,7 +171,7 @@ function setupHeroParallax() {
  * EN: Setup spotlight cursor effect
  * RU: Настройка эффекта прожектора курсора
  */
-function setupSpotlightCursor() {
+function setupSpotlightCursor(): void {
   /* EN: Skip if reduced motion preference
      RU: Пропустить если предпочтение уменьшенного движения */
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -188,7 +182,7 @@ function setupSpotlightCursor() {
      RU: Отслеживание позиции мыши для эффекта прожектора */
   let spotlightActive = false;
 
-  function updateSpotlight(e) {
+  function updateSpotlight(e: MouseEvent): void {
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
 
@@ -203,7 +197,7 @@ function setupSpotlightCursor() {
 
   /* EN: Debounce mouse move for performance
      RU: Debounce движения мыши для производительности */
-  let rafId = null;
+  let rafId: number | null = null;
   window.addEventListener('mousemove', (e) => {
     if (rafId) {
       return;
@@ -228,7 +222,7 @@ function setupSpotlightCursor() {
  * EN: Initialize all animation systems
  * RU: Инициализация всех систем анимации
  */
-export function init() {
+export function init(): void {
   const revealInitial = setupRevealAnimations();
 
   // EN: Immediately reveal visible elements to prevent flash when no-js is removed

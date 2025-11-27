@@ -2,8 +2,8 @@
 
 # ✅ Modular Reorganization Complete
 
-**Дата завершения / Completion Date:** 3 октября 2025  
-**Статус / Status:** ✅ **УСПЕШНО ЗАВЕРШЕНО / SUCCESSFULLY COMPLETED**
+**Дата завершения / Completion Date:** 3 октября 2025 **Статус / Status:** ✅
+**УСПЕШНО ЗАВЕРШЕНО / SUCCESSFULLY COMPLETED**
 
 ---
 
@@ -191,12 +191,12 @@ async function buildCSS() {
 }
 ```
 
-#### JavaScript Bundling
+#### TypeScript Bundling
 
 ```javascript
-/* EN: Use modular entry point src/scripts/main.js with ES6 bundling
-   RU: Использование модульной точки входа src/scripts/main.js с ES6 бандлингом */
-const jsEntry = 'src/scripts/main.js';
+/* EN: Use modular entry point src/scripts/main.ts with ES bundling
+  RU: Использование модульной точки входа src/scripts/main.ts с ES бандлингом */
+const jsEntry = 'src/scripts/main.ts';
 
 await esbuild.build({
   entryPoints: [jsEntry],
@@ -307,43 +307,43 @@ setupThemeToggle, track, sendToBackend
 
 ### 1. Модульность / Modularity
 
-**RU:** Каждый компонент изолирован в отдельном файле  
-**EN:** Each component isolated in separate file
+**RU:** Каждый компонент изолирован в отдельном файле **EN:** Each component
+isolated in separate file
 
 ### 2. Поддерживаемость / Maintainability
 
-**RU:** Легко найти и изменить код конкретной функции  
-**EN:** Easy to find and modify specific functionality
+**RU:** Легко найти и изменить код конкретной функции **EN:** Easy to find and
+modify specific functionality
 
 ### 3. Масштабируемость / Scalability
 
-**RU:** Новые компоненты добавляются без конфликтов  
-**EN:** New components added without conflicts
+**RU:** Новые компоненты добавляются без конфликтов **EN:** New components added
+without conflicts
 
 ### 4. Переиспользование / Reusability
 
-**RU:** Модули можно использовать в других проектах  
-**EN:** Modules can be reused in other projects
+**RU:** Модули можно использовать в других проектах **EN:** Modules can be
+reused in other projects
 
 ### 5. Командная работа / Team Collaboration
 
-**RU:** Разные разработчики работают над разными модулями  
-**EN:** Different developers work on different modules
+**RU:** Разные разработчики работают над разными модулями **EN:** Different
+developers work on different modules
 
 ### 6. Двуязычная поддержка / Bilingual Support
 
-**RU:** Комментарии на EN/RU для мультинациональных команд  
-**EN:** EN/RU comments for multinational teams
+**RU:** Комментарии на EN/RU для мультинациональных команд **EN:** EN/RU
+comments for multinational teams
 
 ### 7. Tree-shaking
 
-**RU:** Автоматическое удаление неиспользуемого кода  
-**EN:** Automatic removal of unused code
+**RU:** Автоматическое удаление неиспользуемого кода **EN:** Automatic removal
+of unused code
 
 ### 8. Производительность / Performance
 
-**RU:** Размеры бандлов не увеличились (~3 KB CSS, ~27 KB JS)  
-**EN:** Bundle sizes did not increase (~3 KB CSS, ~27 KB JS)
+**RU:** Размеры бандлов не увеличились (~3 KB CSS, ~27 KB JS) **EN:** Bundle
+sizes did not increase (~3 KB CSS, ~27 KB JS)
 
 ---
 
@@ -438,6 +438,5 @@ configured, all modules working correctly, bundle sizes optimal.
 
 ---
 
-**Дата создания / Created:** 3 октября 2025  
-**Статус / Status:** ✅ ЗАВЕРШЕНО / COMPLETED  
-**Версия / Version:** 2.0.0
+**Дата создания / Created:** 3 октября 2025 **Статус / Status:** ✅ ЗАВЕРШЕНО /
+COMPLETED **Версия / Version:** 2.0.0

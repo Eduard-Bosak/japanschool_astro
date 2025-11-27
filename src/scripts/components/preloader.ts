@@ -7,7 +7,7 @@
  * EN: Preloader initialization and fade out
  * RU: Инициализация прелоадера и его исчезновение
  */
-export function init() {
+export function init(): void {
   const preloader = document.getElementById('preloader');
   if (!preloader) {
     return;
@@ -27,15 +27,15 @@ export function init() {
   const percentEl = document.getElementById('preloaderPercent');
   const barFill = document.getElementById('preloaderBarFill');
 
-  function now() {
+  function now(): number {
     return performance.now();
   }
 
-  function elapsed() {
+  function elapsed(): number {
     return now() - start;
   }
 
-  function safeHide() {
+  function safeHide(): void {
     if (done) {
       return;
     }
@@ -46,9 +46,9 @@ export function init() {
     if (root) {
       root.classList.remove('preloader-active');
     }
-    preloader.classList.add('fade-out');
+    preloader?.classList.add('fade-out');
     setTimeout(() => {
-      preloader.style.display = 'none';
+      if (preloader) preloader.style.display = 'none';
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('preloader:done'));
       }
@@ -57,7 +57,7 @@ export function init() {
     const surgeStart = progress;
     const surgeDur = 260;
     const surgeFromTime = performance.now();
-    function surgeTick(now) {
+    function surgeTick(now: number) {
       const t = Math.min(1, (now - surgeFromTime) / surgeDur);
       const eased = 1 - Math.pow(1 - t, 3);
       const val = surgeStart + (100 - surgeStart) * eased;
@@ -74,7 +74,7 @@ export function init() {
     requestAnimationFrame(surgeTick);
   }
 
-  function attemptHide(trigger) {
+  function attemptHide(trigger: string): void {
     // Wait at least MIN_SHOW; if not elapsed, delay remaining
     const remain = MIN_SHOW - elapsed();
     if (remain > 0) {
@@ -85,13 +85,13 @@ export function init() {
   }
 
   // Wait for full load OR a heuristic of readiness (DOM + hero image loaded)
-  function readinessHeuristic() {
+  function readinessHeuristic(): boolean {
     const hero = document.querySelector('.hero');
     return !!hero; // could be expanded with image decode checks
   }
 
   // Simulated progressive percent updates
-  function tickProgress() {
+  function tickProgress(): void {
     if (done) {
       return;
     }

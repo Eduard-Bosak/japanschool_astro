@@ -4,33 +4,53 @@
    ============================================= */
 
 /* EN: Import all component modules
-   RU: Импорт всех модулей компонентов */
-import * as theme from './components/theme.js';
-import * as preloader from './components/preloader.js';
-import * as navigation from './components/navigation.js';
-import * as animations from './components/animations.js';
-import * as enhancedAnimations from './components/enhanced-animations.js';
-import * as interactive from './components/interactive.js';
-import * as sakura from './components/sakura.js';
-import * as faq from './components/faq.js';
-import * as carousel from './components/carousel.js';
-import * as gallery from './components/gallery.js';
-import * as forms from './components/forms.js';
-import * as blog from './components/blog.js';
+  RU: Импорт всех модулей компонентов */
+import * as theme from './components/theme.ts';
+import * as preloader from './components/preloader.ts';
+import * as navigation from './components/navigation.ts';
+import * as animations from './components/animations.ts';
+import * as enhancedAnimations from './components/enhanced-animations.ts';
+import * as interactive from './components/interactive.ts';
+import * as sakura from './components/sakura.ts';
+import * as faq from './components/faq.ts';
+import * as carousel from './components/carousel.ts';
+import * as gallery from './components/gallery.ts';
+import * as forms from './components/forms.ts';
+import * as blog from './components/blog.ts';
 
 /* EN: Import utilities
-   RU: Импорт утилит */
-import { track } from './utils/analytics.js';
+  RU: Импорт утилит */
+import { track } from './utils/analytics';
 
 /* EN: Import API configuration
-   RU: Импорт конфигурации API */
-import './config/api.config.js';
+  RU: Импорт конфигурации API */
+import './config/api.config.ts';
+
+type ResponsiveEntry = {
+  avif: string[];
+  webp: string[];
+};
+
+type ResponsiveManifest = Record<string, ResponsiveEntry>;
+
+type AppModules = {
+  theme: typeof theme;
+  preloader: typeof preloader;
+  navigation: typeof navigation;
+  animations: typeof animations;
+  sakura: typeof sakura;
+  faq: typeof faq;
+  carousel: typeof carousel;
+  gallery: typeof gallery;
+  forms: typeof forms;
+  track: typeof track;
+};
 
 /**
  * EN: Initialize all components on DOM ready
  * RU: Инициализация всех компонентов при готовности DOM
  */
-function initializeApp() {
+function initializeApp(): void {
   /* EN: Initialize theme system first (runs before DOM ready)
      RU: Инициализация системы тем в первую очередь (выполняется до готовности DOM) */
   theme.initTheme();
@@ -38,9 +58,7 @@ function initializeApp() {
   /* EN: Initialize components after DOM is ready
      RU: Инициализация компонентов после готовности DOM */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initComponents();
-    });
+    document.addEventListener('DOMContentLoaded', initComponents);
   } else {
     initComponents();
   }
@@ -50,7 +68,7 @@ function initializeApp() {
  * EN: Initialize all UI components
  * RU: Инициализация всех UI компонентов
  */
-function initComponents() {
+function initComponents(): void {
   /* EN: Core components
      RU: Основные компоненты */
   try {
@@ -108,8 +126,8 @@ function initComponents() {
   }
 
   /* EN: Additional features
-     RU: Дополнительные функции */
-  setupResponsiveImages().then(() => {
+      RU: Дополнительные функции */
+  void setupResponsiveImages().then(() => {
     /* EN: Initialize gallery AFTER images are processed
        RU: Инициализация галереи ПОСЛЕ обработки изображений */
     try {
@@ -154,10 +172,10 @@ function initComponents() {
  * EN: Update footer year dynamically
  * RU: Динамическое обновление года в футере
  */
-function updateFooterYear() {
+function updateFooterYear(): void {
   const yearEl = document.getElementById('year');
   if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
+    yearEl.textContent = String(new Date().getFullYear());
   }
 }
 
@@ -166,33 +184,48 @@ function updateFooterYear() {
  * RU: Настройка улучшения адаптивных изображений с использованием манифеста
  * @returns {Promise} Promise that resolves when images are processed
  */
-async function setupResponsiveImages() {
+function isResponsiveEntry(entry: unknown): entry is ResponsiveEntry {
+  return (
+    !!entry &&
+    typeof entry === 'object' &&
+    Array.isArray((entry as ResponsiveEntry).avif) &&
+    Array.isArray((entry as ResponsiveEntry).webp)
+  );
+}
+
+async function setupResponsiveImages(): Promise<void> {
   try {
     const response = await fetch('img-manifest.json');
     if (!response || !response.ok) {
       return;
     }
-    const manifest = await response.json();
-    if (!manifest) {
+    const manifest = (await response.json()) as unknown;
+    if (!manifest || typeof manifest !== 'object') {
       return;
     }
 
+    const typedManifest = manifest as Partial<ResponsiveManifest>;
+
     /* EN: Build srcset from array of responsive images
          RU: Построение srcset из массива адаптивных изображений */
-    function buildSrcSet(arr) {
-      return arr
+    const buildSrcSet = (arr: string[]): string =>
+      arr
         .map((p) => {
-          const m = p.match(/-w(\d+)\./);
-          return m ? `${p} ${m[1]}w` : p;
+          const sizeMatch = /-w(\d+)(?:\.\w+)?$/u.exec(p);
+          return sizeMatch ? `${p} ${sizeMatch[1]}w` : p;
         })
         .join(', ');
-    }
 
     /* EN: Enhance gallery images with modern formats
          RU: Улучшение изображений галереи современными форматами */
-    document.querySelectorAll('#galleryGrid img').forEach((img) => {
+    document.querySelectorAll<HTMLImageElement>('#galleryGrid img').forEach((img) => {
       const orig = img.getAttribute('src');
-      if (!manifest[orig]) {
+      if (!orig) {
+        return;
+      }
+
+      const entry = typedManifest[orig];
+      if (!isResponsiveEntry(entry)) {
         return;
       }
 
@@ -202,13 +235,13 @@ async function setupResponsiveImages() {
            RU: Добавление AVIF источника */
       const avif = document.createElement('source');
       avif.type = 'image/avif';
-      avif.srcset = buildSrcSet(manifest[orig].avif);
+      avif.srcset = buildSrcSet(entry.avif);
 
       /* EN: Add WebP source
            RU: Добавление WebP источника */
       const webp = document.createElement('source');
       webp.type = 'image/webp';
-      webp.srcset = buildSrcSet(manifest[orig].webp);
+      webp.srcset = buildSrcSet(entry.webp);
 
       const sizes = '(max-width: 640px) 50vw, 240px';
       img.setAttribute('sizes', sizes);
@@ -243,4 +276,11 @@ if (typeof window !== 'undefined') {
     forms,
     track
   };
+}
+
+declare global {
+  interface Window {
+    __appInitialized?: boolean;
+    __japanSchoolApp?: AppModules;
+  }
 }

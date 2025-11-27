@@ -3,8 +3,20 @@
    Модуль утилиты аналитики
    ============================================= */
 
-/* EN: Lightweight analytics queue for tracking user interactions
-   RU: Легковесная очередь аналитики для отслеживания взаимодействий пользователя */
+interface AnalyticsPayload {
+  evt: string;
+  ts: number;
+  [key: string]: any;
+}
+
+declare global {
+  interface Window {
+    analyticsQueue: AnalyticsPayload[];
+    __PRODUCTION_BUILD?: boolean;
+    __NO_ANALYTICS_LOG?: boolean;
+    track: (evt: string, data?: Record<string, any>) => void;
+  }
+}
 
 /* EN: Initialize analytics queue on window object
    RU: Инициализация очереди аналитики на объекте window */
@@ -13,12 +25,9 @@ window.analyticsQueue = window.analyticsQueue || [];
 /**
  * EN: Track analytics event with optional data payload
  * RU: Отслеживание события аналитики с опциональными данными
- *
- * @param {string} evt - Event name | Название события
- * @param {Object} data - Event data payload | Данные события
  */
-export function track(evt, data = {}) {
-  const payload = {
+export function track(evt: string, data: Record<string, any> = {}): void {
+  const payload: AnalyticsPayload = {
     evt,
     ts: Date.now(),
     ...data
@@ -46,10 +55,8 @@ export function track(evt, data = {}) {
 /**
  * EN: Get all tracked events from queue
  * RU: Получить все отслеженные события из очереди
- *
- * @returns {Array} - Analytics queue | Очередь аналитики
  */
-export function getAnalyticsQueue() {
+export function getAnalyticsQueue(): AnalyticsPayload[] {
   return window.analyticsQueue || [];
 }
 
@@ -57,7 +64,7 @@ export function getAnalyticsQueue() {
  * EN: Clear analytics queue
  * RU: Очистить очередь аналитики
  */
-export function clearAnalyticsQueue() {
+export function clearAnalyticsQueue(): void {
   window.analyticsQueue = [];
 }
 

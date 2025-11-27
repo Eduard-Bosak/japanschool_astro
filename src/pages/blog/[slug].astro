@@ -116,7 +116,9 @@ const articleJson = {
     </article>
   </main>
   <Fragment slot="body-end">
-    <script type="module" src="/src/scripts/blog-post.js"></script>
+    <script>
+      import '@scripts/blog-post.ts';
+    </script>
     <script is:inline>
       const bar = document.getElementById('readingBar');
       const rawPost = document.querySelector('.post-content');

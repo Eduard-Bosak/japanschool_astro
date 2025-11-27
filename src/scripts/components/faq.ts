@@ -3,7 +3,7 @@
    Компонент аккордеона FAQ (Доступный)
    ============================================= */
 
-import { track } from '../utils/analytics.js';
+import { track } from '../utils/analytics';
 
 /* EN: Storage key for persisting FAQ state
    RU: Ключ хранилища для сохранения состояния FAQ */
@@ -11,23 +11,34 @@ const STORAGE_KEY = 'faqState.v1';
 
 /* EN: FAQ state
    RU: Состояние FAQ */
-let list, items, triggers;
-let expandAllBtn, collapseAllBtn;
-let searchInput, resetBtn, resultsEl;
-let filterBar;
-let progOpenedEl, progTotalEl, progVisibleEl, progBarFill;
+let list: HTMLElement | null = null;
+let items: HTMLElement[] = [];
+let triggers: HTMLElement[] = [];
+let expandAllBtn: HTMLElement | null = null;
+let collapseAllBtn: HTMLElement | null = null;
+let searchInput: HTMLInputElement | null = null;
+let resetBtn: HTMLElement | null = null;
+let resultsEl: HTMLElement | null = null;
+let filterBar: HTMLElement | null = null;
+let progOpenedEl: HTMLElement | null = null;
+let progTotalEl: HTMLElement | null = null;
+let progVisibleEl: HTMLElement | null = null;
+let progBarFill: HTMLElement | null = null;
 let activeCat = '__all';
 let lastQuery = '';
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+interface FAQState {
+  q: string;
+  cat: string;
+  open: string[];
+}
+
 /**
  * EN: Measure panel intrinsic height
  * RU: Измерение внутренней высоты панели
- *
- * @param {HTMLElement} panel - Panel element | Элемент панели
- * @returns {number} - Height in pixels | Высота в пикселях
  */
-function measure(panel) {
+function measure(panel: HTMLElement): number {
   // EN: Robust measurement
   // RU: Надежное измерение
   const wasHidden = panel.hasAttribute('hidden');
@@ -64,12 +75,11 @@ function measure(panel) {
 /**
  * EN: Open FAQ item
  * RU: Открытие элемента FAQ
- *
- * @param {HTMLElement} trigger - Trigger button | Кнопка триггера
- * @param {boolean} silent - Don't track event | Не отслеживать событие
  */
-function open(trigger, silent = false) {
+function open(trigger: HTMLElement, silent = false): void {
   const id = trigger.getAttribute('aria-controls');
+  if (!id) return;
+
   const panel = document.getElementById(id);
   const item = trigger.closest('.faq-item');
 
@@ -84,6 +94,8 @@ function open(trigger, silent = false) {
   // Force reflow
   void panel.offsetHeight;
 
+  /* EN: Pre-calc max height once and store in CSS var to sync with styles
+      RU: Один раз вычисляем высоту и сохраняем в CSS переменной для синхронизации со стилями */
   const h = measure(panel);
   panel.style.setProperty('--panel-max', h + 'px');
 
@@ -106,12 +118,11 @@ function open(trigger, silent = false) {
 /**
  * EN: Close FAQ item
  * RU: Закрытие элемента FAQ
- *
- * @param {HTMLElement} trigger - Trigger button | Кнопка триггера
- * @param {boolean} silent - Don't track event | Не отслеживать событие
  */
-function close(trigger, silent = false) {
+function close(trigger: HTMLElement, silent = false): void {
   const id = trigger.getAttribute('aria-controls');
+  if (!id) return;
+
   const panel = document.getElementById(id);
   const item = trigger.closest('.faq-item');
 
@@ -154,10 +165,8 @@ function close(trigger, silent = false) {
 /**
  * EN: Toggle FAQ item
  * RU: Переключение элемента FAQ
- *
- * @param {HTMLElement} trigger - Trigger button | Кнопка триггера
  */
-function toggle(trigger) {
+function toggle(trigger: HTMLElement): void {
   const expanded = trigger.getAttribute('aria-expanded') === 'true';
   expanded ? close(trigger) : open(trigger);
 }
@@ -166,7 +175,7 @@ function toggle(trigger) {
  * EN: Expand all FAQ items
  * RU: Развернуть все элементы FAQ
  */
-function expandAll() {
+function expandAll(): void {
   triggers.forEach((t) => open(t, true));
   track('faq_expand_all');
 }
@@ -175,7 +184,7 @@ function expandAll() {
  * EN: Collapse all FAQ items
  * RU: Свернуть все элементы FAQ
  */
-function collapseAll() {
+function collapseAll(): void {
   triggers.forEach((t) => close(t, true));
   track('faq_collapse_all');
 }
@@ -184,7 +193,7 @@ function collapseAll() {
  * EN: Normalize string for comparison
  * RU: Нормализация строки для сравнения
  */
-function norm(s) {
+function norm(s: string | null): string {
   return (s || '').toLowerCase();
 }
 
@@ -192,7 +201,7 @@ function norm(s) {
  * EN: Highlight search query in text
  * RU: Подсветка поискового запроса в тексте
  */
-function highlight(text, q) {
+function highlight(text: string, q: string): string {
   if (!q) {
     return text;
   }
@@ -209,15 +218,15 @@ function highlight(text, q) {
  * EN: Apply search and category filters
  * RU: Применение поиска и фильтров категорий
  */
-function applyFilter() {
-  const q = norm(searchInput?.value.trim());
+function applyFilter(): void {
+  const q = norm(searchInput?.value.trim() || '');
 
-  if (q === lastQuery && applyFilter.__lastCat === activeCat) {
+  if (q === lastQuery && (applyFilter as any).__lastCat === activeCat) {
     return;
   }
 
   lastQuery = q;
-  applyFilter.__lastCat = activeCat;
+  (applyFilter as any).__lastCat = activeCat;
 
   let visible = 0;
 
@@ -231,11 +240,13 @@ function applyFilter() {
 
     /* EN: Store original text
        RU: Сохранение оригинального текста */
-    if (!triggerTextEl.__orig) {
-      triggerTextEl.__orig = triggerTextEl.innerHTML;
+    if (!(triggerTextEl as any).__orig) {
+      /* EN: Cache original HTML once to avoid nested marks
+         RU: Кэшируем оригинальный HTML чтобы избежать вложенных <mark> */
+      (triggerTextEl as any).__orig = triggerTextEl.innerHTML;
     }
 
-    const base = triggerTextEl.__orig;
+    const base = (triggerTextEl as any).__orig;
     const text = norm(triggerTextEl.textContent);
     const catOk = activeCat === '__all' || cat === activeCat;
     const qOk = !q || text.includes(q);
@@ -268,7 +279,7 @@ function applyFilter() {
  * EN: Update progress indicators
  * RU: Обновление индикаторов прогресса
  */
-function updateProgress() {
+function updateProgress(): void {
   const total = items.length;
   const visibleItems = items.filter((i) => !i.classList.contains('filter-hide'));
   const openedVisible = visibleItems.filter((i) => i.classList.contains('open')).length;
@@ -293,13 +304,13 @@ function updateProgress() {
  * EN: Persist FAQ state to localStorage
  * RU: Сохранение состояния FAQ в localStorage
  */
-function persist() {
+function persist(): void {
   try {
     const openIds = triggers
       .filter((t) => t.getAttribute('aria-expanded') === 'true')
       .map((t) => t.id);
 
-    const state = {
+    const state: FAQState = {
       q: searchInput?.value || '',
       cat: activeCat,
       open: openIds
@@ -315,14 +326,14 @@ function persist() {
  * EN: Restore FAQ state from localStorage
  * RU: Восстановление состояния FAQ из localStorage
  */
-function restore() {
+function restore(): void {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return;
     }
 
-    const state = JSON.parse(raw);
+    const state: FAQState = JSON.parse(raw);
 
     /* EN: Restore search query
        RU: Восстановление поискового запроса */
@@ -364,7 +375,7 @@ function restore() {
  * EN: Setup FAQ accordion keyboard navigation
  * RU: Настройка клавиатурной навигации аккордеона FAQ
  */
-function setupKeyboardNav() {
+function setupKeyboardNav(): void {
   triggers.forEach((btn) => {
     btn.addEventListener('click', () => toggle(btn));
 
@@ -403,14 +414,14 @@ function setupKeyboardNav() {
  * EN: Setup search and filters
  * RU: Настройка поиска и фильтров
  */
-function setupSearch() {
+function setupSearch(): void {
   searchInput?.addEventListener('input', () => {
     applyFilter();
   });
 
   searchInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      searchInput.value = '';
+      if (searchInput) searchInput.value = '';
       applyFilter();
     }
   });
@@ -425,7 +436,7 @@ function setupSearch() {
   });
 
   filterBar?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.faq-filter');
+    const btn = (e.target as HTMLElement).closest('.faq-filter');
     if (!btn) {
       return;
     }
@@ -437,7 +448,7 @@ function setupSearch() {
 
     activeCat = cat;
 
-    Array.from(filterBar.querySelectorAll('.faq-filter')).forEach((b) => {
+    Array.from(filterBar!.querySelectorAll('.faq-filter')).forEach((b) => {
       const on = b === btn;
       b.classList.toggle('active', on);
       b.setAttribute('aria-pressed', String(on));
@@ -451,17 +462,19 @@ function setupSearch() {
  * EN: Handle deep link to FAQ item
  * RU: Обработка прямой ссылки на элемент FAQ
  */
-function handleDeepLink() {
+function handleDeepLink(): void {
   if (location.hash.startsWith('#faq-panel-')) {
     const panel = document.querySelector(location.hash);
     if (panel) {
       const trigId = panel.getAttribute('aria-labelledby');
-      const trig = document.getElementById(trigId);
-      if (trig) {
-        open(trig, true);
-        setTimeout(() => {
-          trig.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 150);
+      if (trigId) {
+        const trig = document.getElementById(trigId);
+        if (trig) {
+          open(trig, true);
+          setTimeout(() => {
+            trig.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 150);
+        }
       }
     }
   }
@@ -471,14 +484,14 @@ function handleDeepLink() {
  * EN: Initialize FAQ accordion component
  * RU: Инициализация компонента аккордеона FAQ
  */
-export function init() {
+export function init(): void {
   list = document.getElementById('faqList');
   if (!list) {
     return;
   }
 
   items = Array.from(list.querySelectorAll('.faq-item'));
-  triggers = items.map((i) => i.querySelector('.faq-trigger')).filter(Boolean);
+  triggers = items.map((i) => i.querySelector('.faq-trigger')).filter(Boolean) as HTMLElement[];
 
   if (!triggers.length) {
     return;
@@ -488,7 +501,7 @@ export function init() {
      RU: Получение элементов UI */
   expandAllBtn = document.getElementById('faqExpandAll');
   collapseAllBtn = document.getElementById('faqCollapseAll');
-  searchInput = document.getElementById('faqSearch');
+  searchInput = document.getElementById('faqSearch') as HTMLInputElement;
   resetBtn = document.getElementById('faqSearchReset');
   resultsEl = document.getElementById('faqResults');
   filterBar = document.querySelector('.faq-filters');
@@ -505,7 +518,7 @@ export function init() {
   /* EN: Pre-measure intrinsic heights for smoother first open
      RU: Предварительное измерение высот для плавного первого открытия */
   items.forEach((item) => {
-    const panel = item.querySelector('.faq-panel');
+    const panel = item.querySelector('.faq-panel') as HTMLElement;
     if (!panel) {
       return;
     }

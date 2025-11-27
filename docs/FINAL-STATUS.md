@@ -120,7 +120,7 @@ Invoke-RestMethod -Uri "http://localhost:3000/api/submit-form" `
 
 ### Код:
 
-1. `src/scripts/components/interactive.js` (326 строк)
+1. `src/scripts/components/interactive.ts` (326 строк)
 2. `src/styles/components/interactive.css` (267 строк)
 3. `server/submissions.json` (пустой массив)
 
@@ -136,7 +136,7 @@ Invoke-RestMethod -Uri "http://localhost:3000/api/submit-form" `
 1. `server/admin.html` - убран дублированный DOMContentLoaded, добавлены mobile
    styles
 2. `server/index.js` - исправлен формат response (data вместо submissions)
-3. `src/scripts/main.js` - добавлен import interactive.js
+3. `src/scripts/main.ts` - добавлен import interactive.ts
 4. `src/styles.css` - добавлен import interactive.css
 
 ---

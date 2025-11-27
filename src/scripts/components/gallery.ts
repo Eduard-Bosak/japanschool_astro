@@ -3,14 +3,20 @@
    Компонент галереи с лайтбоксом (Доступный, Клавиатурная навигация)
    ============================================= */
 
-import { track } from '../utils/analytics.js';
+import { track } from '../utils/analytics';
 
 /* EN: Lightbox state
-   RU: Состояние лайтбокса */
-let lightbox, imgEl, caption, closeBtn, prevNav, nextNav;
-let images = [];
+  RU: Состояние лайтбокса */
+let lightbox: HTMLDivElement | null = null;
+let imgEl: HTMLImageElement | null = null;
+let caption: HTMLParagraphElement | null = null;
+let closeBtn: HTMLButtonElement | null = null;
+let prevNav: HTMLButtonElement | null = null;
+let nextNav: HTMLButtonElement | null = null;
+
+let images: HTMLImageElement[] = [];
 let current = 0;
-let lastFocus = null;
+let lastFocus: HTMLElement | null = null;
 
 /**
  * EN: Open lightbox at specific image index
@@ -18,7 +24,11 @@ let lastFocus = null;
  *
  * @param {number} i - Image index | Индекс изображения
  */
-function open(i) {
+function open(i: number): void {
+  if (!images.length || !lightbox || !imgEl || !caption || !closeBtn) {
+    return;
+  }
+
   current = (i + images.length) % images.length;
 
   const fig = images[current].closest('figure');
@@ -35,8 +45,8 @@ function open(i) {
 
   /* EN: Store last focused element and focus close button
      RU: Сохранение последнего сфокусированного элемента и фокус на кнопку закрытия */
-  lastFocus = document.activeElement;
-  setTimeout(() => closeBtn.focus(), 40);
+  lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  window.setTimeout(() => closeBtn?.focus(), 40);
 
   track('lightbox_open', { index: current, src: imgEl.src });
 }
@@ -45,7 +55,11 @@ function open(i) {
  * EN: Close lightbox and restore focus
  * RU: Закрытие лайтбокса и восстановление фокуса
  */
-function close() {
+function close(): void {
+  if (!lightbox) {
+    return;
+  }
+
   lightbox.classList.remove('open');
 
   /* EN: Restore focus to triggering element
@@ -61,7 +75,7 @@ function close() {
  *
  * @param {number} dir - Direction (-1 or 1) | Направление (-1 или 1)
  */
-function show(dir) {
+function show(dir: number): void {
   open(current + dir);
 }
 
@@ -69,9 +83,9 @@ function show(dir) {
  * EN: Setup keyboard navigation
  * RU: Настройка клавиатурной навигации
  */
-function setupKeyboard() {
-  window.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('open')) {
+function setupKeyboard(): void {
+  window.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (!lightbox || !lightbox.classList.contains('open')) {
       return;
     }
 
@@ -91,7 +105,7 @@ function setupKeyboard() {
  * EN: Create lightbox DOM structure
  * RU: Создание DOM структуры лайтбокса
  */
-function createLightbox() {
+function createLightbox(): void {
   lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
   lightbox.innerHTML = `
@@ -110,18 +124,22 @@ function createLightbox() {
 
   /* EN: Get lightbox elements
      RU: Получение элементов лайтбокса */
-  imgEl = lightbox.querySelector('img');
-  caption = lightbox.querySelector('.lightbox-caption');
-  closeBtn = lightbox.querySelector('.lightbox-close');
-  prevNav = lightbox.querySelector('.lightbox-nav.prev');
-  nextNav = lightbox.querySelector('.lightbox-nav.next');
+  imgEl = lightbox.querySelector<HTMLImageElement>('img');
+  caption = lightbox.querySelector<HTMLParagraphElement>('.lightbox-caption');
+  closeBtn = lightbox.querySelector<HTMLButtonElement>('.lightbox-close');
+  prevNav = lightbox.querySelector<HTMLButtonElement>('.lightbox-nav.prev');
+  nextNav = lightbox.querySelector<HTMLButtonElement>('.lightbox-nav.next');
 }
 
 /**
  * EN: Setup lightbox event listeners
  * RU: Настройка обработчиков событий лайтбокса
  */
-function setupEventListeners() {
+function setupEventListeners(): void {
+  if (!lightbox || !closeBtn || !prevNav || !nextNav) {
+    return;
+  }
+
   /* EN: Close button
      RU: Кнопка закрытия */
   closeBtn.addEventListener('click', close);
@@ -133,7 +151,7 @@ function setupEventListeners() {
 
   /* EN: Click outside to close
      RU: Клик вне области для закрытия */
-  lightbox.addEventListener('click', (e) => {
+  lightbox.addEventListener('click', (e: MouseEvent) => {
     if (e.target === lightbox) {
       close();
     }
@@ -144,7 +162,7 @@ function setupEventListeners() {
  * EN: Setup gallery image click handlers
  * RU: Настройка обработчиков кликов по изображениям галереи
  */
-function setupGalleryImages() {
+function setupGalleryImages(): void {
   images.forEach((im, i) => {
     /* EN: Make images focusable and clickable
        RU: Сделать изображения фокусируемыми и кликабельными */
@@ -157,7 +175,7 @@ function setupGalleryImages() {
 
     /* EN: Keyboard handler
        RU: Обработчик клавиатуры */
-    im.addEventListener('keydown', (e) => {
+    im.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         open(i);
@@ -170,8 +188,8 @@ function setupGalleryImages() {
  * EN: Initialize gallery lightbox component
  * RU: Инициализация компонента галереи с лайтбоксом
  */
-export function init() {
-  const gallery = document.querySelector('.gallery-grid');
+export function init(): void {
+  const gallery = document.querySelector<HTMLElement>('.gallery-grid');
   if (!gallery) {
     return;
   }
@@ -179,7 +197,9 @@ export function init() {
   /* EN: Get all gallery images
      RU: Получение всех изображений галереи */
   const figures = Array.from(gallery.querySelectorAll('figure'));
-  images = figures.map((f) => f.querySelector('img')).filter(Boolean);
+  images = figures
+    .map((f) => f.querySelector('img'))
+    .filter((img): img is HTMLImageElement => img instanceof HTMLImageElement);
 
   if (images.length === 0) {
     return;

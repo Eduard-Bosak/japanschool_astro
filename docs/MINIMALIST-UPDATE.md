@@ -2,8 +2,7 @@
 
 ## Обновление минималистичного режима чтения
 
-**Дата:** 3 октября 2025  
-**Версия:** 2.1 (Minimalist Edition)
+**Дата:** 3 октября 2025 **Версия:** 2.1 (Minimalist Edition)
 
 ---
 
@@ -235,7 +234,7 @@ npm run build
 
 - `build.mjs` — HTML template (убран A++, короткие тултипы)
 - `src/styles/components/reading-mode.css` — минималистичные стили
-- `src/scripts/components/sakura.js` — оптимизация (15-30 лепестков)
+- `src/scripts/components/sakura.ts` — оптимизация (15-30 лепестков)
 
 **Созданные:**
 
@@ -258,6 +257,5 @@ npm run build
 
 ---
 
-**Автор:** GitHub Copilot  
-**Проект:** 日本語School Landing  
-**Лицензия:** См. LICENSE
+**Автор:** GitHub Copilot **Проект:** 日本語School Landing **Лицензия:** См.
+LICENSE

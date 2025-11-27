@@ -1,11 +1,16 @@
 /* =============================================
-   Blog Posts - Search, Filter, Share
-   ============================================= */
+  Blog Posts - Search, Filter, Share
+  Блок блога — поиск, фильтрация и шаринг
+  ============================================= */
+
+type PostCardElement = HTMLElement;
+type ShareButton = HTMLButtonElement | HTMLAnchorElement;
 
 /**
  * Initialize blog posts functionality
+ * RU: Точка входа для логики карточек блога
  */
-export function init() {
+export function init(): void {
   setupPostCards();
   setupSearch();
   setupCategoryFilters();
@@ -14,20 +19,23 @@ export function init() {
 
 /**
  * Setup post card lazy loading and image optimization
+ * RU: Настройка ленивой загрузки и визуальных эффектов карточек
  */
-function setupPostCards() {
-  const cards = document.querySelectorAll('.post-card');
+function setupPostCards(): void {
+  const cards = document.querySelectorAll<PostCardElement>('.post-card');
 
   if (!cards.length) {
     return;
   }
 
-  // Lazy load post card images
+  // EN: Lazy load post card images
+  // RU: Лениво подгружаем фоновые превью
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const media = entry.target.querySelector('.post-card-media');
+          const cardEl = entry.target as PostCardElement;
+          const media = cardEl.querySelector<HTMLElement>('.post-card-media');
           if (media) {
             const bg = media.dataset.bg;
             if (bg) {
@@ -48,15 +56,17 @@ function setupPostCards() {
 
   cards.forEach((card) => observer.observe(card));
 
-  // Add ripple effect on click
+  // EN: Add ripple effect on click
+  // RU: Добавляем эффект «рябь» при клике по карточке
   cards.forEach((card) => {
-    const link = card.querySelector('.post-card-link');
+    const link = card.querySelector<HTMLElement>('.post-card-link');
     if (!link) {
       return;
     }
 
-    link.addEventListener('click', (e) => {
-      // Create ripple effect
+    link.addEventListener('click', (e: MouseEvent) => {
+      // EN: Create ripple highlight at click position
+      // RU: Создаём круг подсветки в точке клика
       const ripple = document.createElement('span');
       ripple.style.cssText = `
         position: absolute;
@@ -71,36 +81,40 @@ function setupPostCards() {
       `;
 
       const rect = card.getBoundingClientRect();
-      ripple.style.left = e.clientX - rect.left + 'px';
-      ripple.style.top = e.clientY - rect.top + 'px';
+      ripple.style.left = `${e.clientX - rect.left}px`;
+      ripple.style.top = `${e.clientY - rect.top}px`;
 
       card.style.position = 'relative';
       card.appendChild(ripple);
 
-      setTimeout(() => ripple.remove(), 600);
+      setTimeout(() => ripple.remove(), 600); // RU: Удаляем эффект после анимации
     });
   });
 }
 
 /**
  * Setup search functionality
+ * RU: Запускаем поиск по заголовку, описанию и ключевым словам
  */
-function setupSearch() {
-  const searchInput = document.getElementById('postSearch');
-  const resetBtn = document.getElementById('postSearchReset');
+function setupSearch(): void {
+  const searchInput = document.getElementById('postSearch') as HTMLInputElement | null;
+  const resetBtn = document.getElementById('postSearchReset') as HTMLButtonElement | null;
   const resultsCount = document.getElementById('postResultsCount');
-  const cards = document.querySelectorAll('.post-card');
+  const cards = document.querySelectorAll<PostCardElement>('.post-card');
 
-  if (!searchInput || !cards.length) {
+  if (!searchInput || !resetBtn || !resultsCount || !cards.length) {
     return;
   }
 
-  let searchTimeout;
+  let searchTimeout: number | undefined;
 
-  searchInput.addEventListener('input', (e) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      const query = e.target.value.toLowerCase().trim();
+  searchInput.addEventListener('input', (e: Event) => {
+    if (searchTimeout) {
+      window.clearTimeout(searchTimeout);
+    }
+    searchTimeout = window.setTimeout(() => {
+      const target = e.target as HTMLInputElement;
+      const query = target.value.toLowerCase().trim();
 
       if (query) {
         resetBtn.hidden = false;
@@ -125,7 +139,8 @@ function setupSearch() {
         }
       });
 
-      // Update results count
+      // EN: Update results count subtitle
+      // RU: Обновляем подпись с количеством найденных карточек
       if (query) {
         resultsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'результат' : 'результатов'}`;
       } else {
@@ -134,7 +149,8 @@ function setupSearch() {
     }, 300);
   });
 
-  // Reset search
+  // EN: Reset search state
+  // RU: Сброс ввода и возврат всех карточек
   resetBtn?.addEventListener('click', () => {
     searchInput.value = '';
     resetBtn.hidden = true;
@@ -148,10 +164,11 @@ function setupSearch() {
 
 /**
  * Setup category filters
+ * RU: Подключаем фильтрацию карточек по категориям
  */
-function setupCategoryFilters() {
-  const filters = document.querySelectorAll('.cat-filter');
-  const cards = document.querySelectorAll('.post-card');
+function setupCategoryFilters(): void {
+  const filters = document.querySelectorAll<HTMLElement>('.cat-filter');
+  const cards = document.querySelectorAll<PostCardElement>('.post-card');
 
   if (!filters.length || !cards.length) {
     return;
@@ -159,9 +176,10 @@ function setupCategoryFilters() {
 
   filters.forEach((filter) => {
     filter.addEventListener('click', () => {
-      const category = filter.dataset.cat;
+      const category = filter.dataset.cat || '__all';
 
-      // Update active state
+      // EN: Update active state for filter buttons
+      // RU: Переключаем визуальное состояние кнопок фильтра
       filters.forEach((f) => {
         f.classList.remove('active');
         f.setAttribute('aria-pressed', 'false');
@@ -169,13 +187,15 @@ function setupCategoryFilters() {
       filter.classList.add('active');
       filter.setAttribute('aria-pressed', 'true');
 
-      // Filter cards
+      // EN: Show/hide cards by selected category
+      // RU: Отображаем только карточки выбранной категории
       cards.forEach((card) => {
         const cardCats = (card.dataset.cats || '').split(',').filter(Boolean);
 
         if (category === '__all' || cardCats.includes(category)) {
           card.style.display = '';
-          // Animate in
+          // EN: Play fade-in animation for visible cards
+          // RU: Лёгкая анимация появления для оставленных карточек
           card.style.animation = 'fadeInUp 0.4s ease-out';
         } else {
           card.style.display = 'none';
@@ -187,29 +207,33 @@ function setupCategoryFilters() {
 
 /**
  * Setup share buttons
+ * RU: Настройка кнопок «поделиться» (Web Share + fallback)
  */
-function setupShareButtons() {
-  const shareButtons = document.querySelectorAll('.share-btn');
+function setupShareButtons(): void {
+  const shareButtons = document.querySelectorAll<ShareButton>('.share-btn');
 
   shareButtons.forEach((btn) => {
     btn.addEventListener('click', async (e) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const url = btn.dataset.share;
+      const url = btn.dataset.share || window.location.href;
 
       try {
-        // Try native share API first (mobile)
-        if (navigator.share) {
+        // EN: Try native share API first (mobile)
+        // RU: Сначала пытаемся вызвать нативное меню шаринга
+        if ('share' in navigator && typeof navigator.share === 'function') {
           await navigator.share({
             title: document.title,
             url: url
           });
         } else {
-          // Fallback: copy to clipboard
-          await navigator.clipboard.writeText(url);
+          // EN: Fallback to clipboard copy
+          // RU: Резервный вариант — копируем ссылку в буфер
+          await navigator.clipboard?.writeText(url);
 
-          // Show feedback
+          // EN: Highlight success for 2 seconds
+          // RU: Показываем короткий визуальный отклик
           const originalText = btn.innerHTML;
           btn.innerHTML = '✓';
           btn.style.background = 'var(--primary)';
@@ -230,8 +254,11 @@ function setupShareButtons() {
 
 // Add CSS for ripple animation
 if (typeof document !== 'undefined') {
-  const style = document.createElement('style');
-  style.textContent = `
+  const existing = document.head.querySelector('style[data-blog-effects]');
+  if (!existing) {
+    const style = document.createElement('style');
+    style.dataset.blogEffects = 'true';
+    style.textContent = `
     @keyframes ripple {
       from {
         opacity: 1;
@@ -254,5 +281,6 @@ if (typeof document !== 'undefined') {
       }
     }
   `;
-  document.head.appendChild(style);
+    document.head.appendChild(style);
+  }
 }

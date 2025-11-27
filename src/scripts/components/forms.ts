@@ -3,25 +3,38 @@
    Компонент форм (Валидация, Отправка, Модальные окна)
    ============================================= */
 
-import { track } from '../utils/analytics.js';
-import { sendToBackend } from '../utils/api.js';
+import { track } from '../utils/analytics';
+import { sendToBackend } from '../utils/api';
 
 /* EN: Lead form elements
    RU: Элементы формы лидов */
-let leadForm, leadStatusEl;
+let leadForm: HTMLFormElement | null = null;
+let leadStatusEl: HTMLElement | null = null;
 
 /* EN: Program modal elements
    RU: Элементы модального окна программ */
-let programModal, programForm, programStatusEl, hiddenProgramInput;
+let programModal: HTMLElement | null = null;
+let programForm: HTMLFormElement | null = null;
+let programStatusEl: HTMLElement | null = null;
+let hiddenProgramInput: HTMLInputElement | null = null;
+
+interface LeadFormElements extends HTMLFormControlsCollection {
+  leadName: HTMLInputElement;
+  leadEmail: HTMLInputElement;
+  leadGoal: HTMLSelectElement;
+  leadLevel: HTMLSelectElement;
+  leadMsg: HTMLTextAreaElement;
+}
+
+interface ProgramFormElements extends HTMLFormControlsCollection {
+  email: HTMLInputElement;
+}
 
 /**
  * EN: Show field error message
  * RU: Показ сообщения об ошибке поля
- *
- * @param {HTMLElement} field - Form field | Поле формы
- * @param {string} msgId - Error message element ID | ID элемента сообщения об ошибке
  */
-function showFieldError(field, msgId) {
+function showFieldError(field: HTMLElement, msgId: string): void {
   const err = document.getElementById(msgId);
   if (err) {
     err.hidden = false;
@@ -33,11 +46,8 @@ function showFieldError(field, msgId) {
 /**
  * EN: Clear field error message
  * RU: Очистка сообщения об ошибке поля
- *
- * @param {HTMLElement} field - Form field | Поле формы
- * @param {string} msgId - Error message element ID | ID элемента сообщения об ошибке
  */
-function clearFieldError(field, msgId) {
+function clearFieldError(field: HTMLElement, msgId: string): void {
   const err = document.getElementById(msgId);
   if (err) {
     err.hidden = true;
@@ -49,10 +59,8 @@ function clearFieldError(field, msgId) {
 /**
  * EN: Validate lead form fields
  * RU: Валидация полей формы лидов
- *
- * @returns {boolean} - Is form valid | Форма валидна
  */
-function validateLead() {
+function validateLead(): boolean {
   if (!leadForm) {
     return false;
   }
@@ -61,7 +69,7 @@ function validateLead() {
 
   /* EN: Validate name
      RU: Валидация имени */
-  const name = leadForm.querySelector('#leadName');
+  const name = leadForm.querySelector('#leadName') as HTMLInputElement;
   if (name) {
     if (name.value.trim().length < 2) {
       showFieldError(name, 'errName');
@@ -73,7 +81,7 @@ function validateLead() {
 
   /* EN: Validate email
      RU: Валидация email */
-  const email = leadForm.querySelector('#leadEmail');
+  const email = leadForm.querySelector('#leadEmail') as HTMLInputElement;
   if (email) {
     const v = email.value.trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) {
@@ -86,7 +94,7 @@ function validateLead() {
 
   /* EN: Validate goal
      RU: Валидация цели */
-  const goal = leadForm.querySelector('#leadGoal');
+  const goal = leadForm.querySelector('#leadGoal') as HTMLSelectElement;
   if (goal) {
     if (!goal.value) {
       showFieldError(goal, 'errGoal');
@@ -98,7 +106,7 @@ function validateLead() {
 
   /* EN: Validate level
      RU: Валидация уровня */
-  const level = leadForm.querySelector('#leadLevel');
+  const level = leadForm.querySelector('#leadLevel') as HTMLSelectElement;
   if (level) {
     if (!level.value) {
       showFieldError(level, 'errLevel');
@@ -115,8 +123,8 @@ function validateLead() {
  * EN: Setup lead form validation and submission
  * RU: Настройка валидации и отправки формы лидов
  */
-function setupLeadForm() {
-  leadForm = document.getElementById('leadForm');
+function setupLeadForm(): void {
+  leadForm = document.getElementById('leadForm') as HTMLFormElement;
   if (!leadForm) {
     return;
   }
@@ -126,7 +134,7 @@ function setupLeadForm() {
   /* EN: Real-time validation on input/change/blur
      RU: Валидация в реальном времени при input/change/blur */
   ['input', 'change', 'blur'].forEach((ev) => {
-    leadForm.addEventListener(ev, (e) => {
+    leadForm?.addEventListener(ev, (e) => {
       const t = e.target;
       if (!(t instanceof HTMLElement)) {
         return;
@@ -148,20 +156,24 @@ function setupLeadForm() {
   leadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!validateLead()) {
-      leadStatusEl.textContent = 'Исправьте ошибки формы';
-      leadStatusEl.style.color = 'var(--danger)';
+    if (!validateLead() || !leadForm || !leadStatusEl) {
+      if (leadStatusEl) {
+        leadStatusEl.textContent = 'Исправьте ошибки формы';
+        leadStatusEl.style.color = 'var(--danger)';
+      }
       return;
     }
+
+    const elements = leadForm.elements as LeadFormElements;
 
     /* EN: Build payload
        RU: Формирование данных */
     const payload = {
-      name: leadForm.leadName?.value?.trim(),
-      email: leadForm.leadEmail?.value?.trim(),
-      goal: leadForm.leadGoal?.value || '',
-      level: leadForm.leadLevel?.value || '',
-      message: leadForm.leadMsg?.value?.trim() || ''
+      name: elements.leadName?.value?.trim(),
+      email: elements.leadEmail?.value?.trim(),
+      goal: elements.leadGoal?.value || '',
+      level: elements.leadLevel?.value || '',
+      message: elements.leadMsg?.value?.trim() || ''
     };
 
     leadStatusEl.textContent = 'Отправка...';
@@ -195,11 +207,9 @@ function setupLeadForm() {
 /**
  * EN: Open program modal
  * RU: Открытие модального окна программы
- *
- * @param {string} prog - Program name | Название программы
  */
-function openModal(prog) {
-  if (!programModal) {
+function openModal(prog: string): void {
+  if (!programModal || !hiddenProgramInput) {
     return;
   }
 
@@ -211,7 +221,7 @@ function openModal(prog) {
 
   /* EN: Focus trap
      RU: Ловушка фокуса */
-  const focusables = programModal.querySelectorAll(
+  const focusables = programModal.querySelectorAll<HTMLElement>(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
   const first = focusables[0];
@@ -221,7 +231,7 @@ function openModal(prog) {
     first.focus();
   }
 
-  function trap(e) {
+  function trap(e: KeyboardEvent) {
     if (e.key === 'Tab') {
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
@@ -236,7 +246,7 @@ function openModal(prog) {
     }
   }
 
-  programModal.__trapHandler = trap;
+  (programModal as any).__trapHandler = trap;
   window.addEventListener('keydown', trap);
 }
 
@@ -244,7 +254,7 @@ function openModal(prog) {
  * EN: Close program modal
  * RU: Закрытие модального окна программы
  */
-function closeModal() {
+function closeModal(): void {
   if (!programModal) {
     return;
   }
@@ -252,9 +262,9 @@ function closeModal() {
   programModal.setAttribute('hidden', '');
   document.body.style.overflow = '';
 
-  if (programModal.__trapHandler) {
-    window.removeEventListener('keydown', programModal.__trapHandler);
-    delete programModal.__trapHandler;
+  if ((programModal as any).__trapHandler) {
+    window.removeEventListener('keydown', (programModal as any).__trapHandler);
+    delete (programModal as any).__trapHandler;
   }
 }
 
@@ -262,29 +272,30 @@ function closeModal() {
  * EN: Setup program modal and form
  * RU: Настройка модального окна программы и формы
  */
-function setupProgramModal() {
+function setupProgramModal(): void {
   programModal = document.getElementById('programModal');
   if (!programModal) {
     return;
   }
 
-  programForm = document.getElementById('programForm');
+  programForm = document.getElementById('programForm') as HTMLFormElement;
   programStatusEl = programForm?.querySelector('.mini-status');
-  hiddenProgramInput = programForm?.querySelector('input[name="program"]');
+  hiddenProgramInput = programForm?.querySelector('input[name="program"]') as HTMLInputElement;
 
   /* EN: Open modal buttons
      RU: Кнопки открытия модального окна */
   const programButtons = document.querySelectorAll('[data-program]');
   programButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      openModal(btn.getAttribute('data-program'));
+      const prog = btn.getAttribute('data-program');
+      if (prog) openModal(prog);
     });
   });
 
   /* EN: Close modal on backdrop click
      RU: Закрытие модального окна при клике на подложку */
   programModal.addEventListener('click', (e) => {
-    if (e.target.hasAttribute('data-close')) {
+    if ((e.target as HTMLElement).hasAttribute('data-close')) {
       closeModal();
     }
   });
@@ -296,7 +307,7 @@ function setupProgramModal() {
   /* EN: Escape key closes modal
      RU: Клавиша Escape закрывает модальное окно */
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !programModal.hasAttribute('hidden')) {
+    if (e.key === 'Escape' && programModal && !programModal.hasAttribute('hidden')) {
       closeModal();
     }
   });
@@ -306,6 +317,8 @@ function setupProgramModal() {
   if (programForm) {
     programForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      if (!programForm || !programStatusEl) return;
 
       if (!programForm.checkValidity()) {
         programStatusEl.textContent = 'Введите корректный email';
@@ -318,8 +331,10 @@ function setupProgramModal() {
       programStatusEl.classList.remove('success', 'error');
       programStatusEl.classList.add('show');
 
+      const elements = programForm.elements as ProgramFormElements;
+
       const payload = {
-        email: programForm.elements.email?.value?.trim(),
+        email: elements.email?.value?.trim(),
         program: hiddenProgramInput?.value || 'unknown'
       };
 
@@ -361,10 +376,10 @@ function setupProgramModal() {
  * EN: Update current year in footer
  * RU: Обновление текущего года в футере
  */
-function updateCurrentYear() {
+function updateCurrentYear(): void {
   const yearEl = document.getElementById('year');
   if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
+    yearEl.textContent = new Date().getFullYear().toString();
   }
 }
 
@@ -372,7 +387,7 @@ function updateCurrentYear() {
  * EN: Initialize forms component
  * RU: Инициализация компонента форм
  */
-export function init() {
+export function init(): void {
   setupLeadForm();
   setupProgramModal();
   updateCurrentYear();

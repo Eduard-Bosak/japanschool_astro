@@ -2,8 +2,7 @@
 
 # 🔄 Migration Guide to Modular Architecture
 
-**Дата миграции / Migration Date:** 3 октября 2025  
-**Версия / Version:** 2.0.0
+**Дата миграции / Migration Date:** 3 октября 2025 **Версия / Version:** 2.0.0
 
 ---
 
@@ -55,8 +54,8 @@ japanschool/
 
 ### 1. CSS Модули / CSS Modules
 
-**RU:** 16 модулей вместо одного монолитного файла.  
-**EN:** 16 modules instead of one monolithic file.
+**RU:** 16 модулей вместо одного монолитного файла. **EN:** 16 modules instead
+of one monolithic file.
 
 #### Base система / Base System (271 строка / 271 lines)
 
@@ -86,32 +85,32 @@ src/styles/components/
 └── utilities.css       # Animation and responsive utilities
 ```
 
-### 2. JavaScript Модули / JavaScript Modules
+### 2. TypeScript Модули / TypeScript Modules
 
-**RU:** 11 ES6 модулей с import/export вместо одного файла.  
-**EN:** 11 ES6 modules with import/export instead of one file.
+**RU:** 11 ES-модулей на TypeScript с import/export вместо одного файла. **EN:**
+11 ES modules written in TypeScript with import/export instead of one file.
 
 #### Утилиты / Utilities (240 строк / 240 lines)
 
 ```
 src/scripts/utils/
-├── analytics.js        # Event tracking system (track, getQueue)
-└── api.js              # Backend API with offline queue
+├── analytics.ts        # Event tracking system (track, getQueue)
+└── api.ts              # Backend API with offline queue
 ```
 
 #### UI Компоненты / UI Components (1770 строк / 1770 lines)
 
 ```
 src/scripts/components/
-├── theme.js            # Theme switcher (6 themes)
-├── preloader.js        # Preloader fade-out control
-├── navigation.js       # Mobile menu, scroll spy, smooth scroll
-├── animations.js       # IntersectionObserver animations
-├── sakura.js           # Canvas cherry blossom animation
-├── faq.js              # FAQ accordion with search/filters
-├── carousel.js         # Reviews carousel with swipe
-├── gallery.js          # Lightbox keyboard navigation
-└── forms.js            # Form validation and submission
+├── theme.ts            # Theme switcher (6 themes)
+├── preloader.ts        # Preloader fade-out control
+├── navigation.ts       # Mobile menu, scroll spy, smooth scroll
+├── animations.ts       # IntersectionObserver animations
+├── sakura.ts           # Canvas cherry blossom animation
+├── faq.ts              # FAQ accordion with search/filters
+├── carousel.ts         # Reviews carousel with swipe
+├── gallery.ts          # Lightbox keyboard navigation
+└── forms.ts            # Form validation and submission
 ```
 
 ---
@@ -120,7 +119,7 @@ src/scripts/components/
 
 ### Старая конфигурация / Old Configuration
 
-```javascript
+```typescript
 // build.mjs (OLD)
 const cssEntry = 'styles.css';
 const jsEntry = 'main.js';
@@ -138,9 +137,9 @@ await esbuild.build({
    RU: Использование модульной точки входа src/styles.css */
 const cssEntry = 'src/styles.css';
 
-/* EN: Use modular entry point src/scripts/main.js with ES6 bundling
-   RU: Использование модульной точки входа src/scripts/main.js с ES6 бандлингом */
-const jsEntry = 'src/scripts/main.js';
+/* EN: Use modular entry point src/scripts/main.ts with ES bundling
+   RU: Использование модульной точки входа src/scripts/main.ts с ES бандлингом */
+const jsEntry = 'src/scripts/main.ts';
 await esbuild.build({
   entryPoints: [jsEntry],
   bundle: true, // ✅ Bundle ES6 modules
@@ -171,19 +170,19 @@ await esbuild.build({
 /* ... */
 ```
 
-### JavaScript (ES6 import/export)
+### TypeScript (ES import/export)
 
 ```javascript
-// src/scripts/main.js
+// src/scripts/main.ts
 
 /* EN: Import utilities | RU: Импорт утилит */
-import { track } from './utils/analytics.js';
-import { sendToBackend } from './utils/api.js';
+import { track } from './utils/analytics.ts';
+import { sendToBackend } from './utils/api.ts';
 
 /* EN: Import UI components | RU: Импорт UI компонентов */
-import { initTheme } from './components/theme.js';
-import { initPreloader } from './components/preloader.js';
-import { initNavigation } from './components/navigation.js';
+import { initTheme } from './components/theme.ts';
+import { initPreloader } from './components/preloader.ts';
+import { initNavigation } from './components/navigation.ts';
 /* ... */
 
 /* EN: Initialize application | RU: Инициализация приложения */
@@ -304,7 +303,7 @@ Build система работает корректно, все импорты 
 ```javascript
 // build.mjs
 const cssEntry = 'styles.css'; // вместо src/styles.css
-const jsEntry = 'main.js'; // вместо src/scripts/main.js
+const jsEntry = 'main.js'; // вместо src/scripts/main.ts
 await esbuild.build({
   bundle: false // отключить бандлинг модулей
 });
@@ -415,6 +414,5 @@ project repository.
 
 ---
 
-**Дата создания / Created:** 3 октября 2025  
-**Последнее обновление / Last Updated:** 3 октября 2025  
-**Версия документа / Document Version:** 1.0.0
+**Дата создания / Created:** 3 октября 2025 **Последнее обновление / Last
+Updated:** 3 октября 2025 **Версия документа / Document Version:** 1.0.0

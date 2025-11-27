@@ -501,7 +501,7 @@ npm run dev
 
 **Проблема:** Неверный API endpoint
 
-**Решение:** Проверьте `src/scripts/config/api.config.js`
+**Решение:** Проверьте `src/scripts/config/api.config.ts`
 
 ---
 

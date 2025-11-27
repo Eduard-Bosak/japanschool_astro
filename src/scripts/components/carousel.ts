@@ -3,15 +3,23 @@
    Компонент карусели отзывов (Доступный, С поддержкой касаний)
    ============================================= */
 
-import { track } from '../utils/analytics.js';
+import { track } from '../utils/analytics';
 
 /* EN: Carousel state
    RU: Состояние карусели */
-let carouselTrack, prevBtn, nextBtn, dotsWrap, live;
-let baseSlides, slidesWithClones, dots;
+let carouselTrack!: HTMLElement;
+let prevBtn!: HTMLButtonElement;
+let nextBtn!: HTMLButtonElement;
+let dotsWrap!: HTMLElement;
+let live: HTMLElement | null = null;
+
+let baseSlides: HTMLElement[] = [];
+let slidesWithClones: HTMLElement[] = [];
+let dots: HTMLButtonElement[] = [];
+
 let index = 1;
 let isTransitioning = false;
-let autoTimer = null;
+let autoTimer: number | null = null;
 
 /* EN: Auto-play interval in milliseconds
    RU: Интервал автопроигрывания в миллисекундах */
@@ -21,29 +29,31 @@ const INTERVAL = 6500;
  * EN: Get gap between slides
  * RU: Получение зазора между слайдами
  */
-function gap() {
-  return parseFloat(getComputedStyle(carouselTrack).gap) || 32;
+function gap(): number {
+  return parseFloat(getComputedStyle(carouselTrack).gap || '32') || 32;
 }
 
 /**
  * EN: Get slide width
  * RU: Получение ширины слайда
  */
-function slideWidth() {
-  return baseSlides[0].getBoundingClientRect().width;
+function slideWidth(): number {
+  return baseSlides[0]?.getBoundingClientRect().width || 0;
 }
 
 /**
  * EN: Translate carousel to current index
  * RU: Перемещение карусели к текущему индексу
  *
- * @param {boolean} withTransition - Use CSS transition | Использовать CSS переход
+ * @param withTransition Use CSS transition | Использовать CSS переход
  */
-function translate(withTransition = true) {
+function translate(withTransition = true): void {
   if (!withTransition) {
     carouselTrack.style.transition = 'none';
   }
 
+  /* EN: Offset equals slide width + CSS gap to keep spacing consistent
+      RU: Смещение равно ширине слайда + CSS-gap для сохранения расстояния */
   const offset = -(slideWidth() + gap()) * index;
   carouselTrack.style.transform = `translateX(${offset}px)`;
 
@@ -59,7 +69,7 @@ function translate(withTransition = true) {
  * EN: Get current real slide index (without clones)
  * RU: Получение текущего реального индекса слайда (без клонов)
  */
-function currentRealIndex() {
+function currentRealIndex(): number {
   const totalSlides = baseSlides.length;
   const normalized = (index - 1 + totalSlides) % totalSlides;
   return normalized;
@@ -69,7 +79,7 @@ function currentRealIndex() {
  * EN: Update dot indicators
  * RU: Обновление индикаторов точек
  */
-function updateDots() {
+function updateDots(): void {
   const realIndex = currentRealIndex();
 
   dots.forEach((d, i) => {
@@ -87,10 +97,10 @@ function updateDots() {
  * EN: Go to specific slide by real index
  * RU: Переход к конкретному слайду по реальному индексу
  *
- * @param {number} realIndex - Real slide index | Реальный индекс слайда
- * @param {boolean} userTriggered - User initiated | Инициировано пользователем
+ * @param realIndex Real slide index | Реальный индекс слайда
+ * @param userTriggered User initiated | Инициировано пользователем
  */
-function goToActual(realIndex, userTriggered = false) {
+function goToActual(realIndex: number, userTriggered = false): void {
   index = realIndex + 1; // EN: Account for leading clone | RU: Учёт ведущего клона
   translate();
   updateDots();
@@ -107,11 +117,13 @@ function goToActual(realIndex, userTriggered = false) {
  *
  * @param {number} delta - Shift amount | Величина сдвига
  */
-function shift(delta) {
+function shift(delta: number): void {
   if (isTransitioning) {
     return;
   }
 
+  /* EN: Lock pointer/timer input until transition end to avoid double jumps
+     RU: Блокируем ввод до окончания transition чтобы не было двойных прыжков */
   index += delta;
   isTransitioning = true;
   translate();
@@ -122,7 +134,7 @@ function shift(delta) {
  * EN: Handle transition end for seamless looping
  * RU: Обработка окончания перехода для бесшовного зацикливания
  */
-function handleTransitionEnd() {
+function handleTransitionEnd(): void {
   isTransitioning = false;
 
   /* EN: Jump to opposite clone for seamless loop
@@ -144,7 +156,7 @@ function handleTransitionEnd() {
  * EN: Navigate to next slide
  * RU: Переход к следующему слайду
  */
-function next() {
+function next(): void {
   shift(1);
   restartAuto();
   track('reviews_carousel_next');
@@ -154,7 +166,7 @@ function next() {
  * EN: Navigate to previous slide
  * RU: Переход к предыдущему слайду
  */
-function prev() {
+function prev(): void {
   shift(-1);
   restartAuto();
   track('reviews_carousel_prev');
@@ -164,22 +176,22 @@ function prev() {
  * EN: Start auto-play
  * RU: Запуск автопроигрывания
  */
-export function startAuto() {
+export function startAuto(): void {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return;
   }
 
   stopAuto();
-  autoTimer = setInterval(() => shift(1), INTERVAL);
+  autoTimer = window.setInterval(() => shift(1), INTERVAL);
 }
 
 /**
  * EN: Stop auto-play
  * RU: Остановка автопроигрывания
  */
-export function stopAuto() {
+export function stopAuto(): void {
   if (autoTimer) {
-    clearInterval(autoTimer);
+    window.clearInterval(autoTimer);
   }
 }
 
@@ -187,7 +199,7 @@ export function stopAuto() {
  * EN: Restart auto-play
  * RU: Перезапуск автопроигрывания
  */
-function restartAuto() {
+function restartAuto(): void {
   stopAuto();
   startAuto();
 }
@@ -196,18 +208,18 @@ function restartAuto() {
  * EN: Setup drag/swipe interaction
  * RU: Настройка drag/swipe взаимодействия
  */
-function setupDragSwipe() {
-  carouselTrack.addEventListener('pointerdown', (e) => {
+function setupDragSwipe(): void {
+  carouselTrack.addEventListener('pointerdown', (e: PointerEvent) => {
     const startX = e.clientX;
     let moved = false;
 
-    const move = (ev) => {
+    const move = (ev: PointerEvent) => {
       if (Math.abs(ev.clientX - startX) > 10) {
         moved = true;
       }
     };
 
-    const up = (ev) => {
+    const up = (ev: PointerEvent) => {
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
 
@@ -215,6 +227,8 @@ function setupDragSwipe() {
         return;
       }
 
+      /* EN: Compare drag distance to threshold to decide direction
+         RU: Сравниваем расстояние перетаскивания с порогом чтобы понять направление */
       const diff = ev.clientX - startX;
       if (diff < -40) {
         next();
@@ -232,10 +246,10 @@ function setupDragSwipe() {
  * EN: Setup keyboard navigation
  * RU: Настройка клавиатурной навигации
  */
-function setupKeyboard() {
+function setupKeyboard(): void {
   carouselTrack.setAttribute('tabindex', '0');
 
-  carouselTrack.addEventListener('keydown', (e) => {
+  carouselTrack.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight') {
       next();
       e.preventDefault();
@@ -259,7 +273,7 @@ function setupKeyboard() {
  * EN: Setup pause on hover/focus
  * RU: Настройка паузы при наведении/фокусе
  */
-function setupPauseOnInteraction() {
+function setupPauseOnInteraction(): void {
   const region = document.getElementById('reviews');
   if (!region) {
     return;
@@ -275,18 +289,25 @@ function setupPauseOnInteraction() {
  * EN: Initialize reviews carousel
  * RU: Инициализация карусели отзывов
  */
-export function init() {
-  carouselTrack = document.getElementById('reviewsTrack');
-  prevBtn = document.querySelector('.reviews-controls [data-dir="prev"]');
-  nextBtn = document.querySelector('.reviews-controls [data-dir="next"]');
-  dotsWrap = document.getElementById('revDots');
+export function init(): void {
+  const trackEl = document.getElementById('reviewsTrack');
+  const prevEl = document.querySelector<HTMLButtonElement>('.reviews-controls [data-dir="prev"]');
+  const nextEl = document.querySelector<HTMLButtonElement>('.reviews-controls [data-dir="next"]');
+  const dotsEl = document.getElementById('revDots');
   live = document.getElementById('reviewsStatus');
 
-  if (!carouselTrack || !prevBtn || !nextBtn || !dotsWrap) {
+  if (!trackEl || !prevEl || !nextEl || !dotsEl) {
     return;
   }
 
-  baseSlides = Array.from(carouselTrack.children);
+  carouselTrack = trackEl;
+  prevBtn = prevEl;
+  nextBtn = nextEl;
+  dotsWrap = dotsEl;
+
+  baseSlides = Array.from(carouselTrack.children).filter(
+    (node): node is HTMLElement => node instanceof HTMLElement
+  );
   const totalSlides = baseSlides.length;
 
   if (totalSlides === 0) {
@@ -301,8 +322,8 @@ export function init() {
 
   /* EN: Clone edge slides for seamless looping
      RU: Клонирование крайних слайдов для бесшовного зацикливания */
-  const firstClone = baseSlides[0].cloneNode(true);
-  const lastClone = baseSlides[totalSlides - 1].cloneNode(true);
+  const firstClone = baseSlides[0].cloneNode(true) as HTMLElement;
+  const lastClone = baseSlides[totalSlides - 1].cloneNode(true) as HTMLElement;
 
   firstClone.classList.add('is-clone');
   lastClone.classList.add('is-clone');
@@ -312,17 +333,20 @@ export function init() {
   carouselTrack.appendChild(firstClone);
   carouselTrack.insertBefore(lastClone, baseSlides[0]);
 
-  slidesWithClones = Array.from(carouselTrack.children);
+  slidesWithClones = Array.from(carouselTrack.children).filter(
+    (node): node is HTMLElement => node instanceof HTMLElement
+  );
 
   /* EN: Add ARIA labels to real slides
      RU: Добавление ARIA меток к реальным слайдам */
-  slidesWithClones.forEach((slide, _idx) => {
+  slidesWithClones.forEach((slide) => {
     if (slide.classList.contains('is-clone')) {
       return;
     }
 
     slide.setAttribute('role', 'group');
-    slide.setAttribute('aria-label', `Слайд ${baseSlides.indexOf(slide) + 1} из ${totalSlides}`);
+    const idx = baseSlides.indexOf(slide);
+    slide.setAttribute('aria-label', `Слайд ${idx + 1} из ${totalSlides}`);
   });
 
   /* EN: Build dot indicators
@@ -340,9 +364,11 @@ export function init() {
 
     d.addEventListener('click', () => goToActual(i, true));
     dotsWrap.appendChild(d);
+    dots.push(d);
   });
-
-  dots = Array.from(dotsWrap.children);
+  if (!dots.length) {
+    dots = Array.from(dotsWrap.querySelectorAll('button'));
+  }
 
   /* EN: Setup navigation buttons
      RU: Настройка кнопок навигации */
@@ -372,4 +398,11 @@ export function init() {
      RU: Экспорт функций управления */
   window.startCarouselAuto = startAuto;
   window.stopCarouselAuto = stopAuto;
+}
+
+declare global {
+  interface Window {
+    startCarouselAuto?: typeof startAuto;
+    stopCarouselAuto?: typeof stopAuto;
+  }
 }

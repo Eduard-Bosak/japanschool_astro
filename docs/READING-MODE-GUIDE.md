@@ -117,7 +117,7 @@
   времени
 - **src/styles/components/rich-text.css** — типографика контента (h1-h6, tables,
   quotes, code)
-- **src/scripts/blog-post.js** — вся логика (прогресс, TOC, режимы, share,
+- **src/scripts/blog-post.ts** — вся логика (прогресс, TOC, режимы, share,
   bookmarks, mobile nav)
 - **build.mjs** (line 375) — шаблон генерации HTML с полным header/footer
 
@@ -252,6 +252,5 @@ document.body.classList.add('reading-mode-focus');
 
 ---
 
-**Создано:** 3 октября 2025  
-**Версия:** 2.0.0  
-**Авторы:** Eduard Bosak + GitHub Copilot
+**Создано:** 3 октября 2025 **Версия:** 2.0.0 **Авторы:** Eduard Bosak + GitHub
+Copilot

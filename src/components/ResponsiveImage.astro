@@ -5,7 +5,7 @@
  * Astro wrapper for optimized images with multiple formats and sizes
  * Replaces custom build.mjs image processing
  */
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 
 interface Props {
   src: ImageMetadata;
@@ -32,7 +32,7 @@ const {
 } = Astro.props;
 ---
 
-<Image
+<Picture
   src={src}
   alt={alt}
   width={width}

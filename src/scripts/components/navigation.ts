@@ -3,13 +3,13 @@
    Компонент навигации (Мобильное меню, Scroll Spy, Плавная прокрутка)
    ============================================= */
 
-import { track } from '../utils/analytics.js';
+import { track } from '../utils/analytics';
 
 /**
  * EN: Setup mobile navigation toggle
  * RU: Настройка переключения мобильного меню
  */
-function setupMobileNav() {
+function setupMobileNav(): void {
   const navToggle = document.querySelector('.nav-toggle');
   const navMenu = document.getElementById('navMenu');
   if (!navToggle || !navMenu) {
@@ -42,10 +42,10 @@ function setupMobileNav() {
  * EN: Setup smooth scroll with offset for fixed header
  * RU: Настройка плавной прокрутки с отступом для фиксированной шапки
  */
-function setupSmoothScroll() {
+function setupSmoothScroll(): void {
   /* EN: Offset scroll handler for anchor links
      RU: Обработчик прокрутки с отступом для якорных ссылок */
-  function offsetScroll(e) {
+  function offsetScroll(this: HTMLAnchorElement, e: Event): void {
     if (this.hash) {
       const target = document.querySelector(this.hash);
       if (target) {
@@ -58,7 +58,7 @@ function setupSmoothScroll() {
 
   /* EN: Add scroll handler to all anchor links
      RU: Добавление обработчика прокрутки ко всем якорным ссылкам */
-  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', offsetScroll);
 
     /* EN: Track anchor clicks
@@ -73,15 +73,15 @@ function setupSmoothScroll() {
  * EN: Setup scroll spy for navigation highlighting
  * RU: Настройка scroll spy для подсветки навигации
  */
-function setupScrollSpy() {
-  const links = Array.from(document.querySelectorAll('.main-nav a[href^="#"]'));
+function setupScrollSpy(): void {
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.main-nav a[href^="#"]'));
   if (!links.length || typeof IntersectionObserver === 'undefined') {
     return;
   }
 
   /* EN: Map sections to navigation links
      RU: Сопоставление секций и навигационных ссылок */
-  const map = new Map();
+  const map = new Map<Element, HTMLAnchorElement>();
   links.forEach((link) => {
     const hash = link.getAttribute('href');
     if (!hash || hash.length < 2) {
@@ -99,11 +99,11 @@ function setupScrollSpy() {
     return;
   }
 
-  let activeId = null;
+  let activeId: string | null = null;
 
   /* EN: Activate link by section ID
      RU: Активация ссылки по ID секции */
-  const activate = (id) => {
+  const activate = (id: string) => {
     if (id === activeId) {
       return;
     }
@@ -141,7 +141,7 @@ function setupScrollSpy() {
      RU: Установка первой ссылки активной при загрузке */
   const first = links[0];
   if (first) {
-    activate(first.getAttribute('href')?.slice(1));
+    activate(first.getAttribute('href')?.slice(1) || '');
   }
 }
 
@@ -149,18 +149,20 @@ function setupScrollSpy() {
  * EN: Setup scroll progress bar
  * RU: Настройка индикатора прогресса прокрутки
  */
-function setupScrollProgress() {
-  const progressBar = document.querySelector('.scroll-progress span');
+function setupScrollProgress(): void {
+  const progressBar = document.querySelector<HTMLElement>('.scroll-progress span');
   if (!progressBar) {
     return;
   }
 
   /* EN: Update scroll progress on scroll
      RU: Обновление прогресса прокрутки при скролле */
-  function updateScrollProgress() {
+  function updateScrollProgress(): void {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const ratio = max > 0 ? window.scrollY / max : 0;
-    progressBar.style.width = (ratio * 100).toFixed(2) + '%';
+    if (progressBar) {
+      progressBar.style.width = (ratio * 100).toFixed(2) + '%';
+    }
   }
 
   window.addEventListener('scroll', updateScrollProgress, { passive: true });
@@ -174,7 +176,7 @@ function setupScrollProgress() {
  * EN: Restore scroll position from session storage
  * RU: Восстановление позиции прокрутки из session storage
  */
-function setupScrollRestore() {
+function setupScrollRestore(): void {
   const STORAGE_KEY = 'scroll:restore';
 
   const restore = () => {
@@ -230,7 +232,7 @@ function setupScrollRestore() {
  * EN: Initialize navigation component
  * RU: Инициализация компонента навигации
  */
-export function init() {
+export function init(): void {
   setupMobileNav();
   setupSmoothScroll();
   setupScrollSpy();

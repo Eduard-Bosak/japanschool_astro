@@ -7,13 +7,25 @@
  * EN: Sakura animation state
  * RU: Состояние анимации сакуры
  */
-let canvas, ctx;
-let petals = [];
-let width = 0,
-  height = 0;
+let canvas: HTMLCanvasElement | null = null;
+let ctx: CanvasRenderingContext2D | null = null;
+let petals: Petal[] = [];
+let width = 0;
+let height = 0;
 let petalsStarted = false;
 let petalsPaused = false;
 let frameSkip = 0;
+
+interface Petal {
+  x: number;
+  y: number;
+  z: number;
+  r: number;
+  tilt: number;
+  drift: number;
+  vy: number;
+  vr: number;
+}
 
 /* EN: Petal count based on screen size
    RU: Количество лепестков в зависимости от размера экрана */
@@ -24,7 +36,7 @@ const PETAL_COUNT = basePetalCount;
  * EN: Resize canvas to match window dimensions
  * RU: Изменение размера канваса под размеры окна
  */
-function resize() {
+function resize(): void {
   if (!canvas) {
     return;
   }
@@ -35,10 +47,8 @@ function resize() {
 /**
  * EN: Create new petal with random properties
  * RU: Создание нового лепестка со случайными свойствами
- *
- * @returns {Object} - Petal object | Объект лепестка
  */
-function newPetal() {
+function newPetal(): Petal {
   const size = Math.random() * 10 + 5;
   return {
     x: Math.random() * width,
@@ -56,17 +66,17 @@ function newPetal() {
  * EN: Initialize petals array
  * RU: Инициализация массива лепестков
  */
-function initPetals() {
+function initPetals(): void {
   petals = Array.from({ length: PETAL_COUNT }, () => newPetal());
 }
 
 /**
  * EN: Draw petal on canvas with gradient
  * RU: Отрисовка лепестка на канвасе с градиентом
- *
- * @param {Object} p - Petal object | Объект лепестка
  */
-function drawPetal(p) {
+function drawPetal(p: Petal): void {
+  if (!ctx) return;
+
   /* EN: Create radial gradient for petal
      RU: Создание радиального градиента для лепестка */
   const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
@@ -90,10 +100,8 @@ function drawPetal(p) {
 /**
  * EN: Update petal position and rotation
  * RU: Обновление позиции и вращения лепестка
- *
- * @param {Object} p - Petal object | Объект лепестка
  */
-function updatePetal(p) {
+function updatePetal(p: Petal): void {
   /* EN: Update position with depth-based speed
      RU: Обновление позиции со скоростью, зависящей от глубины */
   p.y += p.vy * p.z * 1.8;
@@ -130,7 +138,7 @@ function updatePetal(p) {
  * EN: Animation loop
  * RU: Цикл анимации
  */
-function loop() {
+function loop(): void {
   if (!ctx) {
     return;
   }
@@ -171,7 +179,7 @@ function loop() {
  * EN: Start sakura animation
  * RU: Запуск анимации сакуры
  */
-function startPetals() {
+function startPetals(): void {
   if (petalsStarted || !canvas || !ctx) {
     return;
   }
@@ -190,7 +198,7 @@ function startPetals() {
  * EN: Pause animation (for tab visibility changes)
  * RU: Пауза анимации (для изменений видимости вкладки)
  */
-export function pause() {
+export function pause(): void {
   petalsPaused = true;
 }
 
@@ -198,7 +206,7 @@ export function pause() {
  * EN: Resume animation
  * RU: Возобновление анимации
  */
-export function resume() {
+export function resume(): void {
   petalsPaused = false;
 }
 
@@ -206,8 +214,8 @@ export function resume() {
  * EN: Initialize sakura canvas animation
  * RU: Инициализация анимации канваса сакуры
  */
-export function init() {
-  canvas = document.getElementById('sakura-canvas');
+export function init(): void {
+  canvas = document.getElementById('sakura-canvas') as HTMLCanvasElement;
   if (!canvas) {
     return;
   }

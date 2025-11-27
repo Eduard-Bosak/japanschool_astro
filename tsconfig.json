@@ -7,7 +7,8 @@
       "@scripts/*": ["src/scripts/*"],
       "@styles/*": ["src/styles/*"],
       "@assets/*": ["src/assets/*"]
-    }
+    },
+    "noEmit": true
   },
   "include": ["src", "content", "astro.config.mjs", "site.config.json"]
 }

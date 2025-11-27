@@ -3,19 +3,21 @@
    Компонент переключения темы
    ============================================= */
 
-import { track } from '../utils/analytics.js';
+import { track } from '../utils/analytics';
 
 /* EN: Root element and theme order
    RU: Корневой элемент и порядок тем */
-const root = document.documentElement;
+const root = document.documentElement as HTMLElement;
+
+type Theme = 'light' | 'dark';
 
 /**
  * EN: Initialize theme from localStorage or system preference
  * RU: Инициализация темы из localStorage или системных настроек
  */
-export function initTheme() {
+export function initTheme(): void {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const storedTheme = localStorage.getItem('theme');
+  const storedTheme = localStorage.getItem('theme') as Theme | null;
 
   if (storedTheme && (storedTheme === 'light' || storedTheme === 'dark')) {
     root.setAttribute('data-theme', storedTheme);
@@ -30,9 +32,9 @@ export function initTheme() {
  * EN: Toggle between light and dark theme
  * RU: Переключение между светлой и темной темой
  */
-export function cycleTheme() {
-  const current = root.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
+export function cycleTheme(): void {
+  const current = (root.getAttribute('data-theme') as Theme) || 'dark';
+  const next: Theme = current === 'dark' ? 'light' : 'dark';
 
   root.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
@@ -45,10 +47,8 @@ export function cycleTheme() {
 /**
  * EN: Set specific theme
  * RU: Установка конкретной темы
- *
- * @param {string} theme - Theme name ('light' or 'dark') | Название темы
  */
-export function setTheme(theme) {
+export function setTheme(theme: Theme): void {
   if (theme === 'light' || theme === 'dark') {
     root.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
@@ -59,18 +59,16 @@ export function setTheme(theme) {
 /**
  * EN: Get current theme
  * RU: Получение текущей темы
- *
- * @returns {string} - Current theme | Текущая тема
  */
-export function getCurrentTheme() {
-  return root.getAttribute('data-theme') || 'dark';
+export function getCurrentTheme(): Theme {
+  return (root.getAttribute('data-theme') as Theme) || 'dark';
 }
 
 /**
  * EN: Setup theme toggle button with animations
  * RU: Настройка кнопки переключения темы с анимациями
  */
-export function setupThemeToggle() {
+export function setupThemeToggle(): void {
   const themeBtn = document.getElementById('themeToggle');
   if (!themeBtn) {
     return;
@@ -120,7 +118,7 @@ export function setupThemeToggle() {
  * EN: Initialize theme system
  * RU: Инициализация системы тем
  */
-export function init() {
+export function init(): void {
   initTheme();
   setupThemeToggle();
 }

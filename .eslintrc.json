@@ -130,7 +130,7 @@
       }
     },
     {
-      "files": ["src/scripts/**/*.js"],
+      "files": ["src/scripts/**/*.ts"],
       "rules": {
         "no-inner-declarations": "off"
       }
@@ -143,6 +143,6 @@
     "*.bundle.js",
     ".lighthouseci/",
     "public/",
-    "src/scripts/blog-post.js"
+    "src/scripts/blog-post.ts"
   ]
 }

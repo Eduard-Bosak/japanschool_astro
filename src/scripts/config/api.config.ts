@@ -11,9 +11,31 @@
  * Production: https://your-backend-domain.com
  */
 
-const API_BASE_URL = process.env.API_URL || 'http://localhost:3000';
+interface APIEndpoints {
+  submitForm: string;
+  submissions: string;
+  health: string;
+}
 
-export const API_CONFIG = {
+interface APIConfig {
+  baseURL: string;
+  endpoints: APIEndpoints;
+  timeout: number;
+  retries: number;
+}
+
+declare global {
+  interface Window {
+    __API_ENDPOINTS: {
+      lead: string;
+      program: string;
+    };
+  }
+}
+
+const API_BASE_URL = import.meta.env.API_URL || 'http://localhost:3000';
+
+export const API_CONFIG: APIConfig = {
   baseURL: API_BASE_URL,
   endpoints: {
     submitForm: `${API_BASE_URL}/api/submit-form`,

@@ -825,7 +825,7 @@ production нужен HTTPS.
 - **Files:**
   - `server/index.js:224` - Unexpected console statement
   - `server/index.js:270` - Unexpected console statement
-  - `src/scripts/components/enhanced-animations.js:297` - console.log
+  - `src/scripts/components/enhanced-animations.ts:297` - console.log
 - **Impact:** Performance overhead, information leakage
 - **Fix:** Remove or wrap in `if (process.env.NODE_ENV !== 'production')`
 

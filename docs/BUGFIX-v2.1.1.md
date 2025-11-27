@@ -196,7 +196,7 @@ btn.addEventListener('click', () => {
 
 ## 🔧 Изменённые файлы
 
-1. **src/scripts/components/theme.js**
+1. **src/scripts/components/theme.ts**
    - Упрощено до `dark ⇄ light`
    - Убран массив `themeOrder`
    - Валидация темы в `setTheme()`
@@ -281,6 +281,4 @@ Ctrl + F5 (hard reload)
 
 ---
 
-**Автор:** GitHub Copilot  
-**Проект:** 日本語School Landing  
-**Лицензия:** MIT
+**Автор:** GitHub Copilot **Проект:** 日本語School Landing **Лицензия:** MIT

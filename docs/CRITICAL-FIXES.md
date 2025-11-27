@@ -338,7 +338,7 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
 // server/index.js:224
 console.log(`✅ New submission from ${sanitizedData.name}`);
 
-// src/scripts/components/enhanced-animations.js:297
+// src/scripts/components/enhanced-animations.ts:297
 console.log('✨ Enhanced animations initialized');
 ```
 

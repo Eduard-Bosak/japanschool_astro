@@ -7,8 +7,8 @@
  * EN: Parallax scroll effect for hero section
  * RU: Параллакс эффект для hero секции
  */
-export function initParallax() {
-  const hero = document.querySelector('.hero');
+export function initParallax(): void {
+  const hero = document.querySelector<HTMLElement>('.hero');
   if (!hero) {
     return;
   }
@@ -27,9 +27,9 @@ export function initParallax() {
  * EN: Smooth scroll reveal animations
  * RU: Плавное появление элементов при прокрутке
  */
-export function initScrollReveal() {
+export function initScrollReveal(): void {
   // Элементы для анимации появления
-  const elementsToReveal = document.querySelectorAll(`
+  const elementsToReveal = document.querySelectorAll<HTMLElement>(`
     .program-card,
     .benefit-card,
     .review-card,
@@ -47,13 +47,13 @@ export function initScrollReveal() {
     el.classList.add('reveal');
   });
 
-  const revealElement = (el) => {
+  const revealElement = (el: HTMLElement) => {
     if (!el.classList.contains('revealed')) {
       el.classList.add('revealed');
     }
   };
 
-  let observer = null;
+  let observer: IntersectionObserver | null = null;
 
   const revealVisibleElements = () => {
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -85,14 +85,14 @@ export function initScrollReveal() {
   observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        revealElement(entry.target);
-        observer.unobserve(entry.target);
+        revealElement(entry.target as HTMLElement);
+        observer?.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
   elementsToReveal.forEach((el) => {
-    observer.observe(el);
+    observer?.observe(el);
   });
 
   // Подстраховка: мгновенно показываем элементы, уже находящиеся в зоне видимости
@@ -106,21 +106,23 @@ export function initScrollReveal() {
  * EN: Enhanced hover effects for cards
  * RU: Улучшенные hover эффекты для карточек
  */
-export function initCardHoverEffects() {
-  const cards = document.querySelectorAll('.program-card, .benefit-card, .review-card');
+export function initCardHoverEffects(): void {
+  const cards = document.querySelectorAll<HTMLElement>(
+    '.program-card, .benefit-card, .review-card'
+  );
 
   cards.forEach((card) => {
-    card.addEventListener('mouseenter', function () {
-      this.style.transform = 'translateY(-10px) scale(1.02)';
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-10px) scale(1.02)';
     });
 
-    card.addEventListener('mouseleave', function () {
-      this.style.transform = '';
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
     });
 
     // 3D tilt effect
-    card.addEventListener('mousemove', function (e) {
-      const rect = this.getBoundingClientRect();
+    card.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
@@ -130,11 +132,11 @@ export function initCardHoverEffects() {
       const rotateX = (y - centerY) / 20;
       const rotateY = (centerX - x) / 20;
 
-      this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
     });
 
-    card.addEventListener('mouseleave', function () {
-      this.style.transform = '';
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
     });
   });
 }
@@ -143,11 +145,11 @@ export function initCardHoverEffects() {
  * EN: Animated counter for statistics
  * RU: Анимированный счетчик для статистики
  */
-export function initCounterAnimation() {
-  const counters = document.querySelectorAll('[data-counter]');
+export function initCounterAnimation(): void {
+  const counters = document.querySelectorAll<HTMLElement>('[data-counter]');
 
-  const animateCounter = (counter) => {
-    const target = parseInt(counter.getAttribute('data-counter'));
+  const animateCounter = (counter: HTMLElement) => {
+    const target = parseInt(counter.getAttribute('data-counter') || '0', 10);
     const duration = 2000;
     const increment = target / (duration / 16);
     let current = 0;
@@ -155,10 +157,10 @@ export function initCounterAnimation() {
     const updateCounter = () => {
       current += increment;
       if (current < target) {
-        counter.textContent = Math.floor(current);
+        counter.textContent = Math.floor(current).toString();
         requestAnimationFrame(updateCounter);
       } else {
-        counter.textContent = target;
+        counter.textContent = target.toString();
       }
     };
 
@@ -167,10 +169,11 @@ export function initCounterAnimation() {
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
-        animateCounter(entry.target);
-        entry.target.classList.add('counted');
-        observer.unobserve(entry.target);
+      const target = entry.target as HTMLElement;
+      if (entry.isIntersecting && !target.classList.contains('counted')) {
+        animateCounter(target);
+        target.classList.add('counted');
+        observer.unobserve(target);
       }
     });
   });
@@ -182,8 +185,8 @@ export function initCounterAnimation() {
  * EN: Typing animation effect
  * RU: Эффект печатного текста
  */
-export function initTypingEffect(selector, text, speed = 100) {
-  const element = document.querySelector(selector);
+export function initTypingEffect(selector: string, text: string, speed = 100): void {
+  const element = document.querySelector<HTMLElement>(selector);
   if (!element) {
     return;
   }
@@ -195,7 +198,7 @@ export function initTypingEffect(selector, text, speed = 100) {
     if (index < text.length) {
       element.textContent += text.charAt(index);
       index++;
-      setTimeout(type, speed);
+      window.setTimeout(type, speed);
     }
   };
 
@@ -206,13 +209,13 @@ export function initTypingEffect(selector, text, speed = 100) {
  * EN: Ripple effect on button click
  * RU: Эффект ряби при клике на кнопку
  */
-export function initRippleEffect() {
-  const buttons = document.querySelectorAll('.btn, button');
+export function initRippleEffect(): void {
+  const buttons = document.querySelectorAll<HTMLElement>('.btn, button');
 
   buttons.forEach((button) => {
-    button.addEventListener('click', function (e) {
+    button.addEventListener('click', (e: MouseEvent) => {
       const ripple = document.createElement('span');
-      const rect = this.getBoundingClientRect();
+      const rect = button.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height);
       const x = e.clientX - rect.left - size / 2;
       const y = e.clientY - rect.top - size / 2;
@@ -222,9 +225,9 @@ export function initRippleEffect() {
       ripple.style.top = y + 'px';
       ripple.classList.add('ripple');
 
-      this.appendChild(ripple);
+      button.appendChild(ripple);
 
-      setTimeout(() => ripple.remove(), 600);
+      window.setTimeout(() => ripple.remove(), 600);
     });
   });
 }
@@ -233,8 +236,8 @@ export function initRippleEffect() {
  * EN: Floating animation for images
  * RU: Плавающая анимация для изображений
  */
-export function initFloatingAnimation() {
-  const floatingElements = document.querySelectorAll('[data-float]');
+export function initFloatingAnimation(): void {
+  const floatingElements = document.querySelectorAll<HTMLElement>('[data-float]');
 
   floatingElements.forEach((el, index) => {
     el.style.animation = `float ${3 + index * 0.5}s ease-in-out infinite`;
@@ -246,15 +249,15 @@ export function initFloatingAnimation() {
  * EN: Text gradient animation
  * RU: Анимация градиента текста
  */
-export function initGradientText() {
-  const gradientTexts = document.querySelectorAll('[data-gradient]');
+export function initGradientText(): void {
+  const gradientTexts = document.querySelectorAll<HTMLElement>('[data-gradient]');
 
   gradientTexts.forEach((text) => {
     text.style.backgroundImage = 'linear-gradient(45deg, var(--primary), var(--accent))';
     text.style.backgroundSize = '200% 200%';
     text.style.animation = 'gradientShift 3s ease infinite';
-    text.style.webkitBackgroundClip = 'text';
-    text.style.webkitTextFillColor = 'transparent';
+    text.style.setProperty('-webkit-background-clip', 'text');
+    text.style.setProperty('-webkit-text-fill-color', 'transparent');
   });
 }
 
@@ -262,8 +265,8 @@ export function initGradientText() {
  * EN: Stagger animation for lists
  * RU: Поэтапная анимация для списков
  */
-export function initStaggerAnimation(selector, delay = 100) {
-  const items = document.querySelectorAll(selector);
+export function initStaggerAnimation(selector: string, delay = 100): void {
+  const items = document.querySelectorAll<HTMLElement>(selector);
 
   items.forEach((item, index) => {
     item.style.animationDelay = `${index * delay}ms`;
@@ -275,7 +278,7 @@ export function initStaggerAnimation(selector, delay = 100) {
  * EN: Progress bar animation on scroll
  * RU: Анимация прогресс-бара при прокрутке
  */
-export function initScrollProgress() {
+export function initScrollProgress(): void {
   const progressBar = document.createElement('div');
   progressBar.id = 'scroll-progress';
   progressBar.style.cssText = `
@@ -291,7 +294,7 @@ export function initScrollProgress() {
 
   window.addEventListener('scroll', () => {
     const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (window.pageYOffset / windowHeight) * 100;
+    const scrolled = windowHeight > 0 ? (window.pageYOffset / windowHeight) * 100 : 0;
     progressBar.style.width = scrolled + '%';
   });
 }
@@ -300,20 +303,20 @@ export function initScrollProgress() {
  * EN: Magnetic button effect
  * RU: Магнитный эффект для кнопок
  */
-export function initMagneticButtons() {
-  const buttons = document.querySelectorAll('[data-magnetic]');
+export function initMagneticButtons(): void {
+  const buttons = document.querySelectorAll<HTMLElement>('[data-magnetic]');
 
   buttons.forEach((button) => {
-    button.addEventListener('mousemove', function (e) {
-      const rect = this.getBoundingClientRect();
+    button.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = button.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
 
-      this.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+      button.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
     });
 
-    button.addEventListener('mouseleave', function () {
-      this.style.transform = '';
+    button.addEventListener('mouseleave', () => {
+      button.style.transform = '';
     });
   });
 }
@@ -322,7 +325,7 @@ export function initMagneticButtons() {
  * EN: Initialize all enhanced animations
  * RU: Инициализация всех расширенных анимаций
  */
-export function init() {
+export function init(): void {
   // Основные анимации
   initScrollReveal();
   initCardHoverEffects();

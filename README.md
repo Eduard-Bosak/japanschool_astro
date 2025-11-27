@@ -371,31 +371,31 @@ npm run lighthouse:open
 - `footer.css` (121 строка) — Footer с social links
 - `utilities.css` (180 строк) — Анимации, responsive helpers
 
-### JavaScript модули (11 файлов, ES6)
+### TypeScript модули (11 файлов, ES Modules)
 
 **Utilities:**
 
-- `analytics.js` — Легковесная очередь событий аналитики
-- `api.js` — Отправка на backend, offline queue, mock mode
+- `analytics.ts` — Легковесная очередь событий аналитики
+- `api.ts` — Отправка на backend, offline queue, mock mode
 
 **Компоненты:**
 
-- `theme.js` — Переключение между 6 темами (dark, light, spring, autumn, winter,
+- `theme.ts` — Переключение между 6 темами (dark, light, spring, autumn, winter,
   sakura)
-- `preloader.js` — Fade-out прелоадера после загрузки
-- `navigation.js` — Мобильное меню, smooth scroll, scroll spy, scroll progress
-- `animations.js` — IntersectionObserver, count-up, parallax, spotlight cursor
-- `sakura.js` — Canvas анимация падающих лепестков сакуры (200+ строк)
-- `faq.js` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage
+- `preloader.ts` — Fade-out прелоадера после загрузки
+- `navigation.ts` — Мобильное меню, smooth scroll, scroll spy, scroll progress
+- `animations.ts` — IntersectionObserver, count-up, parallax, spotlight cursor
+- `sakura.ts` — Canvas анимация падающих лепестков сакуры (200+ строк)
+- `faq.ts` — FAQ аккордеон с поиском, фильтрами, прогресс-баром, localStorage
   (480+ строк)
-- `carousel.js` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+
+- `carousel.ts` — Карусель отзывов с auto-play, drag/swipe, keyboard nav (330+
   строк)
-- `gallery.js` — Lightbox с клавиатурной навигацией и accessibility (160+ строк)
-- `forms.js` — Валидация форм, modal управление, отправка данных (280+ строк)
+- `gallery.ts` — Lightbox с клавиатурной навигацией и accessibility (160+ строк)
+- `forms.ts` — Валидация форм, modal управление, отправка данных (280+ строк)
 
 **Main entry:**
 
-- `main.js` — Импорт и инициализация всех модулей, responsive images
+- `main.ts` — Импорт и инициализация всех модулей, responsive images
 
 ### Добавление нового модуля
 
@@ -408,13 +408,15 @@ npm run lighthouse:open
    ```
 3. Запустить `npm run build`
 
-#### JavaScript модуль:
+#### TypeScript модуль:
 
-1. Создать файл в `src/scripts/components/myComponent.js`
-2. Добавить импорт в `src/scripts/main.js`:
-   ```javascript
-   import { initMyComponent } from './components/myComponent.js';
-   ```
+1. Создать файл в `src/scripts/components/myComponent.ts`
+2. Добавить импорт в `src/scripts/main.ts`:
+
+```typescript
+import { initMyComponent } from './components/myComponent.ts';
+```
+
 3. Вызвать функцию инициализации
 
 ### Создание новой статьи в блоге
@@ -479,8 +481,8 @@ npm run lighthouse:open
 
 **Количество лепестков сакуры:**
 
-```javascript
-/* src/scripts/components/sakura.js */
+```typescript
+/* src/scripts/components/sakura.ts */
 const PETAL_COUNT = 50; // Уменьшить для слабых устройств
 ```
 

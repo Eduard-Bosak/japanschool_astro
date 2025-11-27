@@ -176,7 +176,7 @@ src/
 
 ### Отключить определенные анимации:
 
-Откройте `src/scripts/components/enhanced-animations.js`:
+Откройте `src/scripts/components/enhanced-animations.ts`:
 
 ```javascript
 export function init() {

@@ -32,7 +32,7 @@ npm run lint
 npm run lint:fix
 
 # Проверить конкретный файл
-npx eslint src/scripts/main.js
+npx eslint src/scripts/main.ts
 
 # Проверить с детальным выводом
 npx eslint src/**/*.js --format stylish
@@ -589,7 +589,7 @@ rm -rf node_modules package-lock.json
 npm install
 
 # Проверить конфигурацию
-npx eslint --print-config src/scripts/main.js
+npx eslint --print-config src/scripts/main.ts
 ```
 
 ### Prettier конфликтует с ESLint

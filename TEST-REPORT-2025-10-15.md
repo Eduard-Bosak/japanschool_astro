@@ -65,7 +65,7 @@ Copilot
 
 **Проверенные файлы:**
 
-- `src/scripts/**/*.js` (11 модулей)
+- `src/scripts/**/*.ts` (11 модулей)
 - `build.mjs` (система сборки)
 - `og.js` (генератор OG изображений)
 
@@ -87,10 +87,10 @@ Copilot
 
 1. docs/FAQ-STYLISH-v2.2.1.md
 2. docs/READING-MODE-GUIDE.md
-3. src/scripts/components/faq.js
-4. src/scripts/components/sakura.js
-5. src/scripts/components/theme.js
-6. src/scripts/main.js
+3. src/scripts/components/faq.ts
+4. src/scripts/components/sakura.ts
+5. src/scripts/components/theme.ts
+6. src/scripts/main.ts
 7. src/styles.css
 8. src/styles/components/blog-posts.css
 9. src/styles/components/footer.css
@@ -419,10 +419,10 @@ Sitemap: https://example.com/sitemap.xml
 
 - `docs/FAQ-STYLISH-v2.2.1.md`
 - `docs/READING-MODE-GUIDE.md`
-- `src/scripts/components/faq.js`
-- `src/scripts/components/sakura.js`
-- `src/scripts/components/theme.js`
-- `src/scripts/main.js`
+- `src/scripts/components/faq.ts`
+- `src/scripts/components/sakura.ts`
+- `src/scripts/components/theme.ts`
+- `src/scripts/main.ts`
 - `src/styles.css`
 - `src/styles/components/blog-posts.css`
 - `src/styles/components/footer.css`

@@ -117,8 +117,8 @@
 
 **Использование в коде:**
 
-```javascript
-import { showLoadingIndicator } from './components/interactive.js';
+```typescript
+import { showLoadingIndicator } from './components/interactive.ts';
 
 const button = document.querySelector('.submit-btn');
 const hideLoading = showLoadingIndicator(button);

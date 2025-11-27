@@ -60,7 +60,7 @@
 
 **Файлы:**
 
-- `src/scripts/components/interactive.js` (326 строк)
+- `src/scripts/components/interactive.ts` (326 строк)
 - `src/styles/components/interactive.css` (267 строк)
 - `docs/INTERACTIVE-GUIDE.md` (440+ строк документации)
 
@@ -79,7 +79,7 @@
 
 **Интеграция:**
 
-- ✅ Импортирован в `main.js`
+- ✅ Импортирован в `main.ts`
 - ✅ CSS подключен в `styles.css`
 - ✅ Ready to use с HTML атрибутами
 
@@ -196,7 +196,7 @@ japanschool/
 │   ├── scripts/
 │   │   ├── main.js                 (Entry point - импорты)
 │   │   └── components/
-│   │       ├── interactive.js      (NEW! 326 строк)
+│   │       ├── interactive.ts      (NEW! 326 строк)
 │   │       └── enhanced-animations.js
 │   │
 │   └── styles/
@@ -308,7 +308,7 @@ curl -X POST http://localhost:3000/api/submit-form \
 
 ```
 styles.073e8b09e2.css  - ~45KB (включая interactive.css)
-main.a1d5500807.js     - ~52KB (включая interactive.js)
+main.a1d5500807.js     - ~52KB (включая interactive.ts)
 ```
 
 ### Lighthouse Score Цели
@@ -331,7 +331,7 @@ main.a1d5500807.js     - ~52KB (включая interactive.js)
 
 ```javascript
 // Import
-import * as interactive from './components/interactive.js';
+import * as interactive from './components/interactive.ts';
 
 // Initialize all features
 interactive.init();
