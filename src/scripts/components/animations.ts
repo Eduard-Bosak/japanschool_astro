@@ -139,32 +139,9 @@ function setupCountUpAnimations(): void {
  * RU: Настройка эффекта параллакса героя при прокрутке
  */
 function setupHeroParallax(): void {
-  /* EN: Skip if reduced motion preference
-     RU: Пропустить если предпочтение уменьшенного движения */
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return;
-  }
-
-  const hero = document.querySelector<HTMLElement>('.hero');
-  if (!hero) {
-    return;
-  }
-
-  /* EN: Parallax scroll handler
-     RU: Обработчик параллакс-прокрутки */
-  function updateParallax(): void {
-    const scrollY = window.scrollY;
-    const heroHeight = hero!.offsetHeight;
-
-    /* EN: Only apply parallax if hero is in viewport
-       RU: Применять параллакс только если герой в области просмотра */
-    if (scrollY < heroHeight) {
-      const offset = scrollY * 0.4;
-      hero!.style.transform = `translateY(${offset}px)`;
-    }
-  }
-
-  window.addEventListener('scroll', updateParallax, { passive: true });
+  // EN: Disabled - causes choppy scroll
+  // RU: Отключено - вызывает рывки при скролле
+  return;
 }
 
 /**
