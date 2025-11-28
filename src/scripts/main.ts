@@ -138,22 +138,29 @@ function initComponents(): void {
     console.error('Forms init failed', e);
   }
 
-  /* EN: Additional features
-      RU: Дополнительные функции */
-  void setupResponsiveImages().then(() => {
-    /* EN: Emit event when images are ready, gallery will subscribe if loaded
-       RU: Отправка события когда изображения готовы, галерея подпишется если загружена */
-    eventBus.emit('images:ready');
-  });
-
   /* EN: Lazy load gallery if grid exists
      RU: Ленивая загрузка галереи если существует сетка */
-  if (document.querySelector('.gallery')) {
+  const galleryEl = document.querySelector('.gallery');
+  console.log('[Main] Gallery element found:', !!galleryEl);
+
+  if (galleryEl) {
+    console.log('[Main] Loading gallery module...');
     import('./components/gallery.ts')
       .then(() => {
-        // Gallery auto-initializes on 'images:ready' event
+        console.log('[Main] Gallery module loaded successfully');
+        // Now emit images:ready so gallery can initialize
+        void setupResponsiveImages().then(() => {
+          console.log('[Main] Images ready, emitting event');
+          eventBus.emit('images:ready');
+        });
       })
       .catch((e) => console.error('Failed to load gallery module', e));
+  } else {
+    // No gallery, just setup images
+    void setupResponsiveImages().then(() => {
+      console.log('[Main] Images ready, emitting event');
+      eventBus.emit('images:ready');
+    });
   }
 
   // Initialize blog section interactions

@@ -15,25 +15,25 @@
 }
 
 /* Section header | Заголовок секции */
-.section-head {
+.section__header {
   max-width: 780px;
   margin: 0 auto 3.5rem;
   text-align: center;
 }
 
-.section-head p {
+.section__header p {
   margin-top: 0.75rem;
   font-size: 1.05rem;
 }
 
 /* About Section | Секция "О школе" */
-.about-grid {
+.about {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.about-card {
+.about__card {
   background: linear-gradient(145deg, var(--surface), var(--surface-alt));
   padding: 1.35rem 1.25rem 1.4rem;
   border-radius: var(--radius);
@@ -43,7 +43,7 @@
   border: 1px solid rgba(255 255 255 / 0.06);
 }
 
-.about-card::before {
+.about__card::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -52,39 +52,39 @@
   mix-blend-mode: overlay;
 }
 
-.about-card h3 {
+.about__card h3 {
   margin-top: 0;
   font-size: 1.15rem;
 }
 
-.about-card p {
+.about__card p {
   font-size: 0.88rem;
   color: var(--ink-dim);
 }
 
 /* Founder Section | Секция "Основатель" */
-.founder-inner {
+.founder {
   display: grid;
   gap: 3rem;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   align-items: start;
 }
 
-.founder-photo img {
+.founder__photo img {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   outline: 1px solid rgba(255 255 255 / 0.08);
 }
 
 /* Highlight metrics | Метрики достижений */
-.highlight-metrics {
+.metrics {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
   margin-top: 1.75rem;
 }
 
-.metric {
+.metrics__item {
   background: linear-gradient(
     140deg,
     rgba(var(--primary-rgb) / 0.12),
@@ -97,7 +97,7 @@
   overflow: hidden;
 }
 
-.metric .num {
+.metrics__num {
   font-size: 1.85rem;
   display: block;
   font-weight: 600;
@@ -107,7 +107,7 @@
   color: transparent;
 }
 
-.metric .label {
+.metrics__label {
   font-size: 0.7rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -132,13 +132,13 @@
   background: linear-gradient(to bottom, var(--primary), transparent);
 }
 
-.timeline-item {
+.timeline__item {
   position: relative;
   padding-left: 2.75rem;
   margin-bottom: 2rem;
 }
 
-.timeline-item::before {
+.timeline__item::before {
   content: '';
   position: absolute;
   left: 4px;
@@ -152,7 +152,7 @@
     0 0 0 8px rgba(var(--primary-rgb) / 0.05);
 }
 
-.timeline-item .time {
+.timeline__time {
   font-size: 0.75rem;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -160,19 +160,19 @@
   margin-bottom: 0.3rem;
 }
 
-.timeline-item .content {
+.timeline__content {
   font-size: 0.95rem;
   color: var(--ink-soft);
 }
 
 /* Programs Section | Секция "Программы" */
-.program-cards {
+.programs {
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.program-card {
+.programs__card {
   position: relative;
   background: linear-gradient(150deg, var(--surface), var(--surface-alt));
   padding: 1.5rem 1.4rem 1.7rem;
@@ -187,7 +187,7 @@
     box-shadow 0.4s;
 }
 
-.program-card::before {
+.programs__card::before {
   content: '';
   position: absolute;
   inset: -1px;
@@ -201,17 +201,17 @@
   pointer-events: none;
 }
 
-.program-card:hover {
+.programs__card:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow: var(--shadow-lg);
 }
 
-.program-card h3 {
+.programs__card h3 {
   margin-top: 0;
   font-size: 1.2rem;
 }
 
-.program-card .mini-list {
+.programs__list {
   list-style: none;
   padding: 0;
   margin: 1rem 0;
@@ -219,14 +219,14 @@
   gap: 0.5rem;
 }
 
-.program-card .mini-list li {
+.programs__list li {
   font-size: 0.8rem;
   color: var(--ink-dim);
   padding-left: 1.2rem;
   position: relative;
 }
 
-.program-card .mini-list li::before {
+.programs__list li::before {
   content: '→';
   position: absolute;
   left: 0;
@@ -234,96 +234,57 @@
 }
 
 /* Method grid | Сетка методики */
-.method-grid {
+.method {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.method-item {
+.method__item {
   background: var(--surface);
   padding: 1.2rem 1.15rem 1.3rem;
   border-radius: var(--radius);
   border: 1px solid rgba(255 255 255 / 0.06);
 }
 
-.method-item h3 {
+.method__item h3 {
   margin: 0 0 0.55rem;
   font-size: 1rem;
   color: var(--primary);
 }
 
-.method-item p {
+.method__item p {
   font-size: 0.85rem;
   color: var(--ink-dim);
   margin: 0;
 }
 
-/* Gallery grid | Сетка галереи */
-.gallery-grid {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.gallery-grid figure {
-  margin: 0;
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.4s ease;
-}
-
-.gallery-grid figure:hover {
-  transform: translateY(-4px) scale(1.02);
-}
-
-.gallery-grid figure img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.gallery-grid figcaption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1rem;
-  background: linear-gradient(to top, rgba(0 0 0 / 0.8), transparent);
-  color: #fff;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
 /* Contact section | Секция контактов */
-.contact-inner {
+.contact {
   display: grid;
   gap: 3rem;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   align-items: start;
 }
 
-.contact-list {
+.contact__list {
   list-style: none;
   padding: 0;
   margin: 1.5rem 0 0;
 }
 
-.contact-list li {
+.contact__list li {
   margin-bottom: 0.85rem;
   font-size: 0.9rem;
   color: var(--ink-soft);
 }
 
-.contact-list a {
+.contact__list a {
   color: var(--primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.contact-list a:hover {
+.contact__list a:hover {
   color: var(--accent);
 }

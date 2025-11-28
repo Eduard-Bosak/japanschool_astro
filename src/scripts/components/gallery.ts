@@ -164,21 +164,35 @@ function setupEventListeners(): void {
  * RU: Настройка обработчиков кликов по изображениям галереи
  */
 function setupGalleryImages(): void {
-  images.forEach((im, i) => {
-    /* EN: Make images focusable and clickable
-       RU: Сделать изображения фокусируемыми и кликабельными */
-    im.style.cursor = 'zoom-in';
-    im.setAttribute('tabindex', '0');
+  const gallery = document.querySelector<HTMLElement>('.gallery');
+  if (!gallery) {
+    console.warn('[Gallery] Gallery element not found');
+    return;
+  }
+
+  const figures = Array.from(gallery.querySelectorAll('.gallery__item'));
+  console.log('[Gallery] Setting up click handlers for', figures.length, 'items');
+
+  figures.forEach((figure, i) => {
+    /* EN: Make figures focusable and clickable
+       RU: Сделать фигуры фокусируемыми и кликабельными */
+    (figure as HTMLElement).style.cursor = 'zoom-in';
+    figure.setAttribute('tabindex', '0');
 
     /* EN: Click handler
        RU: Обработчик клика */
-    im.addEventListener('click', () => open(i));
+    figure.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('[Gallery] Opening image', i);
+      open(i);
+    });
 
     /* EN: Keyboard handler
        RU: Обработчик клавиатуры */
-    im.addEventListener('keydown', (e: KeyboardEvent) => {
+    figure.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
+        console.log('[Gallery] Opening image via keyboard', i);
         open(i);
       }
     });
@@ -190,8 +204,10 @@ function setupGalleryImages(): void {
  * RU: Инициализация компонента галереи с лайтбоксом
  */
 export function init(): void {
+  console.log('[Gallery] Initializing...');
   const gallery = document.querySelector<HTMLElement>('.gallery');
   if (!gallery) {
+    console.warn('[Gallery] Gallery element not found');
     return;
   }
 
@@ -202,7 +218,10 @@ export function init(): void {
     .map((f) => f.querySelector('img'))
     .filter((img): img is HTMLImageElement => img instanceof HTMLImageElement);
 
+  console.log('[Gallery] Found', images.length, 'images');
+
   if (images.length === 0) {
+    console.warn('[Gallery] No images found');
     return;
   }
 
@@ -212,6 +231,8 @@ export function init(): void {
   setupEventListeners();
   setupKeyboard();
   setupGalleryImages();
+
+  console.log('[Gallery] Initialization complete');
 }
 
 /* EN: Subscribe to images:ready event for proper initialization timing
