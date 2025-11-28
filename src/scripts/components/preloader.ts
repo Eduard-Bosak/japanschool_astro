@@ -19,8 +19,8 @@ export function init(): void {
   }
 
   // Dynamic timing strategy
-  const MIN_SHOW = 1200; // минимальное время чтобы анимация успела показаться
-  const MAX_SHOW = 6000; // жёсткий предел чтобы не висело вечно
+  const MIN_SHOW = 800; // минимальное время для плавной анимации загрузки
+  const MAX_SHOW = 2500; // максимальное время показа прелоадера
   const start = performance.now();
   let done = false;
   let progress = 0;

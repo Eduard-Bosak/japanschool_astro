@@ -80,7 +80,7 @@ function setupMicroAnimations(): void {
  * RU: Настройка анимации подсчёта для метрик
  */
 function setupCountUpAnimations(): void {
-  const nums = document.querySelectorAll<HTMLElement>('.metric .num');
+  const nums = document.querySelectorAll<HTMLElement>('.metrics__num');
   if (!nums.length) {
     return;
   }

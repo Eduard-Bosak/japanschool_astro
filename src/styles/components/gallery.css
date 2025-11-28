@@ -55,6 +55,38 @@
   }
 }
 
+/* Lightbox image | Изображение в лайтбоксе */
+.lightbox__figure img {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 80px rgba(0 0 0 / 0.5);
+}
+
+/* Close button | Кнопка закрытия */
+.lightbox__close {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  background: rgba(255 255 255 / 0.12);
+  border: 1px solid rgba(255 255 255 / 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
 /* Gallery grid layout */
 .gallery {
   display: grid;
@@ -67,19 +99,32 @@
   margin: 0;
   position: relative;
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   transition: transform 0.4s ease;
-  aspect-ratio: 4 / 5; /* Maintain 4:5 aspect ratio */
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery__item:hover {
+  transform: translateY(-4px);
 }
 
 /* Gallery image styling */
-.gallery__image {
+.gallery__item img {
   width: 100%;
-  height: 100%;
+  height: 350px;
   display: block;
   object-fit: cover;
   border-radius: var(--radius-lg);
+}
+
+/* Gallery caption */
+.gallery__caption {
+  margin-top: 0.75rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
 }
 
 /* Responsive for mobile */

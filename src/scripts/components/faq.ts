@@ -12,7 +12,6 @@ export function initFAQ() {
   const searchWrap = document.querySelector('.faq__search-wrap');
   const filters = document.querySelector('.faq__filters');
   const filterBtns = Array.from(document.querySelectorAll('.faq__filter'));
-  const bulk = document.querySelector('.faq__bulk');
   const progress = document.querySelector('.faq__progress');
   const progressBar = document.querySelector('.faq__progress-bar span') as HTMLElement;
   const progressOpened = document.getElementById('faqProgressOpened');
@@ -21,8 +20,6 @@ export function initFAQ() {
   const searchInput = document.getElementById('faqSearch') as HTMLInputElement;
   const resetBtn = document.getElementById('faqSearchReset');
   const resultsContainer = document.getElementById('faqResults');
-  const expandAllBtn = document.getElementById('faqExpandAll');
-  const collapseAllBtn = document.getElementById('faqCollapseAll');
 
   // Restore state from Store
   const savedState = store.get(STORAGE_KEY) || [];
@@ -39,7 +36,6 @@ export function initFAQ() {
   if (controls) (controls as HTMLElement).style.display = 'flex';
   if (searchWrap) (searchWrap as HTMLElement).style.display = 'flex';
   if (filters) (filters as HTMLElement).style.display = 'flex';
-  if (bulk) (bulk as HTMLElement).style.display = 'flex';
   if (progress) (progress as HTMLElement).style.display = 'flex';
 
   updateProgress();
@@ -75,26 +71,6 @@ export function initFAQ() {
       if (cat) applyFilter(cat);
     });
   });
-
-  if (expandAllBtn) {
-    expandAllBtn.addEventListener('click', () => {
-      items.forEach((item) => {
-        if (!item.classList.contains('faq__item--hidden')) {
-          openItem(item as HTMLElement);
-        }
-      });
-      saveState();
-      updateProgress();
-    });
-  }
-
-  if (collapseAllBtn) {
-    collapseAllBtn.addEventListener('click', () => {
-      items.forEach((item) => closeItem(item as HTMLElement));
-      saveState();
-      updateProgress();
-    });
-  }
 
   // Functions
   function toggleItem(item: HTMLElement) {

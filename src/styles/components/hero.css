@@ -11,6 +11,8 @@
   min-height: 100dvh;
   display: flex;
   align-items: center;
+  z-index: 1;
+  isolation: isolate;
 }
 
 /* Background gradient layer | Слой фонового градиента */
