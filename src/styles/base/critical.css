@@ -201,3 +201,85 @@ body.nav-open .nav-backdrop {
     display: none !important;
   }
 }
+
+/* =============================================
+   CLS Prevention - Aspect Ratio & Content Hints
+   Предотвращение CLS - Соотношение сторон
+   ============================================= */
+
+/* EN: Reserve space for hero images | RU: Резервирование места для hero изображений */
+.photo-stack {
+  aspect-ratio: 4 / 5;
+  contain: layout style;
+}
+
+/* EN: Gallery items aspect ratio | RU: Соотношение сторон галереи */
+.gallery__item {
+  aspect-ratio: 1 / 1;
+  contain: layout style paint;
+}
+
+/* EN: Blog cover images | RU: Обложки блога */
+.blog-post__cover {
+  aspect-ratio: 16 / 9;
+  contain: layout;
+}
+
+.blog-post__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* EN: Post cards - reserve height | RU: Карточки постов - резервирование высоты */
+.post-card__image {
+  aspect-ratio: 16 / 10;
+  contain: layout style;
+}
+
+/* EN: Review slides | RU: Слайды отзывов */
+.review-slide {
+  contain: content;
+}
+
+/* =============================================
+   GPU Acceleration Hints
+   Подсказки для GPU ускорения
+   ============================================= */
+
+/* EN: Animated elements use GPU | RU: Анимированные элементы используют GPU */
+.fade-in,
+.slide-up,
+.scale-in,
+.blur-in {
+  will-change: opacity, transform;
+}
+
+/* EN: Sakura canvas | RU: Canvas сакуры */
+#sakura-canvas {
+  will-change: contents;
+}
+
+/* EN: Carousel track | RU: Трек карусели */
+#reviewsTrack {
+  will-change: transform;
+}
+
+/* EN: Lightbox transitions | RU: Переходы лайтбокса */
+.lightbox {
+  will-change: opacity;
+  contain: strict;
+}
+
+.lightbox img {
+  will-change: transform;
+}
+
+/* EN: Remove will-change after animation ends to free memory
+   RU: Удаление will-change после завершения анимации для освобождения памяти */
+.fade-in.is-visible,
+.slide-up.is-visible,
+.scale-in.is-visible,
+.blur-in.is-visible {
+  will-change: auto;
+}

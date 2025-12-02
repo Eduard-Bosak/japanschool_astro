@@ -86,6 +86,17 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
       .skip-link:focus{top:0}
     </style>
     <slot name="head" />
+    <script is:inline>
+      // EN: Instant dark mode application to prevent flash
+      // RU: Мгновенное применение темы для предотвращения вспышки
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.remove('no-js');
+      })();
+    </script>
   </head>
   <body>
     <!-- EN: Skip link for keyboard users | RU: Skip-ссылка для пользователей клавиатуры -->

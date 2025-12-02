@@ -247,6 +247,52 @@ function setupScrollRestore(): void {
 }
 
 /**
+ * EN: Setup link prefetching on hover for faster navigation
+ * RU: Настройка prefetch ссылок при наведении для быстрой навигации
+ */
+function setupLinkPrefetch(): void {
+  const prefetched = new Set<string>();
+
+  /* EN: Prefetch internal links on hover after delay
+     RU: Prefetch внутренних ссылок при наведении после задержки */
+  document.addEventListener(
+    'pointerenter',
+    (e) => {
+      const link = (e.target as Element).closest('a[href]') as HTMLAnchorElement | null;
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:')) {
+        return;
+      }
+
+      /* EN: Skip if already prefetched | RU: Пропуск если уже prefetched */
+      if (prefetched.has(href)) return;
+
+      /* EN: Use requestIdleCallback or setTimeout fallback
+         RU: Использование requestIdleCallback или setTimeout */
+      const prefetch = () => {
+        if (prefetched.has(href)) return;
+        prefetched.add(href);
+
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = href;
+        link.as = 'document';
+        document.head.appendChild(link);
+      };
+
+      if ('requestIdleCallback' in window) {
+        (window as Window & { requestIdleCallback: (cb: () => void, opts: { timeout: number }) => void }).requestIdleCallback(prefetch, { timeout: 300 });
+      } else {
+        globalThis.setTimeout(prefetch, 100);
+      }
+    },
+    { passive: true, capture: true }
+  );
+}
+
+/**
  * EN: Initialize navigation component
  * RU: Инициализация компонента навигации
  */
@@ -256,4 +302,5 @@ export function init(): void {
   setupScrollSpy();
   setupScrollProgress();
   setupScrollRestore();
+  setupLinkPrefetch();
 }

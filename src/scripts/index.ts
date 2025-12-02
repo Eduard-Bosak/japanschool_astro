@@ -6,7 +6,11 @@ export { init as initCarousel, startAuto, stopAuto } from './components/carousel
 export { initFAQ } from './components/faq';
 export { init as initForms } from './components/forms';
 export { init as initGallery } from './components/gallery';
-export { initLazyLoading, initSmoothScroll, init as initInteractive } from './components/interactive';
+export {
+  initLazyLoading,
+  initSmoothScroll,
+  init as initInteractive
+} from './components/interactive';
 export { init as initNavigation } from './components/navigation';
 export { init as initPreloader } from './components/preloader';
 export { init as initSakura } from './components/sakura';
