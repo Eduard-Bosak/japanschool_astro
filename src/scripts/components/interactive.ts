@@ -233,11 +233,20 @@ export function initCopyToClipboard(): void {
 }
 
 /**
- * EN: Lazy loading images with Intersection Observer
- * RU: Ленивая загрузка изображений с Intersection Observer
+ * EN: Lazy loading images with Intersection Observer and skeleton
+ * RU: Ленивая загрузка изображений с Intersection Observer и скелетоном
  */
 export function initLazyLoading(): void {
   const lazyImages = document.querySelectorAll<HTMLImageElement>('img[data-src]');
+
+  /* EN: Add skeleton class to image containers
+     RU: Добавление класса скелетона к контейнерам изображений */
+  lazyImages.forEach((img) => {
+    const parent = img.parentElement;
+    if (parent && !parent.classList.contains('img-placeholder')) {
+      parent.classList.add('img-placeholder');
+    }
+  });
 
   if ('IntersectionObserver' in window) {
     const imageObserver = new IntersectionObserver((entries) => {
@@ -247,7 +256,11 @@ export function initLazyLoading(): void {
           const src = img.dataset.src;
           if (src) {
             img.src = src;
-            img.classList.add('loaded');
+            img.onload = () => {
+              img.classList.add('loaded');
+              img.setAttribute('data-loaded', 'true');
+              img.parentElement?.classList.remove('img-placeholder');
+            };
           }
           imageObserver.unobserve(img);
         }
@@ -261,6 +274,7 @@ export function initLazyLoading(): void {
       const src = img.dataset.src;
       if (src) {
         img.src = src;
+        img.classList.add('loaded');
       }
     });
   }

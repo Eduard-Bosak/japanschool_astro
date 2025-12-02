@@ -19,8 +19,8 @@ export function init(): void {
   }
 
   // Dynamic timing strategy
-  const MIN_SHOW = 0; // полностью отключаем задержку
-  const MAX_SHOW = 100; // минимальное время для скрытия прелоадера
+  const MIN_SHOW = 300; // EN: Minimum display time to avoid flashing | RU: Минимальное время показа для избежания мигания
+  const MAX_SHOW = 3000; // EN: Maximum time before force hide | RU: Максимальное время до принудительного скрытия
   const start = performance.now();
   let done = false;
   let progress = 0;

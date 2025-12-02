@@ -41,12 +41,42 @@ export function initFAQ() {
   updateProgress();
 
   // Event Listeners
-  triggers.forEach((trigger) => {
+  triggers.forEach((trigger, idx) => {
     trigger.addEventListener('click', (e) => {
       const btn = e.currentTarget as HTMLElement;
       const item = btn.closest('.faq__item') as HTMLElement;
       toggleItem(item);
     });
+
+    /* EN: Keyboard navigation for FAQ accordion
+       RU: Клавиатурная навигация для аккордеона FAQ */
+    trigger.addEventListener('keydown', ((e: KeyboardEvent) => {
+      const key = e.key;
+      let targetIdx = -1;
+
+      if (key === 'ArrowDown') {
+        e.preventDefault();
+        targetIdx = (idx + 1) % triggers.length;
+      } else if (key === 'ArrowUp') {
+        e.preventDefault();
+        targetIdx = (idx - 1 + triggers.length) % triggers.length;
+      } else if (key === 'Home') {
+        e.preventDefault();
+        targetIdx = 0;
+      } else if (key === 'End') {
+        e.preventDefault();
+        targetIdx = triggers.length - 1;
+      }
+
+      if (targetIdx >= 0) {
+        const targetTrigger = triggers[targetIdx] as HTMLElement;
+        const targetItem = targetTrigger.closest('.faq__item') as HTMLElement;
+        // EN: Skip hidden items | RU: Пропуск скрытых элементов
+        if (!targetItem.classList.contains('faq__item--hidden')) {
+          targetTrigger.focus();
+        }
+      }
+    }) as EventListener);
   });
 
   if (searchInput) {

@@ -13,10 +13,11 @@ const CORE_ASSETS = [
   '/',
   '/index.html',
   '/offline.html',
-  '/styles.css',
-  '/main.js',
   '/manifest.json',
-  '/favicon.svg'
+  '/favicon.svg',
+  '/fonts/fonts.css',
+  '/fonts/Inter-Regular.woff2',
+  '/fonts/Inter-Bold.woff2'
 ];
 
 /* EN: Install event - cache core assets | RU: Событие установки - кеширование основных ресурсов */
@@ -39,7 +40,7 @@ self.addEventListener('activate', (e) => {
 /* EN: Fetch event - handle requests with caching strategies | RU: Событие fetch - обработка запросов со стратегиями кеширования */
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  
+
   /* EN: HTML navigations: network-first | RU: HTML навигация: сначала сеть */
   if(req.mode === 'navigate'){
     e.respondWith(

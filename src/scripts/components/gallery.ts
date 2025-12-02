@@ -189,13 +189,13 @@ function setupGalleryImages(): void {
 
     /* EN: Keyboard handler
        RU: Обработчик клавиатуры */
-    figure.addEventListener('keydown', (e: KeyboardEvent) => {
+    figure.addEventListener('keydown', ((e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         console.log('[Gallery] Opening image via keyboard', i);
         open(i);
       }
-    });
+    }) as EventListener);
   });
 }
 

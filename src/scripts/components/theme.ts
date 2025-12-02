@@ -75,10 +75,26 @@ export function setupThemeToggle(): void {
     return;
   }
 
+  /* EN: Set initial ARIA state | RU: Установка начального ARIA состояния */
+  const currentTheme = getCurrentTheme();
+  themeBtn.setAttribute('aria-pressed', String(currentTheme === 'dark'));
+  themeBtn.setAttribute(
+    'aria-label',
+    `Переключить тему (текущая: ${currentTheme === 'dark' ? 'тёмная' : 'светлая'})`
+  );
+
   /* EN: Add theme transition overlay on toggle
      RU: Добавление оверлея перехода темы при переключении */
   themeBtn.addEventListener('click', () => {
     cycleTheme();
+
+    /* EN: Update ARIA state | RU: Обновление ARIA состояния */
+    const newTheme = getCurrentTheme();
+    themeBtn.setAttribute('aria-pressed', String(newTheme === 'dark'));
+    themeBtn.setAttribute(
+      'aria-label',
+      `Переключить тему (текущая: ${newTheme === 'dark' ? 'тёмная' : 'светлая'})`
+    );
 
     /* EN: Add transition effect
        RU: Добавление эффекта перехода */

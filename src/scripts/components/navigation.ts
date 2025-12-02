@@ -6,14 +6,32 @@
 import { track } from '../utils/analytics';
 
 /**
- * EN: Setup mobile navigation toggle
- * RU: Настройка переключения мобильного меню
+ * EN: Setup mobile navigation toggle with backdrop
+ * RU: Настройка переключения мобильного меню с backdrop
  */
 function setupMobileNav(): void {
   const navToggle = document.querySelector('.nav-toggle');
   const navMenu = document.getElementById('navMenu');
   if (!navToggle || !navMenu) {
     return;
+  }
+
+  /* EN: Create backdrop element for mobile menu
+     RU: Создание элемента backdrop для мобильного меню */
+  let backdrop = document.querySelector('.nav-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdrop);
+
+    /* EN: Close menu on backdrop click
+       RU: Закрытие меню при клике на backdrop */
+    backdrop.addEventListener('click', () => {
+      navToggle.setAttribute('aria-expanded', 'false');
+      navMenu.setAttribute('data-open', 'false');
+      document.body.classList.remove('nav-open');
+    });
   }
 
   /* EN: Toggle mobile menu on button click

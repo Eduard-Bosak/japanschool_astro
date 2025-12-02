@@ -1,17 +1,16 @@
 // Scripts barrel export
-// Components
-export * from './components/animations';
-export * from './components/blog';
-export * from './components/carousel';
-export * from './components/enhanced-animations';
-export * from './components/faq';
-export * from './components/forms';
-export * from './components/gallery';
-export * from './components/interactive';
-export * from './components/navigation';
-export * from './components/preloader';
-export * from './components/sakura';
-export * from './components/theme';
+// Components - use named exports to avoid init conflicts
+export { init as initAnimations } from './components/animations-unified';
+export { init as initBlog } from './components/blog';
+export { init as initCarousel, startAuto, stopAuto } from './components/carousel';
+export { initFAQ } from './components/faq';
+export { init as initForms } from './components/forms';
+export { init as initGallery } from './components/gallery';
+export { initLazyLoading, initSmoothScroll, init as initInteractive } from './components/interactive';
+export { init as initNavigation } from './components/navigation';
+export { init as initPreloader } from './components/preloader';
+export { init as initSakura } from './components/sakura';
+export { init as initTheme } from './components/theme';
 
 // Utils
 export * from './utils/analytics';

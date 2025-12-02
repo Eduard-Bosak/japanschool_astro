@@ -24,6 +24,7 @@ import * as blog from './components/blog.ts';
 import { track } from './utils/analytics';
 import { eventBus } from './utils/events';
 import { initPerformanceMonitoring } from './utils/performance';
+import { safeInit, setupGlobalErrorHandlers } from './utils/logger';
 
 /* EN: Import API configuration
   RU: Импорт конфигурации API */
@@ -72,33 +73,17 @@ function initializeApp(): void {
  * RU: Инициализация всех UI компонентов
  */
 function initComponents(): void {
-  /* EN: Core components
-     RU: Основные компоненты */
-  try {
-    theme.setupThemeToggle();
-  } catch (e) {
-    console.error('Theme init failed', e);
-  }
-  try {
-    preloader.init();
-  } catch (e) {
-    console.error('Preloader init failed', e);
-  }
-  try {
-    navigation.init();
-  } catch (e) {
-    console.error('Navigation init failed', e);
-  }
-  try {
-    animations.init();
-  } catch (e) {
-    console.error('Animations init failed', e);
-  }
-  try {
-    interactive.init();
-  } catch (e) {
-    console.error('Interactive init failed', e);
-  }
+  /* EN: Setup global error handlers first
+     RU: Сначала настраиваем глобальные обработчики ошибок */
+  setupGlobalErrorHandlers();
+
+  /* EN: Core components with safe initialization
+     RU: Основные компоненты с безопасной инициализацией */
+  safeInit('Theme', () => theme.setupThemeToggle());
+  safeInit('Preloader', () => preloader.init());
+  safeInit('Navigation', () => navigation.init());
+  safeInit('Animations', () => animations.init());
+  safeInit('Interactive', () => interactive.init());
 
   /* EN: Lazy load sakura if canvas exists
      RU: Ленивая загрузка сакуры если существует canvas */
@@ -114,23 +99,11 @@ function initComponents(): void {
       .catch((e) => console.error('Failed to load sakura module', e));
   }
 
-  /* EN: Interactive components
-     RU: Интерактивные компоненты */
-  try {
-    faq.initFAQ();
-  } catch (e) {
-    console.error('FAQ init failed', e);
-  }
-  try {
-    carousel.init();
-  } catch (e) {
-    console.error('Carousel init failed', e);
-  }
-  try {
-    forms.init();
-  } catch (e) {
-    console.error('Forms init failed', e);
-  }
+  /* EN: Interactive components with safe initialization
+     RU: Интерактивные компоненты с безопасной инициализацией */
+  safeInit('FAQ', () => faq.initFAQ());
+  safeInit('Carousel', () => carousel.init());
+  safeInit('Forms', () => forms.init());
 
   /* EN: Lazy load gallery if grid exists
      RU: Ленивая загрузка галереи если существует сетка */
@@ -158,32 +131,22 @@ function initComponents(): void {
   }
 
   // Initialize blog section interactions
-  try {
-    blog.init();
-  } catch (e) {
-    console.error('Blog init failed', e);
-  }
+  safeInit('Blog', () => blog.init());
 
   updateFooterYear();
 
   /* EN: Track page view
      RU: Отслеживание просмотра страницы */
-  try {
+  safeInit('Analytics', () => {
     track('page_view', {
       path: window.location.pathname,
       referrer: document.referrer
     });
-  } catch (e) {
-    console.error('Analytics failed', e);
-  }
+  });
 
   /* EN: Initialize performance monitoring
      RU: Инициализация мониторинга производительности */
-  try {
-    initPerformanceMonitoring();
-  } catch (e) {
-    console.error('Performance monitoring failed', e);
-  }
+  safeInit('Performance', () => initPerformanceMonitoring());
 
   // EN: Mark global init flag so fallback (public/index.html) knows app booted
   // RU: Устанавливаем глобальный флаг инициализации чтобы fallback знал, что приложение запустилось

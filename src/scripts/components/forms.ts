@@ -131,6 +131,30 @@ function setupLeadForm(): void {
 
   leadStatusEl = leadForm.querySelector('.form__status');
 
+  /* EN: Create aria-live region for form errors
+     RU: Создание aria-live региона для ошибок формы */
+  let liveRegion = document.getElementById('formErrorsLive');
+  if (!liveRegion) {
+    liveRegion = document.createElement('div');
+    liveRegion.id = 'formErrorsLive';
+    liveRegion.className = 'visually-hidden';
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    leadForm.appendChild(liveRegion);
+  }
+
+  /* EN: Announce form errors to screen readers
+     RU: Объявление ошибок формы для скринридеров */
+  function announceErrors(): void {
+    const errors = leadForm?.querySelectorAll('.invalid');
+    if (errors && errors.length > 0 && liveRegion) {
+      const errorCount = errors.length;
+      liveRegion.textContent = `Форма содержит ${errorCount} ${errorCount === 1 ? 'ошибку' : 'ошибки'}. Исправьте выделенные поля.`;
+    } else if (liveRegion) {
+      liveRegion.textContent = '';
+    }
+  }
+
   /* EN: Real-time validation on input/change/blur
      RU: Валидация в реальном времени при input/change/blur */
   ['input', 'change', 'blur'].forEach((ev) => {
@@ -147,6 +171,10 @@ function setupLeadForm(): void {
         t.id === 'leadLevel'
       ) {
         validateLead();
+        // EN: Debounced announcement | RU: Объявление с задержкой
+        if (ev === 'blur') {
+          announceErrors();
+        }
       }
     });
   });
