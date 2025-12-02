@@ -1,6 +1,5 @@
 # Dependencies / Зависимости
 node_modules/
-package-lock.json
 
 # Build output / Результат сборки
 dist/
