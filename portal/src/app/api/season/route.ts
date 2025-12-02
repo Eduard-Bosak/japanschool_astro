@@ -22,7 +22,7 @@ export async function GET() {
     const { data: settings } = await supabase
       .from('system_settings')
       .select('key, value')
-      .in('key', ['season_theme', 'season_auto_enabled']);
+      .in('key', ['season_theme', 'season_auto_enabled', 'season_intensity']);
 
     const settingsMap =
       settings?.reduce(
@@ -35,6 +35,7 @@ export async function GET() {
 
     const autoEnabled = settingsMap['season_auto_enabled'] !== 'false';
     const themeSetting = settingsMap['season_theme'] || 'auto';
+    const intensity = parseInt(settingsMap['season_intensity'] || '2', 10);
 
     let season: string;
 
@@ -48,7 +49,8 @@ export async function GET() {
       {
         season,
         mode: themeSetting === 'auto' ? 'auto' : 'manual',
-        autoEnabled
+        autoEnabled,
+        intensity: Math.max(0, Math.min(4, intensity)) // Clamp 0-4
       },
       {
         headers: {
@@ -63,7 +65,8 @@ export async function GET() {
       {
         season: getCurrentSeasonByDate(),
         mode: 'auto',
-        autoEnabled: true
+        autoEnabled: true,
+        intensity: 2 // Default medium intensity
       },
       {
         headers: {

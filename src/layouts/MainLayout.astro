@@ -108,8 +108,10 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
 
         // Set season immediately (auto mode as default)
         var cachedSeason = localStorage.getItem('season_theme');
+        var cachedIntensity = localStorage.getItem('season_intensity') || '2';
         var season = cachedSeason || getSeasonByDate();
         document.documentElement.setAttribute('data-season', season);
+        document.documentElement.setAttribute('data-intensity', cachedIntensity);
 
         // Async load from API to check admin override
         setTimeout(function() {
@@ -119,6 +121,10 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
               if (data && data.season) {
                 document.documentElement.setAttribute('data-season', data.season);
                 localStorage.setItem('season_theme', data.season);
+              }
+              if (data && typeof data.intensity === 'number') {
+                document.documentElement.setAttribute('data-intensity', String(data.intensity));
+                localStorage.setItem('season_intensity', String(data.intensity));
               }
             })
             .catch(function() {});

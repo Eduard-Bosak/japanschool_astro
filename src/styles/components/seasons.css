@@ -1,11 +1,41 @@
 /* ===== Seasonal Themes ===== */
 /* Automatically applied based on data-season attribute on <html> */
 
+/* ===== Intensity Levels ===== */
+/* 0 = off, 1 = light, 2 = medium, 3 = strong, 4 = maximum */
+:root {
+  --season-intensity: 0.5; /* Default medium */
+}
+
+[data-intensity='0'] {
+  --season-intensity: 0;
+}
+[data-intensity='1'] {
+  --season-intensity: 0.25;
+}
+[data-intensity='2'] {
+  --season-intensity: 0.5;
+}
+[data-intensity='3'] {
+  --season-intensity: 0.75;
+}
+[data-intensity='4'] {
+  --season-intensity: 1;
+}
+
+/* Hide effects when intensity is 0 */
+[data-intensity='0'] .hero::before,
+[data-intensity='0'] .hero::after,
+[data-intensity='0'] .hero__title::after,
+[data-intensity='0'] .site-footer::before {
+  display: none !important;
+}
+
 /* ===== Winter Theme ❄️ ===== */
 [data-season='winter'] {
   --season-accent: #7dd3fc;
   --season-accent-rgb: 125, 211, 252;
-  --season-glow: rgba(125, 211, 252, 0.3);
+  --season-glow: rgba(125, 211, 252, calc(0.3 * var(--season-intensity)));
 }
 
 [data-season='winter'] .hero::before {
@@ -22,7 +52,7 @@
   background-size: 200px 200px;
   animation: snowfall 20s linear infinite;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: calc(0.4 * var(--season-intensity) * 2);
   z-index: 1;
 }
 
@@ -59,27 +89,27 @@
 [data-season='spring'] {
   --season-accent: #f9a8d4;
   --season-accent-rgb: 249, 168, 212;
-  --season-glow: rgba(249, 168, 212, 0.3);
+  --season-glow: rgba(249, 168, 212, calc(0.3 * var(--season-intensity)));
 }
 
 [data-season='spring'] .hero::before {
   content: '🌸';
   position: absolute;
-  font-size: 1.5rem;
+  font-size: calc(1rem + 0.5rem * var(--season-intensity));
   animation: sakura-fall 15s linear infinite;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: calc(0.6 * var(--season-intensity) * 2);
   z-index: 1;
 }
 
 [data-season='spring'] .hero::after {
   content: '🌸';
   position: absolute;
-  font-size: 1.2rem;
+  font-size: calc(0.8rem + 0.4rem * var(--season-intensity));
   left: 30%;
   animation: sakura-fall 18s linear infinite 3s;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: calc(0.5 * var(--season-intensity) * 2);
   z-index: 1;
 }
 
@@ -108,7 +138,7 @@
 [data-season='summer'] {
   --season-accent: #fbbf24;
   --season-accent-rgb: 251, 191, 36;
-  --season-glow: rgba(251, 191, 36, 0.3);
+  --season-glow: rgba(251, 191, 36, calc(0.3 * var(--season-intensity)));
 }
 
 [data-season='summer'] .hero::before {
@@ -116,9 +146,9 @@
   position: absolute;
   top: 10%;
   right: 10%;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, transparent 70%);
+  width: calc(50px + 30px * var(--season-intensity));
+  height: calc(50px + 30px * var(--season-intensity));
+  background: radial-gradient(circle, rgba(251, 191, 36, calc(0.8 * var(--season-intensity) * 2)) 0%, transparent 70%);
   border-radius: 50%;
   animation: sun-glow 3s ease-in-out infinite;
   pointer-events: none;
@@ -149,26 +179,26 @@
 [data-season='autumn'] {
   --season-accent: #f97316;
   --season-accent-rgb: 249, 115, 22;
-  --season-glow: rgba(249, 115, 22, 0.3);
+  --season-glow: rgba(249, 115, 22, calc(0.3 * var(--season-intensity)));
 }
 
 [data-season='autumn'] .hero::before {
   content: '🍂';
   position: absolute;
-  font-size: 1.5rem;
+  font-size: calc(1rem + 0.5rem * var(--season-intensity));
   animation: leaf-fall 12s ease-in-out infinite;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: calc(0.7 * var(--season-intensity) * 2);
   z-index: 1;
 }
 
 [data-season='autumn'] .hero::after {
   content: '🍁';
   position: absolute;
-  font-size: 1.3rem;
+  font-size: calc(0.9rem + 0.4rem * var(--season-intensity));
   animation: leaf-fall 16s ease-in-out infinite 4s;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: calc(0.6 * var(--season-intensity) * 2);
   z-index: 1;
   left: 60%;
 }

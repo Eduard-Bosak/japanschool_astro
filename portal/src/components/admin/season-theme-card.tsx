@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Snowflake, Flower2, Sun, Leaf, Wand2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -55,6 +56,8 @@ const seasons: {
   }
 ];
 
+const intensityLabels = ['Выкл', 'Лёгкий', 'Средний', 'Сильный', 'Максимум'];
+
 function getCurrentSeasonByDate(): Season {
   const month = new Date().getMonth() + 1;
   if (month >= 12 || month <= 2) return 'winter';
@@ -66,32 +69,34 @@ function getCurrentSeasonByDate(): Season {
 export function SeasonThemeCard() {
   const [currentSeason, setCurrentSeason] = useState<Season>('auto');
   const [autoEnabled, setAutoEnabled] = useState(true);
+  const [intensity, setIntensity] = useState(2); // 0-4: off, light, medium, strong, max
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    const loadSettings = async () => {
+      const { data } = await supabase
+        .from('system_settings')
+        .select('key, value')
+        .in('key', ['season_theme', 'season_auto_enabled', 'season_intensity']);
+
+      if (data) {
+        const settings = data.reduce(
+          (acc, s) => {
+            acc[s.key] = s.value;
+            return acc;
+          },
+          {} as Record<string, string>
+        );
+
+        setCurrentSeason((settings['season_theme'] as Season) || 'auto');
+        setAutoEnabled(settings['season_auto_enabled'] !== 'false');
+        setIntensity(parseInt(settings['season_intensity'] || '2', 10));
+      }
+    };
+
     loadSettings();
   }, []);
-
-  const loadSettings = async () => {
-    const { data } = await supabase
-      .from('system_settings')
-      .select('key, value')
-      .in('key', ['season_theme', 'season_auto_enabled']);
-
-    if (data) {
-      const settings = data.reduce(
-        (acc, s) => {
-          acc[s.key] = s.value;
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-
-      setCurrentSeason((settings['season_theme'] as Season) || 'auto');
-      setAutoEnabled(settings['season_auto_enabled'] !== 'false');
-    }
-  };
 
   const saveSetting = async (key: string, value: string) => {
     setSaving(true);
@@ -127,6 +132,12 @@ export function SeasonThemeCard() {
       setCurrentSeason('auto');
       await saveSetting('season_theme', 'auto');
     }
+  };
+
+  const handleIntensityChange = async (value: number[]) => {
+    const newIntensity = value[0];
+    setIntensity(newIntensity);
+    await saveSetting('season_intensity', newIntensity.toString());
   };
 
   const actualSeason = currentSeason === 'auto' ? getCurrentSeasonByDate() : currentSeason;
@@ -188,6 +199,28 @@ export function SeasonThemeCard() {
           ))}
         </div>
 
+        {/* Intensity slider */}
+        <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+          <div className="flex items-center justify-between">
+            <Label className="font-medium">Интенсивность эффектов</Label>
+            <span className="text-sm font-medium text-primary">{intensityLabels[intensity]}</span>
+          </div>
+          <Slider
+            value={[intensity]}
+            onValueChange={handleIntensityChange}
+            max={4}
+            step={1}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>🚫</span>
+            <span>✨</span>
+            <span>🌟</span>
+            <span>💫</span>
+            <span>🎆</span>
+          </div>
+        </div>
+
         {/* Current status */}
         <div className="p-4 border rounded-lg bg-background">
           <p className="text-sm">
@@ -196,6 +229,8 @@ export function SeasonThemeCard() {
               {seasons.find((s) => s.id === actualSeason)?.label}
               {currentSeason === 'auto' && ' (авто)'}
             </span>
+            <span className="text-muted-foreground"> · </span>
+            <span className="font-medium">{intensityLabels[intensity]}</span>
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {seasons.find((s) => s.id === actualSeason)?.description}
