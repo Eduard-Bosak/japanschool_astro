@@ -18,7 +18,15 @@ interface TrialRequestBody {
   utm?: string;
   page?: string;
   timestamp?: string;
+  source?: string;
 }
+
+// CORS headers for cross-origin requests from landing page
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
 
 // Rate limiting map (in production use Redis)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -65,7 +73,7 @@ export async function POST(request: NextRequest) {
     if (isRateLimited(ip)) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again later.' },
-        { status: 429 }
+        { status: 429, headers: corsHeaders }
       );
     }
 
@@ -74,16 +82,25 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!body.name || body.name.trim().length < 2) {
-      return NextResponse.json({ error: 'Name is required (min 2 characters)' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Name is required (min 2 characters)' },
+        { status: 400, headers: corsHeaders }
+      );
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!body.email || !emailRegex.test(body.email)) {
-      return NextResponse.json({ error: 'Valid email is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Valid email is required' },
+        { status: 400, headers: corsHeaders }
+      );
     }
 
     // Parse UTM parameters
     const utmParams = parseUTMParams(body.utm);
+
+    // Determine source
+    const source = body.source || (body.page?.includes('/blog') ? 'blog' : 'landing');
 
     // Insert into database
     const { data, error } = await supabase
@@ -96,7 +113,7 @@ export async function POST(request: NextRequest) {
           level: body.level?.trim() || null,
           message: body.message?.trim() || null,
           phone: body.phone?.trim() || null,
-          utm_source: utmParams.utm_source || null,
+          utm_source: utmParams.utm_source || source,
           utm_medium: utmParams.utm_medium || null,
           utm_campaign: utmParams.utm_campaign || null,
           referrer: body.page || null,
@@ -110,7 +127,7 @@ export async function POST(request: NextRequest) {
       console.error('[Trial API] Supabase error:', error);
       return NextResponse.json(
         { error: 'Failed to submit request. Please try again.' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -121,22 +138,21 @@ export async function POST(request: NextRequest) {
         message: 'Trial lesson request submitted successfully',
         id: data?.id
       },
-      { status: 201 }
+      { status: 201, headers: corsHeaders }
     );
   } catch (err) {
     console.error('[Trial API] Error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500, headers: corsHeaders }
+    );
   }
 }
 
-// CORS headers for cross-origin requests from landing page
+// CORS preflight handler
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
+    headers: corsHeaders
   });
 }

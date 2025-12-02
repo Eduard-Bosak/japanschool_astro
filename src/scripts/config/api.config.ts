@@ -8,7 +8,7 @@
  * RU: Настройка эндпоинтов API для интеграции с бэкендом
  *
  * Development: http://localhost:3000
- * Production: https://your-backend-domain.com
+ * Production: Portal on Vercel
  */
 
 interface APIEndpoints {
@@ -33,14 +33,21 @@ declare global {
   }
 }
 
-const API_BASE_URL = import.meta.env.API_URL || 'http://localhost:3000';
+/* EN: Portal URL - production Vercel deployment
+   RU: URL портала - продакшен деплой на Vercel */
+const PORTAL_URL = 'https://japanschool-astro-9szg.vercel.app';
+
+/* EN: Use local backend in development, portal in production
+   RU: Локальный бэкенд в разработке, портал в продакшене */
+const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+const API_BASE_URL = isDev ? 'http://localhost:3000' : PORTAL_URL;
 
 export const API_CONFIG: APIConfig = {
   baseURL: API_BASE_URL,
   endpoints: {
-    submitForm: `${API_BASE_URL}/api/submit-form`,
-    submissions: `${API_BASE_URL}/api/submissions`,
-    health: `${API_BASE_URL}/health`
+    submitForm: `${API_BASE_URL}/api/trial`,
+    submissions: `${API_BASE_URL}/api/trial`,
+    health: `${API_BASE_URL}/api/health`
   },
   timeout: 10000, // 10 seconds
   retries: 3

@@ -1,10 +1,9 @@
 /* =============================================
-   Form Components
-   Компоненты форм
+   Form Components - Modern Design
+   Компоненты форм - Современный дизайн
    ============================================= */
 
-/* Form container | Контейнер формы */
-/* Form container | Контейнер формы */
+/* ===== Base Form Container ===== */
 .form {
   background: var(--surface);
   padding: 1.75rem 1.5rem 2rem;
@@ -13,7 +12,473 @@
   box-shadow: var(--shadow);
 }
 
-/* Form row (field wrapper) | Строка формы (обёртка поля) */
+/* ===== Modern Form (with floating labels) ===== */
+.form--modern {
+  background: linear-gradient(
+    145deg,
+    rgba(var(--surface-rgb), 0.95),
+    rgba(var(--surface-rgb), 0.85)
+  );
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  padding: 2rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255 255 255 / 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Progress Bar ===== */
+.form__progress {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form__progress-bar {
+  height: 4px;
+  background: rgba(var(--primary-rgb, 240, 107, 147), 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.form__progress-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form__progress-text {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  margin-top: 0.35rem;
+  display: block;
+  text-align: right;
+  opacity: 0.7;
+}
+
+/* ===== Form Groups ===== */
+.form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.form__group--split {
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.form__group--split .form__field {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .form__group--split {
+    flex-direction: column;
+  }
+}
+
+/* ===== Field Container (for floating label) ===== */
+.form__field {
+  position: relative;
+}
+
+/* ===== Floating Labels ===== */
+.form__label-float {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  color: var(--ink-dim);
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  padding: 0 0.25rem;
+  z-index: 1;
+}
+
+.form__field--textarea .form__label-float {
+  top: 1.25rem;
+  transform: none;
+}
+
+/* Float up when focused or has value */
+.form__input:focus ~ .form__label-float,
+.form__input:not(:placeholder-shown) ~ .form__label-float,
+.form__input.has-value ~ .form__label-float,
+.form__select:focus ~ .form__label-float,
+.form__select:valid ~ .form__label-float,
+.form__select.has-value ~ .form__label-float,
+.form__textarea:focus ~ .form__label-float,
+.form__textarea:not(:placeholder-shown) ~ .form__label-float,
+.form__textarea.has-value ~ .form__label-float {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--surface);
+  letter-spacing: 0.5px;
+}
+
+/* ===== Modern Inputs ===== */
+.form--modern .form__input,
+.form--modern .form__textarea,
+.form--modern .form__select {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  background: rgba(var(--bg-soft-rgb, 30, 30, 35), 0.6);
+  border: 2px solid rgba(255 255 255 / 0.08);
+  padding: 1rem 2.5rem 1rem 1rem;
+  border-radius: 0.75rem;
+  color: var(--ink);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form--modern .form__textarea {
+  resize: vertical;
+  min-height: 100px;
+  padding-right: 1rem;
+}
+
+.form--modern .form__select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+}
+
+/* ===== Focus States ===== */
+.form--modern .form__input:focus,
+.form--modern .form__textarea:focus,
+.form--modern .form__select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(var(--surface-rgb), 0.9);
+  box-shadow:
+    0 0 0 4px rgba(var(--primary-rgb, 240, 107, 147), 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Validation Icons ===== */
+.form__icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.form__icon--valid {
+  color: #10b981;
+}
+
+.form__icon--invalid {
+  color: var(--danger, #ff4d61);
+}
+
+.form__field.valid .form__icon--valid {
+  opacity: 1;
+  animation: iconPop 0.3s ease;
+}
+
+.form__field.invalid .form__icon--invalid {
+  opacity: 1;
+  animation: iconShake 0.4s ease;
+}
+
+@keyframes iconPop {
+  0% {
+    transform: translateY(-50%) scale(0);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.3);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes iconShake {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateY(-50%) translateX(-3px);
+  }
+  75% {
+    transform: translateY(-50%) translateX(3px);
+  }
+}
+
+/* ===== Validation States ===== */
+.form__field.valid .form__input,
+.form__field.valid .form__select,
+.form__field.valid .form__textarea {
+  border-color: #10b981;
+}
+
+.form__field.invalid .form__input,
+.form__field.invalid .form__select,
+.form__field.invalid .form__textarea {
+  border-color: var(--danger, #ff4d61);
+  animation: inputShake 0.4s ease;
+}
+
+@keyframes inputShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* ===== Hint/Error Messages ===== */
+.form__hint {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  margin-top: 0.4rem;
+  padding-left: 0.5rem;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.25s ease;
+}
+
+.form__field.invalid .form__hint {
+  opacity: 1;
+  transform: translateY(0);
+  color: var(--danger, #ff4d61);
+}
+
+/* ===== Select Arrow ===== */
+.form__select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  color: var(--ink-dim);
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.form__select:focus ~ .form__select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary);
+}
+
+/* ===== Character Counter ===== */
+.form__char-count {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  opacity: 0.6;
+}
+
+.form__char-count.warning {
+  color: #f59e0b;
+  opacity: 1;
+}
+
+.form__char-count.danger {
+  color: var(--danger, #ff4d61);
+  opacity: 1;
+}
+
+/* ===== Submit Button ===== */
+.form__submit {
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.5rem;
+}
+
+.form__submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.form__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(var(--primary-rgb, 240, 107, 147), 0.4);
+}
+
+.form__submit:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.form__submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Button States */
+.form__submit-text,
+.form__submit-loading,
+.form__submit-success {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.form__submit-loading,
+.form__submit-success {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form__submit.loading .form__submit-text {
+  opacity: 0;
+}
+
+.form__submit.loading .form__submit-loading {
+  opacity: 1;
+}
+
+.form__submit.success .form__submit-text {
+  opacity: 0;
+}
+
+.form__submit.success .form__submit-loading {
+  opacity: 0;
+}
+
+.form__submit.success .form__submit-success {
+  opacity: 1;
+}
+
+.form__submit.success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* Spinner */
+.form__spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Status Message ===== */
+.form__status {
+  font-size: 0.85rem;
+  min-height: 1.5rem;
+  text-align: center;
+  margin-top: 0.75rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.form__status.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form__status.success {
+  color: #10b981;
+}
+
+.form__status.error {
+  color: var(--danger, #ff4d61);
+}
+
+/* ===== Privacy Text ===== */
+.form__privacy {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.form__privacy a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ===== Contact Features ===== */
+.contact__features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(var(--primary-rgb, 240, 107, 147), 0.08);
+  border-radius: 0.75rem;
+  border-left: 3px solid var(--primary);
+}
+
+.contact__feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.contact__feature-icon {
+  font-size: 1.1rem;
+}
+
+/* ===== Legacy Support ===== */
 .form__row {
   margin-bottom: 1.1rem;
   display: flex;
@@ -21,7 +486,6 @@
   gap: 0.55rem;
 }
 
-/* Split row (two columns) | Разделённая строка (два столбца) */
 .form__row--split {
   flex-direction: row;
   gap: 1rem;
@@ -31,7 +495,6 @@
   flex: 1;
 }
 
-/* Label styles | Стили меток */
 .form__label {
   font-size: 0.75rem;
   letter-spacing: 1px;
@@ -43,7 +506,6 @@
   gap: 0.4rem;
 }
 
-/* Input, textarea, select base styles | Базовые стили полей ввода */
 .form__input,
 .form__textarea,
 .form__select {
@@ -59,7 +521,6 @@
     background var(--trans-fast);
 }
 
-/* Focus state | Состояние фокуса */
 .form__input:focus,
 .form__textarea:focus,
 .form__select:focus {
@@ -68,13 +529,6 @@
   background: var(--surface-alt);
 }
 
-/* Form status message | Сообщение о статусе формы */
-.form__status {
-  font-size: 0.75rem;
-  min-height: 1.2rem;
-}
-
-/* Field error message | Сообщение об ошибке поля */
 .form__error {
   display: block;
   margin-top: 0.35rem;
@@ -88,7 +542,6 @@
   display: none !important;
 }
 
-/* Invalid field state | Состояние невалидного поля */
 .form__input.invalid,
 .form__select.invalid,
 .form__textarea.invalid {

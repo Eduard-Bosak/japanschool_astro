@@ -1,6 +1,6 @@
 /* =============================================
-   Forms Component (Validation, Submission, Modals)
-   Компонент форм (Валидация, Отправка, Модальные окна)
+   Forms Component - Modern Implementation
+   Компонент форм - Современная реализация
    ============================================= */
 
 import { track } from '../utils/analytics';
@@ -10,6 +10,9 @@ import { sendToBackend } from '../utils/api';
    RU: Элементы формы лидов */
 let leadForm: HTMLFormElement | null = null;
 let leadStatusEl: HTMLElement | null = null;
+let submitBtn: HTMLButtonElement | null = null;
+let progressBar: HTMLElement | null = null;
+let progressText: HTMLElement | null = null;
 
 /* EN: Program modal elements
    RU: Элементы модального окна программ */
@@ -30,30 +33,141 @@ interface ProgramFormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
 }
 
-/**
- * EN: Show field error message
- * RU: Показ сообщения об ошибке поля
- */
-function showFieldError(field: HTMLElement, msgId: string): void {
-  const err = document.getElementById(msgId);
-  if (err) {
-    err.hidden = false;
+interface ValidationRule {
+  validate: (value: string) => boolean;
+  message: string;
+}
+
+interface FieldValidation {
+  [key: string]: ValidationRule;
+}
+
+/* EN: Validation rules
+   RU: Правила валидации */
+const validationRules: FieldValidation = {
+  leadName: {
+    validate: (v) => v.trim().length >= 2,
+    message: 'Минимум 2 символа'
+  },
+  leadEmail: {
+    validate: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    message: 'Введите корректный email'
+  },
+  leadGoal: {
+    validate: (v) => v.length > 0,
+    message: 'Выберите цель изучения'
+  },
+  leadLevel: {
+    validate: (v) => v.length > 0,
+    message: 'Укажите ваш уровень'
   }
-  field.classList.add('invalid');
+};
+
+/**
+ * EN: Show field as valid
+ * RU: Показать поле как валидное
+ */
+function setFieldValid(field: HTMLElement): void {
+  const container = field.closest('.form__field');
+  if (!container) return;
+
+  container.classList.remove('invalid');
+  container.classList.add('valid');
+  field.setAttribute('aria-invalid', 'false');
+}
+
+/**
+ * EN: Show field as invalid
+ * RU: Показать поле как невалидное
+ */
+function setFieldInvalid(field: HTMLElement): void {
+  const container = field.closest('.form__field');
+  if (!container) return;
+
+  container.classList.remove('valid');
+  container.classList.add('invalid');
   field.setAttribute('aria-invalid', 'true');
 }
 
 /**
- * EN: Clear field error message
- * RU: Очистка сообщения об ошибке поля
+ * EN: Clear field validation state
+ * RU: Очистить состояние валидации поля
  */
-function clearFieldError(field: HTMLElement, msgId: string): void {
-  const err = document.getElementById(msgId);
-  if (err) {
-    err.hidden = true;
-  }
-  field.classList.remove('invalid');
+function clearFieldState(field: HTMLElement): void {
+  const container = field.closest('.form__field');
+  if (!container) return;
+
+  container.classList.remove('valid', 'invalid');
   field.removeAttribute('aria-invalid');
+}
+
+/**
+ * EN: Validate a single field
+ * RU: Валидация одного поля
+ */
+function validateField(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): boolean {
+  const rule = validationRules[field.id];
+  if (!rule) return true;
+
+  const value = field.value;
+  const isValid = rule.validate(value);
+
+  if (value.length === 0 && !field.required) {
+    clearFieldState(field);
+    return true;
+  }
+
+  if (isValid) {
+    setFieldValid(field);
+  } else if (value.length > 0) {
+    setFieldInvalid(field);
+  }
+
+  return isValid;
+}
+
+/**
+ * EN: Update form progress bar
+ * RU: Обновление прогресс-бара формы
+ */
+function updateProgress(): void {
+  if (!leadForm || !progressBar || !progressText) return;
+
+  const fields = ['leadName', 'leadEmail', 'leadGoal', 'leadLevel'] as const;
+  let filledCount = 0;
+
+  fields.forEach((id) => {
+    const field = leadForm?.querySelector(`#${id}`) as HTMLInputElement | HTMLSelectElement;
+    if (field && field.value.trim().length > 0) {
+      filledCount++;
+    }
+  });
+
+  const percent = Math.round((filledCount / fields.length) * 100);
+  progressBar.style.setProperty('--progress', `${percent}%`);
+  progressText.textContent = `${percent}% заполнено`;
+}
+
+/**
+ * EN: Update character counter for message field
+ * RU: Обновление счётчика символов для поля сообщения
+ */
+function updateCharCount(): void {
+  const msgField = document.getElementById('leadMsg') as HTMLTextAreaElement;
+  const charCount = document.getElementById('msgCharCount');
+  const charContainer = document.querySelector('.form__char-count');
+
+  if (!msgField || !charCount || !charContainer) return;
+
+  const count = msgField.value.length;
+  charCount.textContent = String(count);
+
+  charContainer.classList.remove('warning', 'danger');
+  if (count > 450) {
+    charContainer.classList.add('danger');
+  } else if (count > 350) {
+    charContainer.classList.add('warning');
+  }
 }
 
 /**
@@ -61,62 +175,62 @@ function clearFieldError(field: HTMLElement, msgId: string): void {
  * RU: Валидация полей формы лидов
  */
 function validateLead(): boolean {
-  if (!leadForm) {
-    return false;
-  }
+  if (!leadForm) return false;
 
-  let ok = true;
+  let allValid = true;
+  const fields = ['leadName', 'leadEmail', 'leadGoal', 'leadLevel'] as const;
 
-  /* EN: Validate name
-     RU: Валидация имени */
-  const name = leadForm.querySelector('#leadName') as HTMLInputElement;
-  if (name) {
-    if (name.value.trim().length < 2) {
-      showFieldError(name, 'errName');
-      ok = false;
-    } else {
-      clearFieldError(name, 'errName');
+  fields.forEach((id) => {
+    const field = leadForm?.querySelector(`#${id}`) as HTMLInputElement | HTMLSelectElement;
+    if (field && !validateField(field)) {
+      allValid = false;
     }
-  }
+  });
 
-  /* EN: Validate email
-     RU: Валидация email */
-  const email = leadForm.querySelector('#leadEmail') as HTMLInputElement;
-  if (email) {
-    const v = email.value.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) {
-      showFieldError(email, 'errEmail');
-      ok = false;
-    } else {
-      clearFieldError(email, 'errEmail');
-    }
-  }
+  return allValid;
+}
 
-  /* EN: Validate goal
-     RU: Валидация цели */
-  const goal = leadForm.querySelector('#leadGoal') as HTMLSelectElement;
-  if (goal) {
-    if (!goal.value) {
-      showFieldError(goal, 'errGoal');
-      ok = false;
-    } else {
-      clearFieldError(goal, 'errGoal');
-    }
-  }
+/**
+ * EN: Set button loading state
+ * RU: Установка состояния загрузки кнопки
+ */
+function setButtonState(state: 'default' | 'loading' | 'success'): void {
+  if (!submitBtn) return;
 
-  /* EN: Validate level
-     RU: Валидация уровня */
-  const level = leadForm.querySelector('#leadLevel') as HTMLSelectElement;
-  if (level) {
-    if (!level.value) {
-      showFieldError(level, 'errLevel');
-      ok = false;
-    } else {
-      clearFieldError(level, 'errLevel');
-    }
-  }
+  submitBtn.classList.remove('loading', 'success');
+  submitBtn.disabled = state === 'loading';
 
-  return ok;
+  if (state !== 'default') {
+    submitBtn.classList.add(state);
+  }
+}
+
+/**
+ * EN: Show status message
+ * RU: Показ сообщения статуса
+ */
+function showStatus(message: string, type: 'success' | 'error'): void {
+  if (!leadStatusEl) return;
+
+  leadStatusEl.textContent = message;
+  leadStatusEl.className = `form__status show ${type}`;
+
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    leadStatusEl?.classList.remove('show');
+  }, 5000);
+}
+
+/**
+ * EN: Handle select placeholder styling
+ * RU: Обработка стилей плейсхолдера для select
+ */
+function handleSelectChange(select: HTMLSelectElement): void {
+  if (select.value) {
+    select.classList.add('has-value');
+  } else {
+    select.classList.remove('has-value');
+  }
 }
 
 /**
@@ -125,11 +239,12 @@ function validateLead(): boolean {
  */
 function setupLeadForm(): void {
   leadForm = document.getElementById('leadForm') as HTMLFormElement;
-  if (!leadForm) {
-    return;
-  }
+  if (!leadForm) return;
 
   leadStatusEl = leadForm.querySelector('.form__status');
+  submitBtn = leadForm.querySelector('#submitBtn') as HTMLButtonElement;
+  progressBar = leadForm.querySelector('.form__progress-bar');
+  progressText = leadForm.querySelector('.form__progress-text');
 
   /* EN: Create aria-live region for form errors
      RU: Создание aria-live региона для ошибок формы */
@@ -143,38 +258,43 @@ function setupLeadForm(): void {
     leadForm.appendChild(liveRegion);
   }
 
-  /* EN: Announce form errors to screen readers
-     RU: Объявление ошибок формы для скринридеров */
-  function announceErrors(): void {
-    const errors = leadForm?.querySelectorAll('.invalid');
-    if (errors && errors.length > 0 && liveRegion) {
-      const errorCount = errors.length;
-      liveRegion.textContent = `Форма содержит ${errorCount} ${errorCount === 1 ? 'ошибку' : 'ошибки'}. Исправьте выделенные поля.`;
-    } else if (liveRegion) {
-      liveRegion.textContent = '';
-    }
-  }
+  /* EN: Setup select handlers
+     RU: Настройка обработчиков для select */
+  const selects = leadForm.querySelectorAll('select');
+  selects.forEach((select) => {
+    select.addEventListener('change', () => {
+      handleSelectChange(select as HTMLSelectElement);
+      validateField(select as HTMLSelectElement);
+      updateProgress();
+    });
+  });
 
-  /* EN: Real-time validation on input/change/blur
-     RU: Валидация в реальном времени при input/change/blur */
-  ['input', 'change', 'blur'].forEach((ev) => {
-    leadForm?.addEventListener(ev, (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLElement)) {
-        return;
+  /* EN: Setup input handlers for real-time validation
+     RU: Настройка обработчиков ввода для валидации в реальном времени */
+  const inputs = leadForm.querySelectorAll('input, textarea');
+  inputs.forEach((input) => {
+    // Add has-value class if input is not empty
+    input.addEventListener('input', () => {
+      const el = input as HTMLInputElement | HTMLTextAreaElement;
+
+      if (el.value.trim()) {
+        el.classList.add('has-value');
+      } else {
+        el.classList.remove('has-value');
       }
 
-      if (
-        t.id === 'leadName' ||
-        t.id === 'leadEmail' ||
-        t.id === 'leadGoal' ||
-        t.id === 'leadLevel'
-      ) {
-        validateLead();
-        // EN: Debounced announcement | RU: Объявление с задержкой
-        if (ev === 'blur') {
-          announceErrors();
-        }
+      updateProgress();
+
+      if (el.id === 'leadMsg') {
+        updateCharCount();
+      }
+    });
+
+    // Validate on blur
+    input.addEventListener('blur', () => {
+      const el = input as HTMLInputElement | HTMLTextAreaElement;
+      if (el.value.trim()) {
+        validateField(el);
       }
     });
   });
@@ -184,11 +304,17 @@ function setupLeadForm(): void {
   leadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!validateLead() || !leadForm || !leadStatusEl) {
-      if (leadStatusEl) {
-        leadStatusEl.textContent = 'Исправьте ошибки формы';
-        leadStatusEl.style.color = 'var(--danger)';
+    if (!validateLead() || !leadForm) {
+      showStatus('Исправьте ошибки в форме', 'error');
+
+      // Focus first invalid field
+      const firstInvalid = leadForm.querySelector(
+        '.form__field.invalid input, .form__field.invalid select'
+      );
+      if (firstInvalid) {
+        (firstInvalid as HTMLElement).focus();
       }
+
       return;
     }
 
@@ -201,11 +327,11 @@ function setupLeadForm(): void {
       email: elements.leadEmail?.value?.trim(),
       goal: elements.leadGoal?.value || '',
       level: elements.leadLevel?.value || '',
-      message: elements.leadMsg?.value?.trim() || ''
+      message: elements.leadMsg?.value?.trim() || '',
+      source: 'landing_form'
     };
 
-    leadStatusEl.textContent = 'Отправка...';
-    leadStatusEl.style.color = 'var(--ink-dim)';
+    setButtonState('loading');
 
     track('lead_form_submit', { goal: payload.goal, level: payload.level });
 
@@ -214,19 +340,46 @@ function setupLeadForm(): void {
     const result = await sendToBackend('lead', payload);
 
     if (result.ok) {
-      leadStatusEl.textContent = 'Заявка отправлена! Мы свяжемся.';
-      leadStatusEl.style.color = 'var(--accent)';
-      leadForm.reset();
+      setButtonState('success');
+      showStatus('Заявка отправлена! Мы свяжемся с вами в течение 24 часов.', 'success');
+
+      // Reset form after delay
+      setTimeout(() => {
+        leadForm?.reset();
+        setButtonState('default');
+        updateProgress();
+
+        // Clear validation states
+        leadForm?.querySelectorAll('.form__field').forEach((f) => {
+          f.classList.remove('valid', 'invalid');
+        });
+        leadForm?.querySelectorAll('.has-value').forEach((f) => {
+          f.classList.remove('has-value');
+        });
+      }, 2000);
+
       track('lead_form_success', { mode: 'live' });
     } else if (result.mock) {
-      leadStatusEl.textContent =
-        'Заявка сохранена (демо-режим). Подключите backend для реальной отправки.';
-      leadStatusEl.style.color = 'var(--accent)';
-      leadForm.reset();
+      setButtonState('success');
+      showStatus('Заявка принята! Мы свяжемся с вами скоро.', 'success');
+
+      setTimeout(() => {
+        leadForm?.reset();
+        setButtonState('default');
+        updateProgress();
+
+        leadForm?.querySelectorAll('.form__field').forEach((f) => {
+          f.classList.remove('valid', 'invalid');
+        });
+        leadForm?.querySelectorAll('.has-value').forEach((f) => {
+          f.classList.remove('has-value');
+        });
+      }, 2000);
+
       track('lead_form_success', { mode: 'mock', reason: result.error });
     } else {
-      leadStatusEl.textContent = 'Не удалось отправить. Попробуйте позже.';
-      leadStatusEl.style.color = 'var(--danger)';
+      setButtonState('default');
+      showStatus('Не удалось отправить. Попробуйте позже или свяжитесь через Telegram.', 'error');
       track('lead_form_error', { error: result.error });
     }
   });
@@ -237,9 +390,7 @@ function setupLeadForm(): void {
  * RU: Открытие модального окна программы
  */
 function openModal(prog: string): void {
-  if (!programModal || !hiddenProgramInput) {
-    return;
-  }
+  if (!programModal || !hiddenProgramInput) return;
 
   programModal.removeAttribute('hidden');
   hiddenProgramInput.value = prog;
@@ -283,9 +434,7 @@ function openModal(prog: string): void {
  * RU: Закрытие модального окна программы
  */
 function closeModal(): void {
-  if (!programModal) {
-    return;
-  }
+  if (!programModal) return;
 
   programModal.setAttribute('hidden', '');
   document.body.style.overflow = '';
@@ -302,9 +451,7 @@ function closeModal(): void {
  */
 function setupProgramModal(): void {
   programModal = document.getElementById('programModal');
-  if (!programModal) {
-    return;
-  }
+  if (!programModal) return;
 
   programForm = document.getElementById('programForm') as HTMLFormElement;
   programStatusEl = programForm?.querySelector('.form__status--mini');
@@ -381,7 +528,7 @@ function setupProgramModal(): void {
           closeModal();
         }, 2000);
       } else if (result.mock) {
-        programStatusEl.textContent = '✓ Заявка принята! Мы свяжемся с вами.';
+        programStatusEl.textContent = '✓ Заявка принята!';
         programStatusEl.classList.remove('error');
         programStatusEl.classList.add('show', 'success');
         programForm.reset();

@@ -438,54 +438,100 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
         <div class="contact__info fx-fade-up">
           <h2 id="contactTitle">Записаться</h2>
           <p>Оставьте заявку — мы свяжемся и подберём формат.</p>
+          <div class="contact__features">
+            <div class="contact__feature">
+              <span class="contact__feature-icon">⚡</span>
+              <span>Ответ в течение 24 часов</span>
+            </div>
+            <div class="contact__feature">
+              <span class="contact__feature-icon">🎯</span>
+              <span>Бесплатная консультация</span>
+            </div>
+            <div class="contact__feature">
+              <span class="contact__feature-icon">📚</span>
+              <span>Индивидуальный подход</span>
+            </div>
+          </div>
           <ul class="contact__list">
             <li><strong>Email:</strong> <a href="mailto:info@example.com">info@example.com</a></li>
-            <li><strong>Telegram:</strong> <a href="#" rel="noopener">@japanese_school</a></li>
+            <li><strong>Telegram:</strong> <a href="https://t.me/japanese_school" rel="noopener" target="_blank">@japanese_school</a></li>
           </ul>
         </div>
-        <form class="form fx-fade-up" data-delay="100" id="leadForm" novalidate>
-          <div class="form__row">
-            <label for="leadName" class="form__label">Имя</label>
-            <input id="leadName" class="form__input" type="text" name="name" required placeholder="Ваше имя" aria-describedby="errName" />
-            <small class="form__error" id="errName" hidden>Введите имя (мин. 2 символа)</small>
+        <form class="form form--modern fx-fade-up" data-delay="100" id="leadForm" novalidate>
+          <div class="form__progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="form__progress-bar"></div>
+            <span class="form__progress-text">0% заполнено</span>
           </div>
-          <div class="form__row">
-            <label for="leadEmail" class="form__label">Email</label>
-            <input id="leadEmail" class="form__input" type="email" name="email" required placeholder="you@example.com" aria-describedby="errEmail" />
-            <small class="form__error" id="errEmail" hidden>Введите корректный email</small>
-          </div>
-          <div class="form__row--split">
-            <div>
-              <label for="leadGoal" class="form__label">Цель</label>
-              <select id="leadGoal" class="form__select" name="goal" required aria-describedby="errGoal">
-                <option value="">Выберите...</option>
-                <option>JLPT</option>
-                <option>Путешествия</option>
-                <option>Работа</option>
-                <option>Переезд</option>
-                <option>Хобби</option>
-              </select>
-              <small class="form__error" id="errGoal" hidden>Выберите цель</small>
+
+          <div class="form__group">
+            <div class="form__field">
+              <input id="leadName" class="form__input" type="text" name="name" required autocomplete="name" />
+              <label for="leadName" class="form__label-float">Ваше имя</label>
+              <span class="form__icon form__icon--valid">✓</span>
+              <span class="form__icon form__icon--invalid">!</span>
+              <small class="form__hint" id="errName">Минимум 2 символа</small>
             </div>
-            <div>
-              <label for="leadLevel" class="form__label">Уровень</label>
-              <select id="leadLevel" class="form__select" name="level" required aria-describedby="errLevel">
-                <option value="">Уровень...</option>
-                <option>N5</option>
-                <option>N4</option>
-                <option>N3</option>
-                <option>N2</option>
-                <option>N1</option>
-              </select>
-              <small class="form__error" id="errLevel" hidden>Укажите текущий уровень</small>
+
+            <div class="form__field">
+              <input id="leadEmail" class="form__input" type="email" name="email" required autocomplete="email" />
+              <label for="leadEmail" class="form__label-float">Email</label>
+              <span class="form__icon form__icon--valid">✓</span>
+              <span class="form__icon form__icon--invalid">!</span>
+              <small class="form__hint" id="errEmail">Введите корректный email</small>
             </div>
           </div>
-          <div class="form__row">
-            <label for="leadMsg" class="form__label">Сообщение</label>
-            <textarea id="leadMsg" class="form__textarea" name="message" rows="4" placeholder="Коротко о запросе"></textarea>
+
+          <div class="form__group form__group--split">
+            <div class="form__field">
+              <select id="leadGoal" class="form__select" name="goal" required>
+                <option value="" disabled selected></option>
+                <option value="jlpt">JLPT подготовка</option>
+                <option value="travel">Путешествия</option>
+                <option value="work">Работа в Японии</option>
+                <option value="relocate">Переезд</option>
+                <option value="hobby">Хобби / интерес</option>
+                <option value="anime">Аниме / манга</option>
+              </select>
+              <label for="leadGoal" class="form__label-float">Ваша цель</label>
+              <span class="form__select-arrow">▼</span>
+              <small class="form__hint" id="errGoal">Выберите цель изучения</small>
+            </div>
+
+            <div class="form__field">
+              <select id="leadLevel" class="form__select" name="level" required>
+                <option value="" disabled selected></option>
+                <option value="zero">С нуля</option>
+                <option value="n5">N5 (начальный)</option>
+                <option value="n4">N4 (базовый)</option>
+                <option value="n3">N3 (средний)</option>
+                <option value="n2">N2 (продвинутый)</option>
+              </select>
+              <label for="leadLevel" class="form__label-float">Текущий уровень</label>
+              <span class="form__select-arrow">▼</span>
+              <small class="form__hint" id="errLevel">Укажите ваш уровень</small>
+            </div>
           </div>
-          <button type="submit" class="btn primary wide">Отправить</button>
-          <p class="form__status" aria-live="polite"></p>
+
+          <div class="form__field form__field--textarea">
+            <textarea id="leadMsg" class="form__textarea" name="message" rows="3"></textarea>
+            <label for="leadMsg" class="form__label-float">Сообщение (необязательно)</label>
+            <span class="form__char-count"><span id="msgCharCount">0</span>/500</span>
+          </div>
+
+          <button type="submit" class="form__submit" id="submitBtn">
+            <span class="form__submit-text">Отправить заявку</span>
+            <span class="form__submit-loading">
+              <svg class="form__spinner" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4 31.4" />
+              </svg>
+              Отправка...
+            </span>
+            <span class="form__submit-success">✓ Отправлено!</span>
+          </button>
+
+          <div class="form__status" aria-live="polite"></div>
+
+          <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a></p>
         </form>
       </div>
     </section>
