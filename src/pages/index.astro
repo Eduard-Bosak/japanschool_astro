@@ -22,7 +22,7 @@ const prefetchImages = [optimizedHero2.src];
 
 const rawPosts = await getCollection('blog', ({ data }) => !data.draft);
 const mappedPosts = sortByDateDesc(rawPosts).map(collectMeta);
-const latestPosts = mappedPosts.slice(0, 6);
+const latestPosts = mappedPosts.slice(0, 3);
 const categoriesToolbar = Array.from(new Set(mappedPosts.flatMap((post) => post.categories))).slice(0, 12);
 const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://example.com';
 ---
@@ -287,34 +287,7 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
         <div class="container">
           <div class="blog-feed__header fx-fade-up">
             <h2 id="latestPostsTitle" class="blog-feed__title">Последние статьи</h2>
-            <p class="blog-feed__desc">Новые материалы из блога: методика, JLPT, практика.</p>
-          </div>
-          <div class="blog-feed__toolbar fx-fade-up" data-delay="40">
-            <div class="blog-feed__search">
-              <input
-                id="postSearch"
-                class="blog-feed__search-input"
-                type="search"
-                placeholder="Поиск по статьям..."
-                aria-label="Поиск по статьям"
-              />
-              <button type="button" id="postSearchReset" class="blog-feed__search-reset" aria-label="Сбросить поиск" hidden>
-                &times;
-              </button>
-              <span id="postResultsCount" class="blog-feed__results-count" aria-live="polite"></span>
-            </div>
-            {categoriesToolbar.length ? (
-              <div class="blog-feed__filters" role="toolbar" aria-label="Фильтр по категориям">
-                <button type="button" class="blog-feed__filter blog-feed__filter--active" data-cat="__all" aria-pressed="true">
-                  Все
-                </button>
-                {categoriesToolbar.map((cat) => (
-                  <button type="button" class="blog-feed__filter" data-cat={cat} aria-pressed="false">
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            ) : null}
+            <p class="blog-feed__desc">Полезные материалы о японском языке</p>
           </div>
           <div class="blog-feed__grid">
             {latestPosts.map((post, index) => {
@@ -353,38 +326,14 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
                         <span class="blog-card__time">{post.readingTime}&nbsp;мин</span>
                       </div>
                       <h3 class="blog-card__title">{post.title}</h3>
-                      <p class="blog-card__desc">{post.description}</p>
-                      {post.categories.length ? (
-                        <div class="blog-card__tags">
-                          {post.categories.map((cat) => (
-                            <span class="blog-card__tag">{cat}</span>
-                          ))}
-                        </div>
-                      ) : null}
                     </div>
                   </a>
-                  <button
-                    type="button"
-                    class="share-btn"
-                    data-share={shareUrl}
-                    aria-label="Скопировать ссылку на статью"
-                    title="Скопировать ссылку"
-                  >
-                    ⤴
-                  </button>
                 </article>
               );
             })}
           </div>
-          <div class="blog-feed__view-all fx-fade-up" data-delay="300">
-            <a href="/blog/" class="blog-feed__view-all-btn">Смотреть все статьи →</a>
-          </div>
-          <div class="blog-feed__callout fx-fade-up" data-delay="360">
-            <div class="blog-feed__callout-inner">
-              <p class="blog-feed__callout-text">
-                Подпишитесь: <a href="/rss.xml" class="blog-feed__callout-link">RSS</a> · <a href="/atom.xml" class="blog-feed__callout-link">Atom</a>
-              </p>
-            </div>
+          <div class="blog-feed__view-all fx-fade-up" data-delay="200">
+            <a href="/blog/" class="blog-feed__view-all-btn">Все статьи →</a>
           </div>
         </div>
       </section>

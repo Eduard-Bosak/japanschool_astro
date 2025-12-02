@@ -156,6 +156,23 @@
   padding-right: 2.5rem;
 }
 
+/* ===== Select Options (для видимости в dropdown) ===== */
+.form--modern .form__select option {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.form--modern .form__select option:checked {
+  background: linear-gradient(0deg, #f06b93 0%, #f06b93 100%);
+  color: #ffffff;
+}
+
+.form--modern .form__select option:disabled {
+  color: #999;
+}
+
 /* ===== Focus States ===== */
 .form--modern .form__input:focus,
 .form--modern .form__textarea:focus,
