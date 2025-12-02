@@ -11,6 +11,10 @@ const siteFromEnv = process.env.SITE_URL?.trim();
 const fallbackSite = siteConfig.siteUrl?.trim() || 'https://example.com';
 const site = (siteFromEnv || fallbackSite).replace(/\/+$/, '');
 
+// Base path for GitHub Pages (e.g., /repo-name/)
+// Leave empty for custom domain or username.github.io
+const basePath = process.env.BASE_PATH?.trim() || '';
+
 // Portal URL for API calls
 const portalUrl = process.env.PUBLIC_PORTAL_URL?.trim() || siteConfig.portalUrl?.trim() || '';
 
@@ -22,6 +26,7 @@ const alias = {
 
 export default defineConfig({
   site,
+  base: basePath || '/',
   srcDir: './src',
   outDir: './dist',
   prefetch: {

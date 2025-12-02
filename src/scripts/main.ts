@@ -147,7 +147,7 @@ function initComponents(): void {
       path: window.location.pathname,
       referrer: document.referrer
     });
-    
+
     // Add breadcrumb for Sentry
     addBreadcrumb(`Page loaded: ${window.location.pathname}`, 'navigation');
   });

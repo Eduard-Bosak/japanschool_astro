@@ -29,40 +29,40 @@ export function initSentry(): void {
     Sentry.init({
       dsn: SENTRY_DSN,
       environment,
-      
+
       // Performance monitoring
       tracesSampleRate: isProduction ? 0.1 : 1.0, // 10% in prod, 100% in dev
-      
+
       // Release info (set during build)
       release: import.meta.env.PUBLIC_APP_VERSION || 'unknown',
-      
+
       // Filter out known non-critical errors
       beforeSend(event, hint) {
         const error = hint.originalException;
-        
+
         // Ignore network errors from extensions
         if (error instanceof Error) {
           const message = error.message.toLowerCase();
-          
+
           // Skip browser extension errors
           if (message.includes('extension')) {
             return null;
           }
-          
+
           // Skip cancelled requests
           if (message.includes('aborted') || message.includes('cancelled')) {
             return null;
           }
-          
+
           // Skip ResizeObserver errors (browser quirk)
           if (message.includes('resizeobserver')) {
             return null;
           }
         }
-        
+
         return event;
       },
-      
+
       // Ignore specific error types
       ignoreErrors: [
         // Network issues
@@ -70,28 +70,28 @@ export function initSentry(): void {
         'Failed to fetch',
         'Load failed',
         'NetworkError',
-        
+
         // Third-party scripts
         /^Script error\.?$/,
-        
+
         // Browser extensions
         /chrome-extension/,
         /moz-extension/,
-        
+
         // Known browser issues
         'ResizeObserver loop limit exceeded',
         'ResizeObserver loop completed with undelivered notifications',
-        
+
         // User-initiated navigation
         'AbortError',
-        'The operation was aborted',
+        'The operation was aborted'
       ],
-      
+
       // Limit breadcrumbs
       maxBreadcrumbs: 50,
-      
+
       // Don't send PII
-      sendDefaultPii: false,
+      sendDefaultPii: false
     });
 
     console.log('[Sentry] Initialized for', environment);
@@ -120,7 +120,10 @@ export function captureError(error: Error, context?: Record<string, unknown>): v
 /**
  * Capture a message (info/warning)
  */
-export function captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info'): void {
+export function captureMessage(
+  message: string,
+  level: 'info' | 'warning' | 'error' = 'info'
+): void {
   if (!SENTRY_DSN) {
     console.log(`[${level}]`, message);
     return;
@@ -146,12 +149,12 @@ export function addBreadcrumb(
   level: 'info' | 'warning' | 'error' = 'info'
 ): void {
   if (!SENTRY_DSN) return;
-  
+
   Sentry.addBreadcrumb({
     message,
     category,
     level,
-    timestamp: Date.now() / 1000,
+    timestamp: Date.now() / 1000
   });
 }
 
@@ -168,9 +171,7 @@ export function withSentryTracking<T extends (...args: unknown[]) => Promise<unk
     } catch (error) {
       captureError(error instanceof Error ? error : new Error(String(error)), {
         operation: operationName,
-        args: args.map(arg => 
-          typeof arg === 'object' ? '[object]' : String(arg)
-        ),
+        args: args.map((arg) => (typeof arg === 'object' ? '[object]' : String(arg)))
       });
       throw error;
     }

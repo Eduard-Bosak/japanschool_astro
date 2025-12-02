@@ -92,15 +92,15 @@ async function sendToMonitoring(entry: LogEntry): Promise<void> {
     if (!sentryModule) {
       sentryModule = await import('./sentry');
     }
-    
+
     // Create error object for Sentry
     const errorObj = new Error(entry.message);
-    
+
     sentryModule.captureError(errorObj, {
       context: entry.context,
       data: entry.data,
       url: entry.url,
-      timestamp: entry.timestamp,
+      timestamp: entry.timestamp
     });
   } catch {
     // Fallback to sendBeacon if Sentry fails
