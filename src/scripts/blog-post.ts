@@ -58,18 +58,13 @@ function createReadingModePanel(): void {
   panel.className = 'reading-controls';
   panel.setAttribute('aria-label', 'Настройки чтения');
 
+  // Simplified panel: font size + theme toggle + share
   panel.innerHTML = `
     <button class="reading-controls__btn" data-mode="size" data-size="decrease" data-tooltip="Меньше" aria-label="Уменьшить текст">A-</button>
-    <button class="reading-controls__btn" data-mode="size" data-size="reset" data-tooltip="Сбросить" aria-label="Сбросить размер">A</button>
     <button class="reading-controls__btn" data-mode="size" data-size="increase" data-tooltip="Больше" aria-label="Увеличить текст">A+</button>
     <div class="reading-controls__separator"></div>
-    <button class="reading-controls__btn" data-mode="serif" data-tooltip="Шрифт" aria-label="Шрифт с засечками">Aa</button>
-    <button class="reading-controls__btn" data-mode="sepia" data-tooltip="Сепия" aria-label="Режим сепия">◑</button>
-    <button class="reading-controls__btn" data-mode="focus" data-tooltip="Фокус" aria-label="Режим фокуса">◉</button>
-    <button class="reading-controls__btn" data-mode="contrast" data-tooltip="Контраст" aria-label="Высокий контраст">◐</button>
-    <div class="reading-controls__separator"></div>
+    <button class="reading-controls__btn" data-mode="sepia" data-tooltip="Сепия" aria-label="Режим сепия">☀</button>
     <button class="reading-controls__btn" data-action="share" data-tooltip="Ссылка" aria-label="Поделиться">🔗</button>
-    <button class="reading-controls__btn" data-action="bookmark" data-tooltip="Закладка" aria-label="Закладка">★</button>
   `;
 
   document.body.appendChild(panel);
