@@ -93,14 +93,11 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
         <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="Меню"><span></span></button>
         <ul id="navMenu">
           <li><a href="#hero">Главная</a></li>
-          <li><a href="#about">О школе</a></li>
-          <li><a href="#founder">Основатель</a></li>
-          <li><a href="#achievements">Достижения</a></li>
+          <li><a href="#teacher">Преподаватель</a></li>
           <li><a href="#programs">Программы</a></li>
-          <li><a href="#method">Методика</a></li>
-          <li><a href="#gallery">Галерея</a></li>
+          <li><a href="#contact">Записаться</a></li>
+          <li><a href="/blog/">Блог</a></li>
           <li><a href="https://japanschool-astro-9szg.vercel.app" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">Личный кабинет</a></li>
-          <li><a href="#contact" class="cta-link">Запись</a></li>
         </ul>
       </nav>
       <div class="header-actions">
@@ -110,501 +107,259 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
   </header>
 
   <main>
-    <section id="hero" class="hero" aria-labelledby="heroTitle">
+    <section id="hero" class="hero hero--minimal" aria-labelledby="heroTitle">
       <div class="hero-bg-layer"></div>
-      <div class="hero-blob" aria-hidden="true">
-        <svg viewBox="0 0 600 600" width="600" height="600" role="presentation">
-          <path id="blobPath" fill="url(#gradBlob)" d="M421 308Q406 366 362.5 412.5Q319 459 255.5 456.5Q192 454 148 409.5Q104 365 84 302.5Q64 240 96 182Q128 124 187 89Q246 54 307.5 82.5Q369 111 406.5 155.5Q444 200 436 250Q428 300 421 308Z" />
-          <defs>
-            <linearGradient id="gradBlob" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.85" />
-              <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.65" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <div class="container hero-inner">
-        <div class="hero-content">
-          <h1 id="heroTitle" class="fx-fade-up">Погружение в японский язык и культуру</h1>
-          <p class="lead fx-fade-up" data-delay="100">Индивидуальные и групповые занятия. Подготовка к JLPT. Методика на основе академического и культурного опыта в Японии.</p>
-          <div class="hero-cta fx-fade-up" data-delay="200">
-            <a href="#contact" class="btn primary">Записаться</a>
-            <a href="#programs" class="btn ghost">Программы</a>
-          </div>
-          <div class="hero-meta fx-fade-up" data-delay="300">
-            <span>Стипендия MEXT</span>
-            <span>Опыт обучения в TUFS</span>
-            <span>Сертификат JLPT N2</span>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="photo-stack">
-            <ResponsiveImage src={heroImg1} alt="Основатель школы" loading="eager" fetchpriority="high" width={600} height={750} />
-            <ResponsiveImage src={heroImg2} alt="Фото из образовательной поездки" class="offset" loading="eager" fetchpriority="high" width={600} height={750} />
-          </div>
+      <div class="container hero-inner hero-inner--centered">
+        <div class="hero-content hero-content--centered">
+          <p class="hero-eyebrow fx-fade-up">Стипендиат MEXT · Токийский университет · JLPT N2</p>
+          <h1 id="heroTitle" class="hero-title--large fx-fade-up" data-delay="100">
+            Японский язык.<br/>
+            <span class="text-gradient">Погружение в культуру.</span>
+          </h1>
+          <p class="hero-subtitle fx-fade-up" data-delay="200">
+            Индивидуальные занятия с преподавателем, прошедшим обучение в Японии.
+            Подготовка к JLPT N5–N2.
+          </p>
+          <div class="hero-cta hero-cta--centered fx-fade-up" data-delay="300">
+            <a href="#contact" class="btn btn--large primary">Записаться на консультацию</a>
           </div>
         </div>
       </div>
       <div class="scroll-indicator" aria-hidden="true">↓</div>
     </section>
 
-    <section id="about" class="about section" aria-labelledby="aboutTitle">
-      <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="aboutTitle">О школе</h2>
-          <p>Мы соединяем язык и живую культуру Японии: традиции, современность, контекст. Не просто слова — мышление.</p>
+    <section id="teacher" class="teacher section" aria-labelledby="teacherTitle">
+      <div class="container teacher__grid">
+        <div class="teacher__photo fx-fade-up">
+          <ResponsiveImage src={founderImg} alt="Преподаватель японского языка" width={500} height={600} />
         </div>
-        <div class="about">
-          <div class="about__card fx-fade-up" data-delay="100">
-            <h3>Подготовка JLPT</h3>
-            <p>Структурированные программы N5–N2. Грамматика, лексика, чтение, аудирование.</p>
-          </div>
-          <div class="about__card fx-fade-up" data-delay="150">
-            <h3>Коммуникация</h3>
-            <p>Практика живых диалогов и отработка речевых моделей в культурных сценариях.</p>
-          </div>
-          <div class="about__card fx-fade-up" data-delay="200">
-            <h3>Культура</h3>
-            <p>Академический и практический опыт из Японии — фестивали, быт, социальные нормы.</p>
-          </div>
-          <div class="about__card fx-fade-up" data-delay="250">
-            <h3>Индивидуальный путь</h3>
-            <p>Адаптация темпа и акцентов под цели: экзамены, путешествия, работа.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="founder" class="founder section" aria-labelledby="founderTitle">
-      <div class="container founder">
-        <div class="founder__photo fx-fade-up">
-          <ResponsiveImage src={founderImg} alt="Основатель школы — преподаватель японского языка" width={600} height={750} />
-        </div>
-        <div class="founder__content fx-fade-up" data-delay="100">
-          <h2 id="founderTitle">Основатель</h2>
-          <div class="bio rich-text">
-            <p>Я имею высшее образование по специальности «Зарубежное регионоведение (азиатские исследования)» от НГТУ, где я изучала японский язык с 2014 по 2018 годы. В 2017 году я успешно сдала экзамены в посольстве Японии в Москве на программу Никкенсей (Японский язык и культура Японии) и обучалась по стипендии MEXT в Токийском университете иностранных языков с 2017 по 2018 годы. На данный момент я имею сертификат на знание японского языка N2.</p>
-            <p>За время обучения в НГТУ я достигла следующих результатов:</p>
-            <ul>
-              <li>Победитель в XI, XII и XIV региональных конкурсах устных выступлений на японском языке среди студентов вузов Западной Сибири «Сибирский Калейдоскоп» в 2016, 2017 и 2019 годах.</li>
-              <li>Победитель в V региональной студенческой научно-практической конференции на иностранных языках с международным участием «Актуальные вопросы региональных и международных исследований (секция на японском языке), НГТУ, 2018 год.</li>
-              <li>Стажировка в Японии по программе Никкенсей с 2017 по 2018 годы, где я изучала японский язык и культуру на продвинутом уровне, а также участвовала в различных культурных и образовательных мероприятиях.</li>
-            </ul>
-          </div>
-          <div class="metrics">
-            <div class="metrics__item"><span class="metrics__num" data-count="8">0</span><span class="metrics__label">Лет опыта</span></div>
-            <div class="metrics__item"><span class="metrics__num" data-count="3">0</span><span class="metrics__label">JLPT уровней</span></div>
-            <div class="metrics__item"><span class="metrics__num" data-count="100">0</span><span class="metrics__label">+ часов практики</span></div>
+        <div class="teacher__content fx-fade-up" data-delay="100">
+          <h2 id="teacherTitle" class="teacher__title">Преподаватель</h2>
+          <p class="teacher__lead">
+            Образование в НГТУ по специальности «Азиатские исследования».
+            Год обучения в Токийском университете иностранных языков по стипендии MEXT.
+            Сертификат JLPT N2.
+          </p>
+          <ul class="teacher__achievements">
+            <li>🏆 3× победитель конкурса «Сибирский Калейдоскоп»</li>
+            <li>🎓 Стажировка по программе Никкенсей (2017–2018)</li>
+            <li>📚 8+ лет изучения и преподавания японского</li>
+          </ul>
+          <div class="teacher__metrics">
+            <div class="teacher__metric">
+              <span class="teacher__metric-value">8+</span>
+              <span class="teacher__metric-label">лет опыта</span>
+            </div>
+            <div class="teacher__metric">
+              <span class="teacher__metric-value">N2</span>
+              <span class="teacher__metric-label">сертификат</span>
+            </div>
+            <div class="teacher__metric">
+              <span class="teacher__metric-value">50+</span>
+              <span class="teacher__metric-label">студентов</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section id="achievements" class="achievements section" aria-labelledby="achievementsTitle">
-      <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="achievementsTitle">Достижения</h2>
-        </div>
-        <ol class="timeline" role="list">
-          <li class="timeline__item fx-fade-up" data-delay="50"><div class="timeline__time">2016</div><div class="timeline__content">Победа в конкурсе «Сибирский Калейдоскоп»</div></li>
-          <li class="timeline__item fx-fade-up" data-delay="100"><div class="timeline__time">2017</div><div class="timeline__content">Победа «Сибирский Калейдоскоп» + поступление на стипендию MEXT</div></li>
-          <li class="timeline__item fx-fade-up" data-delay="150"><div class="timeline__time">2017–2018</div><div class="timeline__content">Обучение в Токийском университете иностранных языков (программа Никкенсей)</div></li>
-          <li class="timeline__item fx-fade-up" data-delay="200"><div class="timeline__time">2018</div><div class="timeline__content">Победа в конференции НГТУ (секция японского языка)</div></li>
-          <li class="timeline__item fx-fade-up" data-delay="250"><div class="timeline__time">2019</div><div class="timeline__content">Очередная победа «Сибирский Калейдоскоп»</div></li>
-        </ol>
       </div>
     </section>
 
     <section id="programs" class="programs section" aria-labelledby="programsTitle">
       <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="programsTitle">Программы</h2>
-          <p>Фокус — результат: комбинируем грамматику, лексику, и живую речь.</p>
+        <div class="section__header section__header--centered fx-fade-up">
+          <h2 id="programsTitle">Программы обучения</h2>
+          <p>Выберите подходящий формат</p>
         </div>
-        <div class="programs">
-          <article class="programs__card fx-tilt" tabindex="0">
-            <h3>N5–N4 База</h3>
-            <p>Азбуки, базовая грамматика, фундамент речи. Темп — комфортный.</p>
-            <ul class="programs__list"><li>Группы 4–7</li><li>2 раза/нед.</li><li>Домашняя поддержка</li></ul>
-            <button class="btn subtle" data-intent="request" data-program="base">Интересно</button>
+        <div class="programs programs--grid">
+          <article class="program-card fx-fade-up" data-delay="50">
+            <div class="program-card__icon">あ</div>
+            <h3 class="program-card__title">N5–N4 База</h3>
+            <p class="program-card__desc">Азбуки, базовая грамматика, первые диалоги. Для начинающих с нуля.</p>
+            <ul class="program-card__features">
+              <li>Группы 4–7 человек</li>
+              <li>2 занятия в неделю</li>
+              <li>Домашняя поддержка</li>
+            </ul>
           </article>
-          <article class="programs__card fx-tilt" tabindex="0">
-            <h3>N3–N2 Интенсив</h3>
-            <p>Структурная отработка, словарь, тексты, аудио — подготовка к экзамену.</p>
-            <ul class="programs__list"><li>Гибрид: офлайн/онлайн</li><li>Разбор ошибок</li><li>Модульные тесты</li></ul>
-            <button class="btn subtle" data-intent="request" data-program="intensive">Интересно</button>
+          <article class="program-card program-card--featured fx-fade-up" data-delay="100">
+            <div class="program-card__badge">Популярное</div>
+            <div class="program-card__icon">漢</div>
+            <h3 class="program-card__title">N3–N2 Интенсив</h3>
+            <p class="program-card__desc">Глубокая подготовка к экзамену: грамматика, лексика, аудирование, тесты.</p>
+            <ul class="program-card__features">
+              <li>Онлайн или офлайн</li>
+              <li>Разбор ошибок</li>
+              <li>Модульные тесты</li>
+            </ul>
           </article>
-          <article class="programs__card fx-tilt" tabindex="0">
-            <h3>Разговор + Культура</h3>
-            <p>Темы повседневности, этикет, социальные контексты, культурные реалии.</p>
-            <ul class="programs__list"><li>Практика диалогов</li><li>Сценарии</li><li>Культурные заметки</li></ul>
-            <button class="btn subtle" data-intent="request" data-program="culture">Интересно</button>
+          <article class="program-card fx-fade-up" data-delay="150">
+            <div class="program-card__icon">話</div>
+            <h3 class="program-card__title">Разговорный</h3>
+            <p class="program-card__desc">Практика живых диалогов, культурные контексты, повседневные ситуации.</p>
+            <ul class="program-card__features">
+              <li>Сценарии из жизни</li>
+              <li>Культурные заметки</li>
+              <li>Аудирование</li>
+            </ul>
           </article>
-          <article class="programs__card fx-tilt" tabindex="0">
-            <h3>Индивидуальные</h3>
-            <p>Персональные цели: переезд, бизнес, стажировка, ускоренное прохождение уровней.</p>
-            <ul class="programs__list"><li>Гибкий график</li><li>Целевая программа</li><li>Отчёты прогресса</li></ul>
-            <button class="btn subtle" data-intent="request" data-program="personal">Интересно</button>
+          <article class="program-card fx-fade-up" data-delay="200">
+            <div class="program-card__icon">私</div>
+            <h3 class="program-card__title">Индивидуальный</h3>
+            <p class="program-card__desc">Персональная программа под ваши цели: переезд, работа, ускоренное обучение.</p>
+            <ul class="program-card__features">
+              <li>Гибкий график</li>
+              <li>Целевая программа</li>
+              <li>Отчёты прогресса</li>
+            </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="method" class="method section" aria-labelledby="methodTitle">
+    <section id="blog" class="blog section" aria-labelledby="blogTitle">
       <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="methodTitle">Методика</h2>
-          <p>Синтез академической строгости и живого погружения.</p>
+        <div class="section__header section__header--centered fx-fade-up">
+          <h2 id="blogTitle">Блог</h2>
         </div>
-        <div class="method">
-          <div class="method__item fx-fade-up" data-delay="50"><h3>Модульность</h3><p>Короткие концентрированные блоки знаний.</p></div>
-          <div class="method__item fx-fade-up" data-delay="100"><h3>Интервальное повторение</h3><p>Укрепление лексики в долговременной памяти.</p></div>
-          <div class="method__item fx-fade-up" data-delay="150"><h3>Контекст</h3><p>Ситуации: магазин, университет, деловая встреча.</p></div>
-          <div class="method__item fx-fade-up" data-delay="200"><h3>Микроаудирование</h3><p>Частые короткие звуковые фрагменты.</p></div>
-          <div class="method__item fx-fade-up" data-delay="250"><h3>Обратная связь</h3><p>Разбор ошибок — сразу.</p></div>
-          <div class="method__item fx-fade-up" data-delay="300"><h3>Метрики</h3><p>Диаграммы прогресса (в будущем LMS).</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="gallery" class="gallery section" aria-labelledby="galleryTitle">
-      <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="galleryTitle">Галерея</h2>
-          <p>Моменты, которые формируют путь обучения.</p>
-        </div>
-        <div class="gallery" id="galleryGrid">
-          <figure class="gallery__item fx-fade-up" data-delay="50"><ResponsiveImage src={heroImg1} alt="Учебный процесс" width={600} height={750} /><figcaption class="gallery__caption">Учебная динамика</figcaption></figure>
-          <figure class="gallery__item fx-fade-up" data-delay="100"><ResponsiveImage src={heroImg2} alt="Опыт в Японии" width={600} height={750} /><figcaption class="gallery__caption">Культурный опыт</figcaption></figure>
-          <figure class="gallery__item fx-fade-up" data-delay="150"><ResponsiveImage src={galleryImg3} alt="Атмосфера занятий" width={600} height={750} /><figcaption class="gallery__caption">Атмосфера</figcaption></figure>
-          <figure class="gallery__item fx-fade-up" data-delay="200"><ResponsiveImage src={founderImg} alt="Преподаватель" width={600} height={750} /><figcaption class="gallery__caption">Преподаватель</figcaption></figure>
-        </div>
-      </div>
-    </section>
-
-    {latestPosts.length ? (
-      <section id="latest-posts" class="section blog-feed" aria-labelledby="latestPostsTitle">
-        <div class="container">
-          <div class="blog-feed__header fx-fade-up">
-            <h2 id="latestPostsTitle" class="blog-feed__title">Последние статьи</h2>
-            <p class="blog-feed__desc">Полезные материалы о японском языке</p>
-          </div>
-          <div class="blog-feed__grid">
+        {latestPosts.length ? (
+          <div class="blog__grid">
             {latestPosts.map((post, index) => {
               const cover = post.cover
                 ? post.cover.startsWith('http')
                   ? post.cover
                   : `/${post.cover.replace(/^\/+/u, '')}`
-                : '/og-image.png';
-              const shareUrl = `${siteOrigin}/blog/${post.slug}/`;
+                : null;
               return (
-                <article
-                  class="blog-card fx-fade-up"
-                  data-index={index}
-                  data-delay={Math.min((index + 1) * 70, 420)}
-                  data-title={post.title}
-                  data-desc={post.description}
-                  data-keywords={post.keywords}
-                  data-cats={post.categories.join(',')}
-                >
-                  <a class="blog-card__link" href={`/blog/${post.slug}/`}>
-                    <div
-                      class="blog-card__media"
-                      data-bg={cover}
-                      data-plc={cover}
-                      data-state="loading"
-                      style={`background-image:url('${cover}')`}
-                    ></div>
-                    <div class="blog-card__content">
-                      <div class="blog-card__meta">
-                        <time datetime={post.isoDate} class="blog-card__date">
-                          {post.date}
-                        </time>
-                        <span class="blog-card__meta-sep" aria-hidden="true">
-                          ·
-                        </span>
-                        <span class="blog-card__time">{post.readingTime}&nbsp;мин</span>
-                      </div>
-                      <h3 class="blog-card__title">{post.title}</h3>
+                <article class="blog__card fx-fade-up" data-delay={index * 50 + 50}>
+                  <a href={`/blog/${post.slug}/`} class="blog__card-link">
+                    <div class="blog__card-image" style={cover ? `background-image: url('${cover}')` : ''}></div>
+                    <div class="blog__card-content">
+                      <time class="blog__card-date">{post.date}</time>
+                      <h3 class="blog__card-title">{post.title}</h3>
+                      <p class="blog__card-excerpt">{post.description}</p>
                     </div>
                   </a>
                 </article>
               );
             })}
           </div>
-          <div class="blog-feed__view-all fx-fade-up" data-delay="200">
-            <a href="/blog/" class="blog-feed__view-all-btn">Все статьи →</a>
-          </div>
-        </div>
-      </section>
-    ) : null}
-
-    <section id="stats" class="stats section" aria-labelledby="statsTitle">
-      <div class="container">
-        <div class="stats__grid fx-fade-up">
-          <div class="stats__item">
-            <span class="stats__number">5+</span>
-            <span class="stats__label">лет опыта преподавания</span>
-          </div>
-          <div class="stats__item">
-            <span class="stats__number">50+</span>
-            <span class="stats__label">студентов обучено</span>
-          </div>
-          <div class="stats__item">
-            <span class="stats__number">N5–N2</span>
-            <span class="stats__label">подготовка к JLPT</span>
-          </div>
-          <div class="stats__item">
-            <span class="stats__number">100%</span>
-            <span class="stats__label">индивидуальный подход</span>
-          </div>
+        ) : (
+          <p class="blog__empty">Скоро здесь появятся статьи</p>
+        )}
+        <div class="blog__more fx-fade-up" data-delay="200">
+          <a href="/blog/" class="btn ghost">Все статьи →</a>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="contact section" aria-labelledby="contactTitle">
-      <div class="container contact">
-        <div class="contact__info fx-fade-up">
-          <h2 id="contactTitle">Записаться</h2>
-          <p>Оставьте заявку — мы свяжемся и подберём формат.</p>
-          <div class="contact__features">
-            <div class="contact__feature">
-              <span class="contact__feature-icon">⚡</span>
-              <span>Ответ в течение 24 часов</span>
-            </div>
-            <div class="contact__feature">
-              <span class="contact__feature-icon">🎯</span>
-              <span>Бесплатная консультация</span>
-            </div>
-            <div class="contact__feature">
-              <span class="contact__feature-icon">📚</span>
-              <span>Индивидуальный подход</span>
-            </div>
-          </div>
-          <ul class="contact__list">
-            <li><strong>Email:</strong> <a href="mailto:info@example.com">info@example.com</a></li>
-            <li><strong>Telegram:</strong> <a href="https://t.me/japanese_school" rel="noopener" target="_blank">@japanese_school</a></li>
-          </ul>
-        </div>
-        <form class="form form--modern fx-fade-up" data-delay="100" id="leadForm" novalidate>
-          <div class="form__progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            <div class="form__progress-bar"></div>
-            <span class="form__progress-text">0% заполнено</span>
-          </div>
-
-          <div class="form__group">
-            <div class="form__field">
-              <input id="leadName" class="form__input" type="text" name="name" required autocomplete="name" />
-              <label for="leadName" class="form__label-float">Ваше имя</label>
-              <span class="form__icon form__icon--valid">✓</span>
-              <span class="form__icon form__icon--invalid">!</span>
-              <small class="form__hint" id="errName">Минимум 2 символа</small>
-            </div>
-
-            <div class="form__field">
-              <input id="leadEmail" class="form__input" type="email" name="email" required autocomplete="email" />
-              <label for="leadEmail" class="form__label-float">Email</label>
-              <span class="form__icon form__icon--valid">✓</span>
-              <span class="form__icon form__icon--invalid">!</span>
-              <small class="form__hint" id="errEmail">Введите корректный email</small>
-            </div>
-          </div>
-
-          <div class="form__group form__group--split">
-            <div class="form__field">
-              <select id="leadGoal" class="form__select" name="goal" required>
-                <option value="" disabled selected></option>
-                <option value="jlpt">JLPT подготовка</option>
-                <option value="travel">Путешествия</option>
-                <option value="work">Работа в Японии</option>
-                <option value="relocate">Переезд</option>
-                <option value="hobby">Хобби / интерес</option>
-                <option value="anime">Аниме / манга</option>
-              </select>
-              <label for="leadGoal" class="form__label-float">Ваша цель</label>
-              <span class="form__select-arrow">▼</span>
-              <small class="form__hint" id="errGoal">Выберите цель изучения</small>
-            </div>
-
-            <div class="form__field">
-              <select id="leadLevel" class="form__select" name="level" required>
-                <option value="" disabled selected></option>
-                <option value="zero">С нуля</option>
-                <option value="n5">N5 (начальный)</option>
-                <option value="n4">N4 (базовый)</option>
-                <option value="n3">N3 (средний)</option>
-                <option value="n2">N2 (продвинутый)</option>
-              </select>
-              <label for="leadLevel" class="form__label-float">Текущий уровень</label>
-              <span class="form__select-arrow">▼</span>
-              <small class="form__hint" id="errLevel">Укажите ваш уровень</small>
-            </div>
-          </div>
-
-          <div class="form__field form__field--textarea">
-            <textarea id="leadMsg" class="form__textarea" name="message" rows="3"></textarea>
-            <label for="leadMsg" class="form__label-float">Сообщение (необязательно)</label>
-            <span class="form__char-count"><span id="msgCharCount">0</span>/500</span>
-          </div>
-
-          <button type="submit" class="form__submit" id="submitBtn">
-            <span class="form__submit-text">Отправить заявку</span>
-            <span class="form__submit-loading">
-              <svg class="form__spinner" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4 31.4" />
-              </svg>
-              Отправка...
-            </span>
-            <span class="form__submit-success">✓ Отправлено!</span>
-          </button>
-
-          <div class="form__status" aria-live="polite"></div>
-
-          <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a></p>
-        </form>
-      </div>
-    </section>
-
-    <section id="faq" class="section" aria-labelledby="faqTitle">
+    <section id="contact" class="contact-faq section" aria-labelledby="contactTitle">
       <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="faqTitle">FAQ — ответы сразу</h2>
-          <p>Быстрые уточнения по подготовке, формату и поддержке.</p>
-        </div>
-        <div class="faq__controls fx-fade-up" data-delay="20" aria-label="Поиск и фильтр FAQ">
-          <div class="faq__search-wrap">
-            <input id="faqSearch" type="search" placeholder="Поиск вопроса..." autocomplete="off" aria-describedby="faqResults" />
-            <button type="button" id="faqSearchReset" class="faq__reset" aria-label="Сбросить поиск" hidden>✕</button>
-            <div class="faq__results small" id="faqResults" aria-live="polite" aria-atomic="true"></div>
-          </div>
-          <div class="faq__filters" role="toolbar" aria-label="Категории FAQ">
-            <button type="button" class="faq__filter active" data-cat="__all" aria-pressed="true">Все</button>
-            <button type="button" class="faq__filter" data-cat="jlpt" aria-pressed="false">JLPT</button>
-            <button type="button" class="faq__filter" data-cat="format" aria-pressed="false">Формат</button>
-            <button type="button" class="faq__filter" data-cat="support" aria-pressed="false">Поддержка</button>
-          </div>
-        </div>
-        <div class="faq__progress fx-fade-up" data-delay="30" aria-live="polite" aria-atomic="true">
-          <div class="faq__progress-bar"><span></span></div>
-          <div class="faq__progress-meta small"><strong id="faqProgressOpened">0</strong>/<span id="faqProgressTotal">0</span> раскрыто · <span id="faqProgressVisible">0</span> видно</div>
-        </div>
-        <div class="faq__list" id="faqList" data-mode="multi">
-          <div class="faq__group" data-group="jlpt">
-            <h3 class="faq__group-title">JLPT и уровни</h3>
-            <div class="faq__item fx-fade-up" data-delay="50" data-cat="jlpt">
-              <h3>
-                <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-panel-1" id="faq-trigger-1">
-                  <span class="faq__trigger-text">Сколько нужно времени чтобы пройти уровень N5?</span>
-                  <span class="faq__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <div id="faq-panel-1" class="faq__panel" role="region" aria-labelledby="faq-trigger-1" hidden>
-                <div class="faq__panel-inner">
-                  <p>В среднем 3–4 месяца при 2 занятиях в неделю и регулярной самостоятельной практике.</p>
-                </div>
-              </div>
-            </div>
-            <div class="faq__item fx-fade-up" data-delay="90" data-cat="jlpt">
-              <h3>
-                <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">
-                  <span class="faq__trigger-text">Можно ли сразу готовиться к N3, минуя N4 у вас?</span>
-                  <span class="faq__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <div id="faq-panel-2" class="faq__panel" role="region" aria-labelledby="faq-trigger-2" hidden>
-                <div class="faq__panel-inner">
-                  <p>Да, перед стартом проведём мини-оценку: базовая грамматика и ~800 слов должны быть усвоены.</p>
-                </div>
-              </div>
+        <div class="contact-faq__grid">
+          <!-- FAQ слева -->
+          <div class="contact-faq__left fx-fade-up">
+            <h2 class="contact-faq__title">Частые вопросы</h2>
+            <div class="faq__list faq__list--compact">
+              <details class="faq__item">
+                <summary class="faq__question">Сколько времени нужно для уровня N5?</summary>
+                <p class="faq__answer">В среднем 3–4 месяца при 2 занятиях в неделю и регулярной практике дома.</p>
+              </details>
+              <details class="faq__item">
+                <summary class="faq__question">Можно сразу готовиться к N3?</summary>
+                <p class="faq__answer">Да, если уже есть база. Проведём оценку уровня перед началом.</p>
+              </details>
+              <details class="faq__item">
+                <summary class="faq__question">Как проходят занятия?</summary>
+                <p class="faq__answer">Онлайн через Zoom или офлайн в Новосибирске. Индивидуально или в мини-группах до 7 человек.</p>
+              </details>
+              <details class="faq__item">
+                <summary class="faq__question">Есть ли поддержка между занятиями?</summary>
+                <p class="faq__answer">Да, проверка домашних заданий и ответы на вопросы включены в программу.</p>
+              </details>
             </div>
           </div>
-          <div class="faq__group" data-group="format">
-            <h3 class="faq__group-title">Формат и занятия</h3>
-            <div class="faq__item fx-fade-up" data-delay="130" data-cat="format">
-              <h3>
-                <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
-                  <span class="faq__trigger-text">Есть ли разговорные клубы?</span>
-                  <span class="faq__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <div id="faq-panel-3" class="faq__panel" role="region" aria-labelledby="faq-trigger-3" hidden>
-                <div class="faq__panel-inner">
-                  <p>Да, модуль «Разговор + Культура» с тематическими сценариями и аудированием.</p>
+
+          <!-- Форма справа -->
+          <div class="contact-faq__right fx-fade-up" data-delay="100">
+            <h2 id="contactTitle" class="contact-faq__title">Записаться</h2>
+            <form class="form form--modern form--compact" id="leadForm" novalidate>
+              <div class="form__progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="form__progress-bar"></div>
+                <span class="form__progress-text">0% заполнено</span>
+              </div>
+
+              <div class="form__field">
+                <input id="leadName" class="form__input" type="text" name="name" required autocomplete="name" />
+                <label for="leadName" class="form__label-float">Ваше имя</label>
+                <span class="form__icon form__icon--valid">✓</span>
+                <span class="form__icon form__icon--invalid">!</span>
+                <small class="form__hint" id="errName">Минимум 2 символа</small>
+              </div>
+
+              <div class="form__field">
+                <input id="leadEmail" class="form__input" type="email" name="email" required autocomplete="email" />
+                <label for="leadEmail" class="form__label-float">Email</label>
+                <span class="form__icon form__icon--valid">✓</span>
+                <span class="form__icon form__icon--invalid">!</span>
+                <small class="form__hint" id="errEmail">Введите корректный email</small>
+              </div>
+
+              <div class="form__group form__group--split">
+                <div class="form__field">
+                  <select id="leadGoal" class="form__select" name="goal" required>
+                    <option value="" disabled selected></option>
+                    <option value="jlpt">JLPT</option>
+                    <option value="travel">Путешествия</option>
+                    <option value="work">Работа</option>
+                    <option value="relocate">Переезд</option>
+                    <option value="hobby">Хобби</option>
+                  </select>
+                  <label for="leadGoal" class="form__label-float">Цель</label>
+                  <span class="form__select-arrow">▼</span>
+                </div>
+
+                <div class="form__field">
+                  <select id="leadLevel" class="form__select" name="level" required>
+                    <option value="" disabled selected></option>
+                    <option value="zero">С нуля</option>
+                    <option value="n5">N5</option>
+                    <option value="n4">N4</option>
+                    <option value="n3">N3+</option>
+                  </select>
+                  <label for="leadLevel" class="form__label-float">Уровень</label>
+                  <span class="form__select-arrow">▼</span>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="faq__group" data-group="support">
-            <h3 class="faq__group-title">Поддержка</h3>
-            <div class="faq__item fx-fade-up" data-delay="170" data-cat="support">
-              <h3>
-                <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-panel-4" id="faq-trigger-4">
-                  <span class="faq__trigger-text">Поддерживаете ли между занятиями?</span>
-                  <span class="faq__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C11.5 2 11 2.19 10.59 2.59C10.2 3 10 3.5 10 4C10 4.5 10.2 5 10.59 5.41C11 5.81 11.5 6 12 6C12.5 6 13 5.81 13.41 5.41C13.8 5 14 4.5 14 4C14 3.5 13.8 3 13.41 2.59C13 2.19 12.5 2 12 2M7.5 6C6.67 6 6 6.67 6 7.5C6 8.33 6.67 9 7.5 9C8.33 9 9 8.33 9 7.5C9 6.67 8.33 6 7.5 6M16.5 6C15.67 6 15 6.67 15 7.5C15 8.33 15.67 9 16.5 9C17.33 9 18 8.33 18 7.5C18 6.67 17.33 6 16.5 6M5 10C4.45 10 4 10.45 4 11C4 11.55 4.45 12 5 12C5.55 12 6 11.55 6 11C6 10.45 5.55 10 5 10M19 10C18.45 10 18 10.45 18 11C18 11.55 18.45 12 19 12C19.55 12 20 11.55 20 11C20 10.45 19.55 10 19 10M12 21C16 21 19.5 17.5 19.5 14C19.5 12.5 19 11 18 10L18 14C18 16.76 15.76 19 13 19H11C8.24 19 6 16.76 6 14L6 10C5 11 4.5 12.5 4.5 14C4.5 17.5 8 21 12 21Z" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <div id="faq-panel-4" class="faq__panel" role="region" aria-labelledby="faq-trigger-4" hidden>
-                <div class="faq__panel-inner">
-                  <p>Да, проверка домашнего и ответы на уточняющие вопросы включены.</p>
-                </div>
-              </div>
-            </div>
+
+              <button type="submit" class="form__submit" id="submitBtn">
+                <span class="form__submit-text">Отправить заявку</span>
+                <span class="form__submit-loading">
+                  <svg class="form__spinner" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4 31.4" />
+                  </svg>
+                </span>
+                <span class="form__submit-success">✓ Отправлено!</span>
+              </button>
+
+              <div class="form__status" aria-live="polite"></div>
+              <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a></p>
+            </form>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="foot-brand">
+  <footer class="site-footer site-footer--minimal">
+    <div class="container">
+      <div class="footer__inner">
         <div class="brand sm">日本語<span>School</span></div>
-        <p class="foot-tagline">Японский язык как система мышления.</p>
-      </div>
-      <nav class="foot-nav" aria-label="Дополнительные ссылки">
-        <ul>
-          <li><a href="#programs">Программы</a></li>
-          <li><a href="#method">Методика</a></li>
-          <li><a href="#contact">Контакты</a></li>
-        </ul>
-      </nav>
-      <div class="foot-meta">
-        <p>© <span id="year"></span> Школа японского языка. Все права защищены.</p>
-        <p class="small muted">Дизайн и разработка – внутренний проект.</p>
+        <p class="footer__copy">© 2024 Школа японского языка</p>
+        <div class="footer__links">
+          <a href="/blog/">Блог</a>
+          <a href="#contact">Контакты</a>
+        </div>
       </div>
     </div>
   </footer>
-
-  <div class="modal" id="programModal" hidden role="dialog" aria-modal="true" aria-labelledby="programModalTitle">
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-dialog">
-      <button class="modal-close" data-close aria-label="Закрыть"></button>
-      <h3 id="programModalTitle">Заявка на программу</h3>
-      <p class="modal-desc">Оставьте контакты — отправим детали.</p>
-      <form id="programForm" class="form--mini" novalidate>
-        <input type="hidden" name="program" />
-        <label class="form__label">Email<input type="email" class="form__input" name="email" required placeholder="you@example.com" /></label>
-        <button class="btn primary" type="submit">Получить</button>
-        <p class="form__status--mini" aria-live="polite"></p>
-      </form>
-    </div>
-  </div>
 
   <Fragment slot="body-end">
     <!-- DEV/SAFE FALLBACK SCRIPTS -->

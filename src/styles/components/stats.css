@@ -28,7 +28,9 @@
   background: rgba(var(--surface-rgb), 0.5);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .stats__item:hover {
@@ -64,20 +66,20 @@
   .stats {
     padding: 2rem 0;
   }
-  
+
   .stats__grid {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-  
+
   .stats__item {
     padding: 1rem 0.75rem;
   }
-  
+
   .stats__number {
     font-size: 1.75rem;
   }
-  
+
   .stats__label {
     font-size: 0.8rem;
   }

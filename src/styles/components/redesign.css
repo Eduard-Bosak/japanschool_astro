@@ -1,0 +1,590 @@
+/* =============================================
+   Redesign Styles - Apple-inspired Minimalism
+   ============================================= */
+
+/* ===== Hero Minimal ===== */
+.hero--minimal {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.hero-inner--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content--centered {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.hero-title--large {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  color: var(--ink-dim);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+.hero-cta--centered {
+  display: flex;
+  justify-content: center;
+}
+
+.btn--large {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  border-radius: 100px;
+}
+
+/* ===== Teacher Section ===== */
+.teacher {
+  padding: 6rem 0;
+}
+
+.teacher__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.teacher__photo {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.teacher__photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.teacher__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.teacher__lead {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--ink-dim);
+  margin-bottom: 2rem;
+}
+
+.teacher__achievements {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+}
+
+.teacher__achievements li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(var(--ink-rgb), 0.08);
+  font-size: 1rem;
+}
+
+.teacher__achievements li:last-child {
+  border-bottom: none;
+}
+
+.teacher__metrics {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.teacher__metric {
+  text-align: center;
+}
+
+.teacher__metric-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.teacher__metric-label {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== Program Cards ===== */
+.programs--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.section__header--centered {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.program-card {
+  background: rgba(var(--surface-rgb), 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.program-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  border-color: rgba(var(--primary-rgb), 0.2);
+}
+
+.program-card--featured {
+  border-color: var(--primary);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--primary-rgb), 0.08) 0%,
+    rgba(var(--surface-rgb), 0.8) 100%
+  );
+}
+
+.program-card__badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.program-card__icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.program-card__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.program-card__desc {
+  font-size: 0.95rem;
+  color: var(--ink-dim);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.program-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.program-card__features li {
+  padding: 0.4rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--ink-dim);
+}
+
+.program-card__features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ===== Contact + FAQ Combined ===== */
+.contact-faq {
+  padding: 5rem 0;
+}
+
+.contact-faq__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.contact-faq__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.contact-faq__left {
+  padding-right: 2rem;
+}
+
+.contact-faq__right {
+  background: var(--surface-color);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* FAQ Compact */
+.faq__list--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.faq__list--compact .faq__item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.faq__list--compact .faq__question {
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq__list--compact .faq__question::after {
+  content: '+';
+  font-size: 1.25rem;
+  color: var(--primary);
+  transition: transform 0.2s ease;
+}
+
+.faq__list--compact .faq__item[open] .faq__question::after {
+  transform: rotate(45deg);
+}
+
+.faq__list--compact .faq__answer {
+  padding: 0 1.25rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Form Compact */
+.form--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form--compact .form__progress {
+  margin-bottom: 0.5rem;
+}
+
+.form--compact .form__submit {
+  margin-top: 0.5rem;
+}
+
+.form--compact .form__privacy {
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .contact-faq__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contact-faq__left {
+    padding-right: 0;
+  }
+}
+
+/* ===== Blog Minimal ===== */
+.blog.section {
+  padding: 4rem 0;
+}
+
+.blog__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.blog__card {
+  background: var(--surface-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blog__card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: var(--primary);
+}
+
+.blog__card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.blog__card-image {
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog__card-image::before {
+  content: '📝';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  opacity: 0.3;
+}
+
+.blog__card:hover .blog__card-image {
+  filter: brightness(1.1);
+}
+
+.blog__card-content {
+  padding: 1.25rem;
+}
+
+.blog__card-date {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.blog__card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.blog__card:hover .blog__card-title {
+  color: var(--primary);
+}
+
+.blog__card-excerpt {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog__more {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.blog__empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+@media (max-width: 900px) {
+  .blog__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .blog__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .blog__card-image {
+    height: 140px;
+  }
+}
+
+/* ===== FAQ Minimal ===== */
+.faq--minimal {
+  padding: 5rem 0;
+}
+
+.container--narrow {
+  max-width: 700px;
+}
+
+.faq__list--simple {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.faq__list--simple .faq__item {
+  background: rgba(var(--surface-rgb), 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.faq__question {
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.faq__question::after {
+  content: '+';
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--primary);
+  transition: transform 0.2s ease;
+}
+
+details[open] .faq__question::after {
+  transform: rotate(45deg);
+}
+
+.faq__answer {
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+
+/* ===== Footer Minimal ===== */
+.site-footer--minimal {
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer__copy {
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+}
+
+.footer__links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer__links a {
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer__links a:hover {
+  color: var(--primary);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .teacher__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .teacher__photo {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .teacher__metrics {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-title--large {
+    font-size: 2.25rem;
+  }
+
+  .teacher__metrics {
+    gap: 1.5rem;
+  }
+
+  .teacher__metric-value {
+    font-size: 1.5rem;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
