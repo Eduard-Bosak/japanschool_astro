@@ -1,5 +1,6 @@
 ---
 import '../styles.css';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface Props {
   pageTitle: string;
@@ -112,6 +113,7 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
     <script>
       import '@scripts/main.ts';
     </script>
+    <SpeedInsights />
     <slot name="body-end" />
   </body>
 </html>
