@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingChart } from '@/components/admin/booking-chart';
 import { PopularTimeChart } from '@/components/admin/popular-time-chart';
+import { SeasonThemeCard } from '@/components/admin/season-theme-card';
 import {
   Table,
   TableBody,
@@ -223,13 +224,10 @@ export default function AdminDashboard() {
           icon={CheckCircle}
           description="За все время"
         />
-        <StatsCard
-          title="Выручка (пример)"
-          value="¥0"
-          icon={TrendingUp}
-          description="В этом месяце"
-        />
       </div>
+
+      {/* Season Theme Card */}
+      <SeasonThemeCard />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4">

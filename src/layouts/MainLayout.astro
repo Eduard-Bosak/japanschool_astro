@@ -96,6 +96,33 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
         const theme = saved || (prefersDark ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
         document.documentElement.classList.remove('no-js');
+
+        // Season theme - auto detect by date, or load from API
+        function getSeasonByDate() {
+          var m = new Date().getMonth() + 1;
+          if (m >= 12 || m <= 2) return 'winter';
+          if (m >= 3 && m <= 5) return 'spring';
+          if (m >= 6 && m <= 8) return 'summer';
+          return 'autumn';
+        }
+
+        // Set season immediately (auto mode as default)
+        var cachedSeason = localStorage.getItem('season_theme');
+        var season = cachedSeason || getSeasonByDate();
+        document.documentElement.setAttribute('data-season', season);
+
+        // Async load from API to check admin override
+        setTimeout(function() {
+          fetch('https://japanschool-astro-9szg.vercel.app/api/season')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              if (data && data.season) {
+                document.documentElement.setAttribute('data-season', data.season);
+                localStorage.setItem('season_theme', data.season);
+              }
+            })
+            .catch(function() {});
+        }, 100);
       })();
     </script>
   </head>
