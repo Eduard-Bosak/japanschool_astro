@@ -16,7 +16,7 @@ import {
   Zap,
   Activity,
   TrendingUp,
-  Eye,
+  Eye
 } from 'lucide-react';
 
 interface HealthCheck {
@@ -54,7 +54,7 @@ export default function HealthCheckPage() {
     { name: 'Supabase Connection', status: 'checking', message: 'Проверка...' },
     { name: 'Landing Site', status: 'checking', message: 'Проверка...' },
     { name: 'API Endpoints', status: 'checking', message: 'Проверка...' },
-    { name: 'Authentication', status: 'checking', message: 'Проверка...' },
+    { name: 'Authentication', status: 'checking', message: 'Проверка...' }
   ]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
@@ -62,7 +62,7 @@ export default function HealthCheckPage() {
   const [speedData, setSpeedData] = useState<VercelSpeedData>({
     vitals: { LCP: null, FID: null, CLS: null, FCP: null, TTFB: null, INP: null },
     score: null,
-    lastUpdated: null,
+    lastUpdated: null
   });
 
   const checkSupabase = useCallback(async (): Promise<HealthCheck> => {
@@ -78,7 +78,7 @@ export default function HealthCheckPage() {
           status: 'ok',
           message: `Подключено (${data.tables} таблиц)`,
           latency,
-          lastChecked: new Date(),
+          lastChecked: new Date()
         };
       } else {
         return {
@@ -86,7 +86,7 @@ export default function HealthCheckPage() {
           status: 'error',
           message: data.error || 'Не удалось подключиться',
           latency,
-          lastChecked: new Date(),
+          lastChecked: new Date()
         };
       }
     } catch (error) {
@@ -95,7 +95,7 @@ export default function HealthCheckPage() {
         status: 'error',
         message: `Ошибка: ${error instanceof Error ? error.message : 'Unknown'}`,
         latency: Date.now() - start,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     }
   }, []);
@@ -113,7 +113,7 @@ export default function HealthCheckPage() {
         status: 'ok',
         message: `Доступен`,
         latency,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     } catch (error) {
       return {
@@ -121,7 +121,7 @@ export default function HealthCheckPage() {
         status: 'warning',
         message: 'Возможно недоступен (CORS)',
         latency: Date.now() - start,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     }
   }, []);
@@ -130,9 +130,7 @@ export default function HealthCheckPage() {
     const start = Date.now();
     try {
       const endpoints = ['/api/health'];
-      const results = await Promise.all(
-        endpoints.map((ep) => fetch(ep).then((r) => r.ok))
-      );
+      const results = await Promise.all(endpoints.map((ep) => fetch(ep).then((r) => r.ok)));
 
       const allOk = results.every((r) => r);
       const latency = Date.now() - start;
@@ -140,9 +138,11 @@ export default function HealthCheckPage() {
       return {
         name: 'API Endpoints',
         status: allOk ? 'ok' : 'warning',
-        message: allOk ? `${endpoints.length} эндпоинтов работает` : 'Некоторые эндпоинты недоступны',
+        message: allOk
+          ? `${endpoints.length} эндпоинтов работает`
+          : 'Некоторые эндпоинты недоступны',
         latency,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     } catch (error) {
       return {
@@ -150,7 +150,7 @@ export default function HealthCheckPage() {
         status: 'error',
         message: `Ошибка проверки`,
         latency: Date.now() - start,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     }
   }, []);
@@ -167,7 +167,7 @@ export default function HealthCheckPage() {
         status: data.configured ? 'ok' : 'warning',
         message: data.configured ? 'Настроено' : 'Требуется настройка',
         latency,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     } catch {
       return {
@@ -175,7 +175,7 @@ export default function HealthCheckPage() {
         status: 'warning',
         message: 'Не удалось проверить',
         latency: Date.now() - start,
-        lastChecked: new Date(),
+        lastChecked: new Date()
       };
     }
   }, []);
@@ -188,7 +188,7 @@ export default function HealthCheckPage() {
         setSpeedData({
           vitals: data.vitals,
           score: data.score,
-          lastUpdated: new Date(),
+          lastUpdated: new Date()
         });
       }
     } catch {
@@ -200,10 +200,10 @@ export default function HealthCheckPage() {
           CLS: 0.05,
           FCP: 0.8,
           TTFB: 120,
-          INP: 45,
+          INP: 45
         },
         score: 92,
-        lastUpdated: new Date(),
+        lastUpdated: new Date()
       });
     }
   }, []);
@@ -215,7 +215,7 @@ export default function HealthCheckPage() {
       checkSupabase(),
       checkLandingSite(),
       checkAPIEndpoints(),
-      checkAuth(),
+      checkAuth()
     ]);
 
     setChecks(results);
@@ -281,28 +281,24 @@ export default function HealthCheckPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">🏥 Health Check</h1>
-          <p className="text-muted-foreground mt-1">
-            Статус системы и диагностика
-          </p>
+          <p className="text-muted-foreground mt-1">Статус системы и диагностика</p>
         </div>
-        <Button
-          onClick={runAllChecks}
-          disabled={isRefreshing}
-          variant="outline"
-        >
+        <Button onClick={runAllChecks} disabled={isRefreshing} variant="outline">
           <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
           Обновить
         </Button>
       </div>
 
       {/* Overall Status */}
-      <Card className={`border-2 ${
-        overallStatus === 'healthy' 
-          ? 'border-green-500 bg-green-50 dark:bg-green-950' 
-          : overallStatus === 'unhealthy'
-            ? 'border-red-500 bg-red-50 dark:bg-red-950'
-            : 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950'
-      }`}>
+      <Card
+        className={`border-2 ${
+          overallStatus === 'healthy'
+            ? 'border-green-500 bg-green-50 dark:bg-green-950'
+            : overallStatus === 'unhealthy'
+              ? 'border-red-500 bg-red-50 dark:bg-red-950'
+              : 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950'
+        }`}
+      >
         <CardContent className="flex items-center justify-between py-6">
           <div className="flex items-center gap-4">
             {overallStatus === 'healthy' ? (
@@ -314,14 +310,14 @@ export default function HealthCheckPage() {
             )}
             <div>
               <h2 className="text-2xl font-bold">
-                {overallStatus === 'healthy' 
-                  ? 'Всё работает!' 
+                {overallStatus === 'healthy'
+                  ? 'Всё работает!'
                   : overallStatus === 'unhealthy'
                     ? 'Есть проблемы'
                     : 'Частичная работа'}
               </h2>
               <p className="text-muted-foreground">
-                {lastFullCheck 
+                {lastFullCheck
                   ? `Последняя проверка: ${lastFullCheck.toLocaleTimeString()}`
                   : 'Проверка...'}
               </p>
@@ -330,7 +326,7 @@ export default function HealthCheckPage() {
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Проверок</p>
             <p className="text-2xl font-bold">
-              {checks.filter(c => c.status === 'ok').length}/{checks.length}
+              {checks.filter((c) => c.status === 'ok').length}/{checks.length}
             </p>
           </div>
         </CardContent>
@@ -357,9 +353,7 @@ export default function HealthCheckPage() {
                   <span className="text-sm">{check.message}</span>
                 </div>
                 {check.latency !== undefined && (
-                  <span className="text-xs text-muted-foreground">
-                    {check.latency}ms
-                  </span>
+                  <span className="text-xs text-muted-foreground">{check.latency}ms</span>
                 )}
               </div>
             </CardContent>
@@ -404,10 +398,15 @@ export default function HealthCheckPage() {
             <CardTitle>Web Vitals (Landing)</CardTitle>
           </div>
           {speedData.score !== null && (
-            <Badge className={`text-lg px-3 py-1 ${
-              speedData.score >= 90 ? 'bg-green-500' :
-              speedData.score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
-            }`}>
+            <Badge
+              className={`text-lg px-3 py-1 ${
+                speedData.score >= 90
+                  ? 'bg-green-500'
+                  : speedData.score >= 50
+                    ? 'bg-yellow-500'
+                    : 'bg-red-500'
+              }`}
+            >
               {speedData.score}/100
             </Badge>
           )}
@@ -420,11 +419,17 @@ export default function HealthCheckPage() {
                 <Eye className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">LCP</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.LCP === null ? 'text-muted-foreground' :
-                speedData.vitals.LCP <= 2.5 ? 'text-green-500' :
-                speedData.vitals.LCP <= 4 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.LCP === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.LCP <= 2.5
+                      ? 'text-green-500'
+                      : speedData.vitals.LCP <= 4
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.LCP !== null ? `${speedData.vitals.LCP.toFixed(1)}s` : '—'}
               </p>
               <p className="text-xs text-muted-foreground">Largest Paint</p>
@@ -436,11 +441,17 @@ export default function HealthCheckPage() {
                 <Zap className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">FID</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.FID === null ? 'text-muted-foreground' :
-                speedData.vitals.FID <= 100 ? 'text-green-500' :
-                speedData.vitals.FID <= 300 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.FID === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.FID <= 100
+                      ? 'text-green-500'
+                      : speedData.vitals.FID <= 300
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.FID !== null ? `${speedData.vitals.FID}ms` : '—'}
               </p>
               <p className="text-xs text-muted-foreground">Input Delay</p>
@@ -452,11 +463,17 @@ export default function HealthCheckPage() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">CLS</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.CLS === null ? 'text-muted-foreground' :
-                speedData.vitals.CLS <= 0.1 ? 'text-green-500' :
-                speedData.vitals.CLS <= 0.25 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.CLS === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.CLS <= 0.1
+                      ? 'text-green-500'
+                      : speedData.vitals.CLS <= 0.25
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.CLS !== null ? speedData.vitals.CLS.toFixed(3) : '—'}
               </p>
               <p className="text-xs text-muted-foreground">Layout Shift</p>
@@ -468,11 +485,17 @@ export default function HealthCheckPage() {
                 <Eye className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">FCP</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.FCP === null ? 'text-muted-foreground' :
-                speedData.vitals.FCP <= 1.8 ? 'text-green-500' :
-                speedData.vitals.FCP <= 3 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.FCP === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.FCP <= 1.8
+                      ? 'text-green-500'
+                      : speedData.vitals.FCP <= 3
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.FCP !== null ? `${speedData.vitals.FCP.toFixed(1)}s` : '—'}
               </p>
               <p className="text-xs text-muted-foreground">First Paint</p>
@@ -484,11 +507,17 @@ export default function HealthCheckPage() {
                 <Server className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">TTFB</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.TTFB === null ? 'text-muted-foreground' :
-                speedData.vitals.TTFB <= 200 ? 'text-green-500' :
-                speedData.vitals.TTFB <= 500 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.TTFB === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.TTFB <= 200
+                      ? 'text-green-500'
+                      : speedData.vitals.TTFB <= 500
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.TTFB !== null ? `${speedData.vitals.TTFB}ms` : '—'}
               </p>
               <p className="text-xs text-muted-foreground">Time to Byte</p>
@@ -500,11 +529,17 @@ export default function HealthCheckPage() {
                 <Zap className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">INP</span>
               </div>
-              <p className={`text-2xl font-bold ${
-                speedData.vitals.INP === null ? 'text-muted-foreground' :
-                speedData.vitals.INP <= 200 ? 'text-green-500' :
-                speedData.vitals.INP <= 500 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  speedData.vitals.INP === null
+                    ? 'text-muted-foreground'
+                    : speedData.vitals.INP <= 200
+                      ? 'text-green-500'
+                      : speedData.vitals.INP <= 500
+                        ? 'text-yellow-500'
+                        : 'text-red-500'
+                }`}
+              >
                 {speedData.vitals.INP !== null ? `${speedData.vitals.INP}ms` : '—'}
               </p>
               <p className="text-xs text-muted-foreground">Interaction</p>
@@ -513,13 +548,13 @@ export default function HealthCheckPage() {
 
           <div className="mt-4 pt-4 border-t flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
-              {speedData.lastUpdated 
+              {speedData.lastUpdated
                 ? `Обновлено: ${speedData.lastUpdated.toLocaleTimeString()}`
                 : 'Загрузка данных...'}
             </p>
-            <a 
-              href="https://vercel.com/eduards-projects-06bbfee4/japanschool-astro/speed-insights" 
-              target="_blank" 
+            <a
+              href="https://vercel.com/eduards-projects-06bbfee4/japanschool-astro/speed-insights"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-primary hover:underline flex items-center gap-1"
             >
