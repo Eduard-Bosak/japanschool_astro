@@ -1,0 +1,199 @@
+/* Apple-style Animations & Transitions */
+
+/* Easing functions matching Apple Human Interface Guidelines */
+:root {
+  --ease-in-out-smooth: cubic-bezier(0.42, 0, 0.58, 1); /* Standard smooth */
+  --ease-out-swift: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* iOS default */
+  --ease-in-out-apple: cubic-bezier(0.4, 0, 0.2, 1); /* Material/Apple hybrid */
+  --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Slight bounce */
+
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 400ms;
+}
+
+/* Global smooth transitions */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Card hover effects */
+.smooth-card {
+  transition: all var(--duration-normal) var(--ease-out-swift);
+}
+
+.smooth-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button ripple effect simulation */
+.smooth-button {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-fast) var(--ease-in-out-apple);
+}
+
+.smooth-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition:
+    width var(--duration-slow) var(--ease-out-swift),
+    height var(--duration-slow) var(--ease-out-swift);
+}
+
+.smooth-button:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Fade in animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframesscalein {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Utility classes */
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-slow) var(--ease-out-swift);
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-in-out-smooth);
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-out-swift);
+}
+
+/* Smooth focus states */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  transition: outline-offset var(--duration-fast) var(--ease-in-out-apple);
+}
+
+/* Loading spinner with smooth rotation */
+@keyframes spin-smooth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-smooth {
+  animation: spin-smooth 1s linear infinite;
+}
+
+/* Skeleton loading shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 0, #f8f8f8 20%, #f0f0f0 40%, #f0f0f0 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Backdrop blur (Apple glassmorphism) */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  transition: all var(--duration-normal) var(--ease-in-out-apple);
+}
+
+.glass-effect-dark {
+  background: rgba(28, 28, 30, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  transition: all var(--duration-normal) var(--ease-in-out-apple);
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition:
+    transform var(--duration-fast) var(--ease-out-swift),
+    box-shadow var(--duration-fast) var(--ease-out-swift);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab switching animation */
+.tab-switch-enter {
+  animation: fadeInUp var(--duration-normal) var(--ease-out-swift);
+}

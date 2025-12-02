@@ -1,65 +1,81 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({
+    request
+  });
 
-  // Создаем клиент Supabase для middleware
-  const supabase = createMiddlewareClient({ req, res });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({
+            request
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        }
+      }
+    }
+  );
 
-  // Получаем сессию
   const {
-    data: { session }
-  } = await supabase.auth.getSession();
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  const path = req.nextUrl.pathname;
+  const path = request.nextUrl.pathname;
 
   // 1. Защита Админки (/admin)
   if (path.startsWith('/admin')) {
     // Если не залогинен -> на вход
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', req.url));
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // Проверяем роль (запрос к базе)
-    // В middleware это может быть дорого, но для MVP пойдет.
-    // Лучше хранить роль в metadata, но пока сделаем простой запрос.
+    // Проверяем роль
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     // Если не админ -> в кабинет ученика
     if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
 
   // 2. Защита Кабинета (/dashboard)
   if (path.startsWith('/dashboard')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', req.url));
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
   // 3. Если залогинен и идет на /login -> редирект внутрь
-  if (path === '/login' && session) {
+  if (path === '/login' && user) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     if (profile?.role === 'admin') {
-      return NextResponse.redirect(new URL('/admin', req.url));
+      return NextResponse.redirect(new URL('/admin', request.url));
     } else {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
 
-  return res;
+  return supabaseResponse;
 }
 
 export const config = {

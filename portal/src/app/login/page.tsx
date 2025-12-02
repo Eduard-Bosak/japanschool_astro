@@ -40,11 +40,23 @@ export default function LoginPage() {
         throw error;
       }
 
-      // Successful login
-      console.log('Logged in:', data);
-      router.push('/admin'); // Redirect to admin for now (we'll split logic later)
-    } catch (err: any) {
-      setError(err.message || 'Ошибка при входе');
+      // Проверяем роль пользователя
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      // Перенаправляем в зависимости от роли
+      router.refresh(); // Обновляем роутер, чтобы middleware увидел сессию
+
+      if (profile?.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (err) {
+      setError((err as Error).message || 'Ошибка при входе');
     } finally {
       setLoading(false);
     }
@@ -55,7 +67,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password
       });
@@ -65,8 +77,8 @@ export default function LoginPage() {
       alert(
         'Регистрация успешна! Проверьте почту для подтверждения (если включено) или просто войдите.'
       );
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

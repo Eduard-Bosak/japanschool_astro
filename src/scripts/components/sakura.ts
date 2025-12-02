@@ -15,6 +15,8 @@ let height = 0;
 let petalsStarted = false;
 let petalsPaused = false;
 let frameSkip = 0;
+let resizeRafId: number | null = null;
+let prefersReducedMotion = false;
 
 interface Petal {
   x: number;
@@ -25,23 +27,36 @@ interface Petal {
   drift: number;
   vy: number;
   vr: number;
+  gradient?: CanvasGradient; // EN: Cached gradient | RU: Закешированный градиент
 }
 
-/* EN: Petal count based on screen size
-   RU: Количество лепестков в зависимости от размера экрана */
-const basePetalCount = window.innerWidth < 640 ? 15 : 30;
-const PETAL_COUNT = basePetalCount;
+/* EN: Petal count based on screen size and device capability
+   RU: Количество лепестков в зависимости от размера экрана и возможностей устройства */
+function getPetalCount(): number {
+  const isMobile = window.innerWidth < 640;
+  const isLowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+  if (isMobile || isLowPower) return 15;
+  return 30;
+}
+
+const PETAL_COUNT = getPetalCount();
 
 /**
- * EN: Resize canvas to match window dimensions
- * RU: Изменение размера канваса под размеры окна
+ * EN: Resize canvas to match window dimensions (RAF-throttled)
+ * RU: Изменение размера канваса под размеры окна (с RAF-троттлингом)
  */
 function resize(): void {
-  if (!canvas) {
-    return;
-  }
-  width = canvas.width = window.innerWidth * devicePixelRatio;
-  height = canvas.height = window.innerHeight * devicePixelRatio;
+  if (resizeRafId) return;
+  resizeRafId = requestAnimationFrame(() => {
+    resizeRafId = null;
+    if (!canvas) return;
+    width = canvas.width = window.innerWidth * devicePixelRatio;
+    height = canvas.height = window.innerHeight * devicePixelRatio;
+    // EN: Invalidate cached gradients on resize | RU: Инвалидация кешированных градиентов при ресайзе
+    petals.forEach((p) => {
+      p.gradient = undefined;
+    });
+  });
 }
 
 /**
@@ -71,18 +86,21 @@ function initPetals(): void {
 }
 
 /**
- * EN: Draw petal on canvas with gradient
- * RU: Отрисовка лепестка на канвасе с градиентом
+ * EN: Draw petal on canvas with cached gradient
+ * RU: Отрисовка лепестка на канвасе с кешированным градиентом
  */
 function drawPetal(p: Petal): void {
   if (!ctx) return;
 
-  /* EN: Create radial gradient for petal
-     RU: Создание радиального градиента для лепестка */
-  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
-  g.addColorStop(0, `rgba(255,255,255,${0.6 * p.z})`);
-  g.addColorStop(0.5, `rgba(255,179,209,${0.35 * p.z})`);
-  g.addColorStop(1, `rgba(255,194,214,0)`);
+  /* EN: Create and cache gradient for petal
+     RU: Создание и кеширование градиента для лепестка */
+  if (!p.gradient) {
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
+    g.addColorStop(0, `rgba(255,255,255,${0.6 * p.z})`);
+    g.addColorStop(0.5, `rgba(255,179,209,${0.35 * p.z})`);
+    g.addColorStop(1, `rgba(255,194,214,0)`);
+    p.gradient = g;
+  }
 
   /* EN: Apply transformations and draw
      RU: Применение трансформаций и отрисовка */
@@ -91,7 +109,7 @@ function drawPetal(p: Petal): void {
   ctx.rotate(Math.sin(p.tilt) * 0.6);
   ctx.scale(1, 0.7); // EN: Flatten petal | RU: Сплющивание лепестка
   ctx.beginPath();
-  ctx.fillStyle = g;
+  ctx.fillStyle = p.gradient;
   ctx.arc(0, 0, p.r, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
@@ -139,13 +157,11 @@ function updatePetal(p: Petal): void {
  * RU: Цикл анимации
  */
 function loop(): void {
-  if (!ctx) {
-    return;
-  }
+  if (!ctx) return;
 
-  /* EN: Pause animation if tab is hidden
-     RU: Пауза анимации если вкладка скрыта */
-  if (petalsPaused) {
+  /* EN: Pause animation if tab is hidden or reduced motion preferred
+     RU: Пауза анимации если вкладка скрыта или предпочитается уменьшенное движение */
+  if (petalsPaused || prefersReducedMotion) {
     requestAnimationFrame(loop);
     return;
   }
@@ -161,16 +177,14 @@ function loop(): void {
   /* EN: Clear canvas and draw all petals
      RU: Очистка канваса и отрисовка всех лепестков */
   ctx.clearRect(0, 0, width, height);
-  petals.forEach((p) => {
-    updatePetal(p);
-    drawPetal(p);
-  });
+  for (let i = 0; i < petals.length; i++) {
+    updatePetal(petals[i]);
+    drawPetal(petals[i]);
+  }
 
-  /* EN: Throttle if hidden or reduced motion
-     RU: Троттлинг если скрыто или уменьшенное движение */
-  const shouldThrottle =
-    document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  frameSkip = shouldThrottle ? 1 : 0;
+  /* EN: Throttle if tab hidden
+     RU: Троттлинг если вкладка скрыта */
+  frameSkip = document.hidden ? 1 : 0;
 
   requestAnimationFrame(loop);
 }
@@ -215,15 +229,19 @@ export function resume(): void {
  * RU: Инициализация анимации канваса сакуры
  */
 export function init(): void {
+  /* EN: Cache reduced motion preference and listen for changes
+     RU: Кеширование предпочтения уменьшенного движения и слушание изменений */
+  const motionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  prefersReducedMotion = motionMQ.matches;
+  motionMQ.addEventListener('change', (e) => {
+    prefersReducedMotion = e.matches;
+  });
+
   canvas = document.getElementById('sakura-canvas') as HTMLCanvasElement;
-  if (!canvas) {
-    return;
-  }
+  if (!canvas) return;
 
   ctx = canvas.getContext?.('2d');
-  if (!ctx) {
-    return;
-  }
+  if (!ctx) return;
 
   /* EN: Trigger function to remove event listeners after first call
      RU: Функция триггера для удаления обработчиков после первого вызова */

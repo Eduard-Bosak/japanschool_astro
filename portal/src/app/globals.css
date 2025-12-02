@@ -1,7 +1,21 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './animations.css';
 
 @custom-variant dark (&:is(.dark *));
+
+/* Apple-Style Easing Functions */
+:root {
+  --ease-in-out-smooth: cubic-bezier(0.42, 0, 0.58, 1);
+  --ease-out-swift: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* iOS default */
+  --ease-in-out-apple: cubic-bezier(0.4, 0, 0.2, 1); /* Material/Apple */
+  --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 400ms;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -119,4 +133,421 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ============================================
+   ADMIN THEME - Dark with minimal lavender accents
+   ============================================ */
+.admin-layout {
+  /* Фон - очень темный, почти черный */
+  --background: 240 10% 8%;
+  --foreground: 0 0% 98%;
+
+  /* Карточки - темно-серые с легким фиолетовым оттенком */
+  --card: 240 8% 12%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 8% 12%;
+  --popover-foreground: 0 0% 98%;
+
+  /* Primary - лавандовый только для акцентов */
+  --primary: 263 70% 60%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary - темно-серый */
+  --secondary: 240 5% 18%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 5% 20%;
+  --muted-foreground: 240 5% 64%;
+
+  --accent: 240 5% 18%;
+  --accent-foreground: 0 0% 98%;
+
+  /* Borders - тонкие серые */
+  --border: 240 8% 20%;
+  --input: 240 8% 20%;
+  --ring: 263 70% 60%;
+
+  --radius: 0.5rem;
+
+  /* Деструктивные действия */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+}
+
+/* Фон страницы - глубокий темный с минимальным градиентом */
+body:has(.admin-layout) {
+  background: linear-gradient(135deg, hsl(240, 10%, 6%) 0%, hsl(245, 12%, 8%) 100%);
+}
+
+/* Карточки - темные с тонким бордером */
+.admin-layout [class*='card'] {
+  background: hsla(240, 8%, 12%, 0.95);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid hsl(240 8% 18% / 0.5);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.3),
+    0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+/* Кнопки - primary фиолетовые, остальные серые */
+.admin-layout button[class*='primary'] {
+  background: hsl(263, 70%, 55%);
+}
+
+.admin-layout button[class*='primary']:hover {
+  background: hsl(263, 70%, 60%);
+}
+
+/* Кнопки - лавандовые */
+.admin-layout
+  button:not([class*='ghost']):not([class*='outline']):not([class*='secondary']):not(
+    [class*='destructive']
+  ) {
+  background: linear-gradient(135deg, hsl(270, 85%, 76%) 0%, hsl(265, 80%, 72%) 100%);
+  color: hsl(265, 20%, 12%);
+  font-weight: 600;
+  box-shadow:
+    0 2px 12px -2px hsl(270 70% 60% / 0.4),
+    0 1px 4px -1px hsl(265 60% 50% / 0.3);
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.admin-layout
+  button:not([class*='ghost']):not([class*='outline']):not([class*='secondary']):not(
+    [class*='destructive']
+  ):hover:not(:disabled) {
+  box-shadow:
+    0 4px 16px -2px hsl(270 70% 60% / 0.6),
+    0 2px 8px -1px hsl(265 60% 50% / 0.4);
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+/* Sidebar - лавандовый градиент */
+.admin-layout aside {
+  background: linear-gradient(180deg, hsla(265, 18%, 36%, 0.95) 0%, hsla(260, 16%, 33%, 0.95) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-right: 1px solid hsl(265 20% 48% / 0.4);
+  box-shadow: 0 0 40px -10px hsl(270 60% 50% / 0.2);
+}
+
+/* Таблицы */
+.admin-layout table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-layout table tr:hover {
+  background: hsl(265 20% 43% / 0.5);
+  transition: background 0.15s ease;
+}
+
+.admin-layout th {
+  color: hsl(260 5% 95%);
+  font-weight: 600;
+  border-bottom: 1px solid hsl(265 15% 48%);
+}
+
+.admin-layout td {
+  border-bottom: 1px solid hsl(265 12% 44% / 0.3);
+}
+
+/* Inputs - Apple style */
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea {
+  background: hsl(265 15% 35%);
+  border: 1px solid hsl(265 15% 48%);
+  color: hsl(260 5% 100%);
+}
+
+.admin-layout input:focus,
+.admin-layout select:focus,
+.admin-layout textarea:focus {
+  background: hsl(265 15% 38%);
+  border-color: hsl(265 85% 75%);
+  box-shadow:
+    0 0 0 4px hsl(265 85% 75% / 0.15),
+    0 2px 12px hsl(270 70% 60% / 0.2);
+  outline: none;
+}
+
+/* Badges */
+.admin-layout [class*='badge'] {
+  font-weight: 600;
+  border: 1px solid currentColor;
+  border-opacity: 0.2;
+}
+
+/* Scrollbar - лавандовая */
+.admin-layout ::-webkit-scrollbar {
+  width: 12px;
+}
+
+.admin-layout ::-webkit-scrollbar-track {
+  background: hsl(265 15% 32%);
+  border-radius: 6px;
+}
+
+.admin-layout ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(270 50% 55%), hsl(265 45% 50%));
+  border-radius: 6px;
+  border: 2px solid hsl(265 15% 32%);
+}
+
+.admin-layout ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(270 60% 65%), hsl(265 55% 60%));
+}
+
+/* Заголовки */
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3 {
+  color: hsl(260 5% 100%);
+  font-weight: 600;
+}
+
+/* Текстовые элементы */
+.admin-layout p,
+.admin-layout span,
+.admin-layout div {
+  color: hsl(260 5% 95%);
+}
+
+/* Muted text */
+.admin-layout [class*='muted'] {
+  color: hsl(260 5% 75%);
+}
+
+/* ============================================
+   ANIMATIONS & EFFECTS
+   ============================================ */
+
+/* Fade in появление карточек */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Shimmer эффект для загрузки */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Pulse для важных элементов */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Glow эффект */
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px hsl(270 70% 60% / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px hsl(270 70% 60% / 0.6);
+  }
+}
+
+/* Применяем fade-in к карточкам */
+.admin-layout [class*='card'] {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Stagger delay для множественных карточек */
+.admin-layout [class*='grid'] > [class*='card']:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.admin-layout [class*='grid'] > [class*='card']:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.admin-layout [class*='grid'] > [class*='card']:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.admin-layout [class*='grid'] > [class*='card']:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+/* Hover на карточках - легкий подъем (Apple-style) */
+.admin-layout [class*='card'] {
+  transition: all var(--duration-normal) var(--ease-out-swift);
+  will-change: transform, box-shadow;
+}
+
+.admin-layout [class*='card']:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 30px -6px hsl(265 40% 20% / 0.35),
+    0 4px 12px -4px hsl(265 40% 20% / 0.25),
+    inset 0 1px 0 hsl(265 60% 90% / 0.1);
+}
+
+/* Кнопки - bounce на клик (Apple-style click) */
+.admin-layout button {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--duration-fast) var(--ease-out-swift),
+    box-shadow var(--duration-fast) var(--ease-out-swift);
+  will-change: transform;
+}
+
+.admin-layout button:active {
+  transform: scale(0.96);
+  transition-duration: var(--duration-instant);
+}
+
+/* Ripple эффект на кнопках (Apple-style ripple) */
+.admin-layout button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: hsla(0, 0%, 100%, 0.3);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.5s var(--ease-out-swift),
+    height 0.5s var(--ease-out-swift),
+    opacity 0.5s var(--ease-out-swift);
+  opacity: 0;
+}
+
+.admin-layout button:active::before {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+  transition-duration: 0s;
+}
+
+/* Таблицы - плавное появление строк */
+.admin-layout table tbody tr {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.admin-layout table tbody tr:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.admin-layout table tbody tr:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.admin-layout table tbody tr:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.admin-layout table tbody tr:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.admin-layout table tbody tr:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* Badge - pulse эффект для новых */
+.admin-layout [class*='badge'].new {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Input focus - плавное появление glow */
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea {
+  transition: all 0.3s ease;
+}
+
+/* Loading shimmer */
+.admin-layout .loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(265 15% 35%) 0%,
+    hsl(265 20% 42%) 50%,
+    hsl(265 15% 35%) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Sidebar items - hover эффект (Apple-style) */
+.admin-layout aside a,
+.admin-layout aside button {
+  transition: all var(--duration-fast) var(--ease-out-swift);
+  position: relative;
+}
+
+.admin-layout aside a::before,
+.admin-layout aside button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(180deg, hsl(270, 85%, 76%), hsl(265, 80%, 72%));
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform var(--duration-normal) var(--ease-out-swift);
+  border-radius: 0 2px 2px 0;
+}
+
+.admin-layout aside a:hover::before,
+.admin-layout aside button:hover::before,
+.admin-layout aside a[aria-current='page']::before {
+  transform: scaleY(1);
+}
+
+.admin-layout aside a:hover,
+.admin-layout aside button:hover {
+  background: hsl(265 20% 40% / 0.5);
+  transform: translateX(2px);
+}
+
+/* Smooth transitions везде (Apple-standard timing) */
+.admin-layout * {
+  transition-timing-function: var(--ease-out-swift);
+}
+
+/* Цифры в статистике - подсчет анимация */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-layout [class*='text-2xl'] {
+  animation: countUp 0.6s ease-out;
 }

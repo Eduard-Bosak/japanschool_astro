@@ -8,8 +8,7 @@
 import * as theme from './components/theme.ts';
 import * as preloader from './components/preloader.ts';
 import * as navigation from './components/navigation.ts';
-import * as animations from './components/animations.ts';
-import * as enhancedAnimations from './components/enhanced-animations.ts';
+import * as animations from './components/animations-unified.ts';
 import * as interactive from './components/interactive.ts';
 /* EN: Lazy-loaded modules (imported dynamically)
    RU: Ленивая загрузка модулей (динамический импорт) */
@@ -94,11 +93,6 @@ function initComponents(): void {
     animations.init();
   } catch (e) {
     console.error('Animations init failed', e);
-  }
-  try {
-    enhancedAnimations.init();
-  } catch (e) {
-    console.error('Enhanced Animations init failed', e);
   }
   try {
     interactive.init();
