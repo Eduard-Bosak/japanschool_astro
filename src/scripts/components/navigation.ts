@@ -283,7 +283,11 @@ function setupLinkPrefetch(): void {
       };
 
       if ('requestIdleCallback' in window) {
-        (window as Window & { requestIdleCallback: (cb: () => void, opts: { timeout: number }) => void }).requestIdleCallback(prefetch, { timeout: 300 });
+        (
+          window as Window & {
+            requestIdleCallback: (cb: () => void, opts: { timeout: number }) => void;
+          }
+        ).requestIdleCallback(prefetch, { timeout: 300 });
       } else {
         globalThis.setTimeout(prefetch, 100);
       }
