@@ -339,44 +339,24 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
       </section>
     ) : null}
 
-    <section id="reviews" class="reviews section" aria-labelledby="reviewsTitle" aria-roledescription="carousel">
+    <section id="stats" class="stats section" aria-labelledby="statsTitle">
       <div class="container">
-        <div class="section__header fx-fade-up">
-          <h2 id="reviewsTitle">Отзывы</h2>
-          <p>Слова студентов о процессе и результате.</p>
-        </div>
-        <div class="reviews-carousel" role="region" aria-label="Слайдер отзывов">
-          <p id="reviewsStatus" class="visually-hidden" aria-live="polite"></p>
-          <div class="reviews-track" id="reviewsTrack">
-            <article class="review-card" aria-label="Отзыв 1">
-              <blockquote>
-                <p>За полгода перешла с полного нуля к чтению простых манга и понимаю речь в учебных аудио. Очень системный подход и постоянная поддержка.</p>
-              </blockquote>
-              <div class="review-meta"><span class="avatar">あ</span><span class="name">Алина</span><span class="tag">N5→N4</span></div>
-            </article>
-            <article class="review-card" aria-label="Отзыв 2">
-              <blockquote>
-                <p>Главное отличие — контекст. Мы не зубрим, а погружаемся: диалоги, ситуации, культурные заметки. Это ускоряет говорение.</p>
-              </blockquote>
-              <div class="review-meta"><span class="avatar">K</span><span class="name">Кирилл</span><span class="tag">Разговор</span></div>
-            </article>
-            <article class="review-card" aria-label="Отзыв 3">
-              <blockquote>
-                <p>Подготовка к JLPT N3 прошла структурно: списки лексики, мини-тесты, отслеживание ошибок. Сдала с запасом по баллам.</p>
-              </blockquote>
-              <div class="review-meta"><span class="avatar">M</span><span class="name">Мария</span><span class="tag">JLPT N3</span></div>
-            </article>
-            <article class="review-card" aria-label="Отзыв 4">
-              <blockquote>
-                <p>Формат «микроаудирования» и регулярной обратной связи вывел восприятие речи на новый уровень. Рекомендую.</p>
-              </blockquote>
-              <div class="review-meta"><span class="avatar">D</span><span class="name">Денис</span><span class="tag">Аудирование</span></div>
-            </article>
+        <div class="stats__grid fx-fade-up">
+          <div class="stats__item">
+            <span class="stats__number">5+</span>
+            <span class="stats__label">лет опыта преподавания</span>
           </div>
-          <div class="reviews-controls">
-            <button class="rev-btn" data-dir="prev" aria-label="Предыдущий отзыв">‹</button>
-            <div class="rev-dots" id="revDots" role="tablist" aria-label="Позиции слайдов"></div>
-            <button class="rev-btn" data-dir="next" aria-label="Следующий отзыв">›</button>
+          <div class="stats__item">
+            <span class="stats__number">50+</span>
+            <span class="stats__label">студентов обучено</span>
+          </div>
+          <div class="stats__item">
+            <span class="stats__number">N5–N2</span>
+            <span class="stats__label">подготовка к JLPT</span>
+          </div>
+          <div class="stats__item">
+            <span class="stats__number">100%</span>
+            <span class="stats__label">индивидуальный подход</span>
           </div>
         </div>
       </div>
