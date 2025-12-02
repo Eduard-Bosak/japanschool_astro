@@ -25,6 +25,7 @@ import { track } from './utils/analytics';
 import { eventBus } from './utils/events';
 import { initPerformanceMonitoring } from './utils/performance';
 import { safeInit, setupGlobalErrorHandlers } from './utils/logger';
+import { initSentry, captureError, addBreadcrumb } from './utils/sentry';
 
 /* EN: Import API configuration
   RU: Импорт конфигурации API */
@@ -55,6 +56,10 @@ type AppModules = {
  * RU: Инициализация всех компонентов при готовности DOM
  */
 function initializeApp(): void {
+  /* EN: Initialize Sentry error tracking first
+     RU: Сначала инициализируем отслеживание ошибок Sentry */
+  initSentry();
+
   /* EN: Initialize theme system first (runs before DOM ready)
      RU: Инициализация системы тем в первую очередь (выполняется до готовности DOM) */
   theme.initTheme();
@@ -142,6 +147,9 @@ function initComponents(): void {
       path: window.location.pathname,
       referrer: document.referrer
     });
+    
+    // Add breadcrumb for Sentry
+    addBreadcrumb(`Page loaded: ${window.location.pathname}`, 'navigation');
   });
 
   /* EN: Initialize performance monitoring

@@ -53,14 +53,14 @@ describe('Forms Component', () => {
     it('should have submit button', () => {
       const form = document.getElementById('contactForm') as HTMLFormElement;
       const submitBtn = form.querySelector('button[type="submit"]');
-      
+
       expect(submitBtn).not.toBeNull();
     });
 
     it('should have required inputs', () => {
       const nameInput = document.getElementById('name');
       const emailInput = document.getElementById('email');
-      
+
       expect(nameInput).not.toBeNull();
       expect(emailInput).not.toBeNull();
     });

@@ -24,9 +24,21 @@ type PendingRequest = {
 
 const apiWindow = window as Window & { __API_ENDPOINTS?: ApiEndpoints };
 
-const API_ENDPOINTS: ApiEndpoints = apiWindow.__API_ENDPOINTS || {
+/* EN: Default API endpoints - can be overridden by site.config.json
+   RU: Дефолтные API эндпоинты - могут быть переопределены через site.config.json */
+const DEFAULT_ENDPOINTS: ApiEndpoints = {
   lead: '/api/lead',
   program: '/api/program-interest'
+};
+
+/* EN: Portal API configuration - for production use portal URL
+   RU: Конфигурация портала - в проде используй URL портала */
+const PORTAL_URL = import.meta.env.PUBLIC_PORTAL_URL || '';
+
+const API_ENDPOINTS: ApiEndpoints = apiWindow.__API_ENDPOINTS || {
+  // If portal URL is set, use it; otherwise use relative paths (for local backend)
+  lead: PORTAL_URL ? `${PORTAL_URL}/api/trial` : DEFAULT_ENDPOINTS.lead,
+  program: PORTAL_URL ? `${PORTAL_URL}/api/program-interest` : DEFAULT_ENDPOINTS.program
 };
 
 const API_TIMEOUT = 6500;

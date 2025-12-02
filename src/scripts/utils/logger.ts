@@ -3,6 +3,9 @@
    Централизованный логгер ошибок
    ============================================= */
 
+// Import Sentry for error reporting (lazy to avoid circular deps)
+let sentryModule: typeof import('./sentry') | null = null;
+
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LogEntry {
@@ -80,17 +83,34 @@ function log(level: LogLevel, message: string, context?: string, data?: unknown)
 }
 
 /**
- * EN: Send error to monitoring service
- * RU: Отправка ошибки в сервис мониторинга
+ * EN: Send error to monitoring service (Sentry)
+ * RU: Отправка ошибки в сервис мониторинга (Sentry)
  */
-function sendToMonitoring(_entry: LogEntry): void {
-  // EN: Use sendBeacon for reliable delivery | RU: Используем sendBeacon для надёжной доставки
-  if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
-    try {
-      // EN: Replace with your monitoring endpoint | RU: Замените на ваш endpoint мониторинга
-      // navigator.sendBeacon('/api/log', JSON.stringify(_entry));
-    } catch {
-      // EN: Silently fail | RU: Тихий отказ
+async function sendToMonitoring(entry: LogEntry): Promise<void> {
+  try {
+    // Lazy load Sentry module
+    if (!sentryModule) {
+      sentryModule = await import('./sentry');
+    }
+    
+    // Create error object for Sentry
+    const errorObj = new Error(entry.message);
+    
+    sentryModule.captureError(errorObj, {
+      context: entry.context,
+      data: entry.data,
+      url: entry.url,
+      timestamp: entry.timestamp,
+    });
+  } catch {
+    // Fallback to sendBeacon if Sentry fails
+    if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
+      try {
+        // EN: Replace with your monitoring endpoint | RU: Замените на ваш endpoint мониторинга
+        // navigator.sendBeacon('/api/log', JSON.stringify(entry));
+      } catch {
+        // EN: Silently fail | RU: Тихий отказ
+      }
     }
   }
 }

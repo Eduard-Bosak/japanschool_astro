@@ -1,4 +1,9 @@
 {
   "siteUrl": "https://example.com",
-  "siteName": "Школа японского языка"
+  "siteName": "Школа японского языка",
+  "portalUrl": "https://portal.example.com",
+  "api": {
+    "lead": "/api/trial",
+    "program": "/api/program-interest"
+  }
 }
