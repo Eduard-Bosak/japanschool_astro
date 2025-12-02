@@ -27,7 +27,9 @@
 [data-intensity='0'] .hero::before,
 [data-intensity='0'] .hero::after,
 [data-intensity='0'] .hero__title::after,
-[data-intensity='0'] .site-footer::before {
+[data-intensity='0'] .hero-title--large::after,
+[data-intensity='0'] .site-footer::before,
+[data-intensity='0'] .season-particles {
   display: none !important;
 }
 
@@ -35,202 +37,242 @@
 [data-season='winter'] {
   --season-accent: #7dd3fc;
   --season-accent-rgb: 125, 211, 252;
-  --season-glow: rgba(125, 211, 252, calc(0.3 * var(--season-intensity)));
+  --season-glow: rgba(125, 211, 252, calc(0.3 * var(--season-intensity) * 2));
 }
 
+/* Snowfall effect */
 [data-season='winter'] .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(2px 2px at 20% 30%, white 1px, transparent 2px),
-    radial-gradient(2px 2px at 40% 70%, white 1px, transparent 2px),
-    radial-gradient(1px 1px at 60% 20%, white 1px, transparent 1px),
-    radial-gradient(2px 2px at 80% 50%, white 1px, transparent 2px),
-    radial-gradient(1px 1px at 10% 80%, white 1px, transparent 1px),
-    radial-gradient(2px 2px at 90% 10%, white 1px, transparent 2px);
-  background-size: 200px 200px;
-  animation: snowfall 20s linear infinite;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='10' cy='10' r='2' fill='white'/%3E%3Ccircle cx='30' cy='40' r='1.5' fill='white'/%3E%3Ccircle cx='60' cy='20' r='2' fill='white'/%3E%3Ccircle cx='80' cy='60' r='1' fill='white'/%3E%3Ccircle cx='20' cy='80' r='1.5' fill='white'/%3E%3Ccircle cx='90' cy='30' r='2' fill='white'/%3E%3Ccircle cx='50' cy='70' r='1' fill='white'/%3E%3Ccircle cx='70' cy='90' r='1.5' fill='white'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='40' cy='30' r='1.5' fill='white'/%3E%3Ccircle cx='15' cy='70' r='2' fill='white'/%3E%3Ccircle cx='75' cy='15' r='1' fill='white'/%3E%3Ccircle cx='55' cy='85' r='2' fill='white'/%3E%3Ccircle cx='85' cy='55' r='1.5' fill='white'/%3E%3C/svg%3E");
+  background-size: 150px 150px, 200px 200px;
+  animation: snowfall 15s linear infinite;
   pointer-events: none;
-  opacity: calc(0.4 * var(--season-intensity) * 2);
-  z-index: 1;
+  opacity: calc(0.6 * var(--season-intensity) * 2);
+  z-index: 10;
 }
 
 @keyframes snowfall {
   0% {
     background-position:
       0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0,
-      0 0;
+      50px 25px;
   }
   100% {
     background-position:
-      200px 400px,
-      200px 400px,
-      200px 400px,
-      200px 400px,
-      200px 400px,
-      200px 400px;
+      150px 450px,
+      200px 500px;
   }
 }
 
+[data-season='winter'] .hero-title--large::after,
 [data-season='winter'] .hero__title::after {
   content: ' ❄️';
 }
 
 [data-season='winter'] .site-header {
-  border-bottom-color: rgba(125, 211, 252, 0.2);
+  border-bottom-color: rgba(125, 211, 252, 0.3);
+  background: linear-gradient(
+    180deg,
+    rgba(125, 211, 252, calc(0.05 * var(--season-intensity) * 2)) 0%,
+    transparent 100%
+  );
 }
 
 /* ===== Spring Theme 🌸 ===== */
 [data-season='spring'] {
   --season-accent: #f9a8d4;
   --season-accent-rgb: 249, 168, 212;
-  --season-glow: rgba(249, 168, 212, calc(0.3 * var(--season-intensity)));
+  --season-glow: rgba(249, 168, 212, calc(0.3 * var(--season-intensity) * 2));
 }
 
+/* Sakura petals */
 [data-season='spring'] .hero::before {
   content: '🌸';
   position: absolute;
-  font-size: calc(1rem + 0.5rem * var(--season-intensity));
-  animation: sakura-fall 15s linear infinite;
+  font-size: calc(1.5rem + 0.5rem * var(--season-intensity));
+  top: 10%;
+  left: 15%;
+  animation: sakura-fall 12s ease-in-out infinite;
   pointer-events: none;
-  opacity: calc(0.6 * var(--season-intensity) * 2);
-  z-index: 1;
+  opacity: calc(0.8 * var(--season-intensity) * 2);
+  z-index: 10;
 }
 
 [data-season='spring'] .hero::after {
   content: '🌸';
   position: absolute;
-  font-size: calc(0.8rem + 0.4rem * var(--season-intensity));
-  left: 30%;
-  animation: sakura-fall 18s linear infinite 3s;
+  font-size: calc(1.2rem + 0.4rem * var(--season-intensity));
+  top: 5%;
+  left: 60%;
+  animation: sakura-fall 16s ease-in-out infinite 4s;
   pointer-events: none;
-  opacity: calc(0.5 * var(--season-intensity) * 2);
-  z-index: 1;
+  opacity: calc(0.7 * var(--season-intensity) * 2);
+  z-index: 10;
 }
 
 @keyframes sakura-fall {
   0% {
-    top: -5%;
-    left: 20%;
-    transform: rotate(0deg) translateX(0);
+    transform: rotate(0deg) translateX(0) translateY(0);
+  }
+  25% {
+    transform: rotate(90deg) translateX(50px) translateY(25vh);
+  }
+  50% {
+    transform: rotate(180deg) translateX(-30px) translateY(50vh);
+  }
+  75% {
+    transform: rotate(270deg) translateX(60px) translateY(75vh);
   }
   100% {
-    top: 105%;
-    left: 40%;
-    transform: rotate(360deg) translateX(100px);
+    transform: rotate(360deg) translateX(20px) translateY(100vh);
   }
 }
 
+[data-season='spring'] .hero-title--large::after,
 [data-season='spring'] .hero__title::after {
   content: ' 🌸';
 }
 
 [data-season='spring'] .site-header {
-  border-bottom-color: rgba(249, 168, 212, 0.2);
+  border-bottom-color: rgba(249, 168, 212, 0.3);
+  background: linear-gradient(
+    180deg,
+    rgba(249, 168, 212, calc(0.05 * var(--season-intensity) * 2)) 0%,
+    transparent 100%
+  );
 }
 
 /* ===== Summer Theme ☀️ ===== */
 [data-season='summer'] {
   --season-accent: #fbbf24;
   --season-accent-rgb: 251, 191, 36;
-  --season-glow: rgba(251, 191, 36, calc(0.3 * var(--season-intensity)));
+  --season-glow: rgba(251, 191, 36, calc(0.3 * var(--season-intensity) * 2));
 }
 
+/* Sun glow effect */
 [data-season='summer'] .hero::before {
+  content: '☀️';
+  position: absolute;
+  top: 8%;
+  right: 12%;
+  font-size: calc(2rem + 1rem * var(--season-intensity));
+  animation: sun-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 0 calc(20px * var(--season-intensity)) rgba(251, 191, 36, 0.6));
+  z-index: 10;
+}
+
+[data-season='summer'] .hero::after {
   content: '';
   position: absolute;
-  top: 10%;
-  right: 10%;
-  width: calc(50px + 30px * var(--season-intensity));
-  height: calc(50px + 30px * var(--season-intensity));
-  background: radial-gradient(circle, rgba(251, 191, 36, calc(0.8 * var(--season-intensity) * 2)) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: sun-glow 3s ease-in-out infinite;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(
+    circle at 70% 20%,
+    rgba(251, 191, 36, calc(0.15 * var(--season-intensity) * 2)) 0%,
+    transparent 60%
+  );
   pointer-events: none;
-  z-index: 1;
+  z-index: 5;
 }
 
-@keyframes sun-glow {
+@keyframes sun-pulse {
   0%,
   100% {
-    transform: scale(1);
-    opacity: 0.8;
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 calc(15px * var(--season-intensity)) rgba(251, 191, 36, 0.5));
   }
   50% {
-    transform: scale(1.1);
-    opacity: 1;
+    transform: scale(1.1) rotate(15deg);
+    filter: drop-shadow(0 0 calc(25px * var(--season-intensity)) rgba(251, 191, 36, 0.8));
   }
 }
 
+[data-season='summer'] .hero-title--large::after,
 [data-season='summer'] .hero__title::after {
   content: ' ☀️';
 }
 
 [data-season='summer'] .site-header {
-  border-bottom-color: rgba(251, 191, 36, 0.2);
+  border-bottom-color: rgba(251, 191, 36, 0.3);
+  background: linear-gradient(
+    180deg,
+    rgba(251, 191, 36, calc(0.05 * var(--season-intensity) * 2)) 0%,
+    transparent 100%
+  );
 }
 
 /* ===== Autumn Theme 🍂 ===== */
 [data-season='autumn'] {
   --season-accent: #f97316;
   --season-accent-rgb: 249, 115, 22;
-  --season-glow: rgba(249, 115, 22, calc(0.3 * var(--season-intensity)));
+  --season-glow: rgba(249, 115, 22, calc(0.3 * var(--season-intensity) * 2));
 }
 
+/* Falling leaves */
 [data-season='autumn'] .hero::before {
   content: '🍂';
   position: absolute;
-  font-size: calc(1rem + 0.5rem * var(--season-intensity));
-  animation: leaf-fall 12s ease-in-out infinite;
+  font-size: calc(1.5rem + 0.5rem * var(--season-intensity));
+  top: 5%;
+  left: 70%;
+  animation: leaf-fall 10s ease-in-out infinite;
   pointer-events: none;
-  opacity: calc(0.7 * var(--season-intensity) * 2);
-  z-index: 1;
+  opacity: calc(0.9 * var(--season-intensity) * 2);
+  z-index: 10;
 }
 
 [data-season='autumn'] .hero::after {
   content: '🍁';
   position: absolute;
-  font-size: calc(0.9rem + 0.4rem * var(--season-intensity));
-  animation: leaf-fall 16s ease-in-out infinite 4s;
+  font-size: calc(1.3rem + 0.4rem * var(--season-intensity));
+  top: 10%;
+  left: 25%;
+  animation: leaf-fall 14s ease-in-out infinite 3s;
   pointer-events: none;
-  opacity: calc(0.6 * var(--season-intensity) * 2);
-  z-index: 1;
-  left: 60%;
+  opacity: calc(0.8 * var(--season-intensity) * 2);
+  z-index: 10;
 }
 
 @keyframes leaf-fall {
   0% {
-    top: -5%;
-    left: 70%;
-    transform: rotate(0deg);
+    transform: rotate(0deg) translateX(0) translateY(0);
   }
-  25% {
-    left: 60%;
+  20% {
+    transform: rotate(72deg) translateX(-40px) translateY(20vh);
   }
-  50% {
-    left: 75%;
+  40% {
+    transform: rotate(144deg) translateX(50px) translateY(40vh);
   }
-  75% {
-    left: 55%;
+  60% {
+    transform: rotate(288deg) translateX(-30px) translateY(60vh);
+  }
+  80% {
+    transform: rotate(504deg) translateX(40px) translateY(80vh);
   }
   100% {
-    top: 105%;
-    left: 65%;
-    transform: rotate(720deg);
+    transform: rotate(720deg) translateX(0) translateY(100vh);
   }
 }
 
+[data-season='autumn'] .hero-title--large::after,
 [data-season='autumn'] .hero__title::after {
   content: ' 🍂';
 }
 
 [data-season='autumn'] .site-header {
-  border-bottom-color: rgba(249, 115, 22, 0.2);
+  border-bottom-color: rgba(249, 115, 22, 0.3);
+  background: linear-gradient(
+    180deg,
+    rgba(249, 115, 22, calc(0.05 * var(--season-intensity) * 2)) 0%,
+    transparent 100%
+  );
 }
 
 /* ===== Shared Seasonal Enhancements ===== */
