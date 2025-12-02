@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -42,8 +42,6 @@ export default function TrialRequestsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<TrialRequest['status'] | 'all'>('all');
   const [selectedRequest, setSelectedRequest] = useState<TrialRequest | null>(null);
-
-  const supabase = createClientComponentClient();
 
   const fetchRequests = useCallback(async () => {
     setLoading(true);
