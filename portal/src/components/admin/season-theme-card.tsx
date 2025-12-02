@@ -54,10 +54,9 @@ export function SeasonThemeCard() {
 
   const saveSetting = useCallback(async (key: string, value: string) => {
     setSaving(true);
-    await supabase.from('system_settings').upsert(
-      { key, value, updated_at: new Date().toISOString() },
-      { onConflict: 'key' }
-    );
+    await supabase
+      .from('system_settings')
+      .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
     setSaving(false);
   }, []);
 
