@@ -1,0 +1,181 @@
+openapi: 3.0.3
+info:
+  title: Japan School API
+  description: |
+    Backend API for Japan School landing page.
+    Handles form submissions and admin operations.
+  version: 1.0.0
+  contact:
+    name: Eduard Bosak
+    url: https://github.com/Eduard-Bosak
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Returns server health status
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/submit-form:
+    post:
+      summary: Submit contact form
+      description: |
+        Submit a contact form from the landing page.
+        Sends email notifications to admin and auto-reply to user.
+      operationId: submitForm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormSubmission'
+      responses:
+        '200':
+          description: Form submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/submissions:
+    get:
+      summary: Get all submissions
+      description: Returns all form submissions (admin endpoint)
+      operationId: getSubmissions
+      responses:
+        '200':
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                    example: 5
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Submission'
+
+  /admin:
+    get:
+      summary: Admin panel
+      description: Serves the admin HTML page
+      operationId: adminPanel
+      responses:
+        '200':
+          description: Admin HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  schemas:
+    FormSubmission:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+      properties:
+        name:
+          type: string
+          minLength: 2
+          example: Иван Петров
+        email:
+          type: string
+          format: email
+          example: ivan@example.com
+        phone:
+          type: string
+          pattern: '^(\+?7|8)?[\s-]?\(?[0-9]{3}\)?[\s-]?[0-9]{3}[\s-]?[0-9]{2}[\s-]?[0-9]{2}$'
+          example: '+79001234567'
+        level:
+          type: string
+          example: N5
+        message:
+          type: string
+          maxLength: 1000
+          example: Хочу записаться на курс
+        formType:
+          type: string
+          enum: [hero, general]
+          default: general
+
+    Submission:
+      allOf:
+        - $ref: '#/components/schemas/FormSubmission'
+        - type: object
+          properties:
+            timestamp:
+              type: string
+              format: date-time
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Заявка успешно отправлена!
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Некорректный email адрес

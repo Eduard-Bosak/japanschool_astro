@@ -6,7 +6,7 @@
 interface AnalyticsPayload {
   evt: string;
   ts: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 declare global {
@@ -14,7 +14,7 @@ declare global {
     analyticsQueue: AnalyticsPayload[];
     __PRODUCTION_BUILD?: boolean;
     __NO_ANALYTICS_LOG?: boolean;
-    track: (evt: string, data?: Record<string, any>) => void;
+    track: (evt: string, data?: Record<string, unknown>) => void;
   }
 }
 
@@ -26,7 +26,7 @@ window.analyticsQueue = window.analyticsQueue || [];
  * EN: Track analytics event with optional data payload
  * RU: Отслеживание события аналитики с опциональными данными
  */
-export function track(evt: string, data: Record<string, any> = {}): void {
+export function track(evt: string, data: Record<string, unknown> = {}): void {
   const payload: AnalyticsPayload = {
     evt,
     ts: Date.now(),

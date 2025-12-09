@@ -5,6 +5,75 @@
 
 import { track } from '../utils/analytics';
 import { sendToBackend } from '../utils/api';
+import confetti from 'canvas-confetti';
+
+/* EN: Native toast notification system
+   RU: Нативная система toast-уведомлений */
+interface ToastOptions {
+  type: 'success' | 'error' | 'info';
+  message: string;
+  description?: string;
+  duration?: number;
+}
+
+function showToast({ type, message, description, duration = 5000 }: ToastOptions): void {
+  /* EN: Create or get toast container
+     RU: Создание или получение контейнера для toast */
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    `;
+    document.body.appendChild(container);
+  }
+
+  /* EN: Create toast element
+     RU: Создание элемента toast */
+  const toast = document.createElement('div');
+  toast.className = `toast toast--${type}`;
+  toast.style.cssText = `
+    padding: 16px 20px;
+    background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #3b82f6, #2563eb)'};
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  `;
+
+  toast.innerHTML = `
+    <div style="font-weight: 600; font-size: 14px;">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'} ${message}</div>
+    ${description ? `<div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">${description}</div>` : ''}
+  `;
+
+  container.appendChild(toast);
+
+  /* EN: Animate in
+     RU: Анимация появления */
+  requestAnimationFrame(() => {
+    toast.style.transform = 'translateX(0)';
+  });
+
+  /* EN: Auto-remove after duration
+     RU: Автоматическое удаление после таймаута */
+  const removeToast = () => {
+    toast.style.transform = 'translateX(120%)';
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  toast.addEventListener('click', removeToast);
+  setTimeout(removeToast, duration);
+}
 
 /* EN: Lead form elements
    RU: Элементы формы лидов */
@@ -20,6 +89,10 @@ let programModal: HTMLElement | null = null;
 let programForm: HTMLFormElement | null = null;
 let programStatusEl: HTMLElement | null = null;
 let hiddenProgramInput: HTMLInputElement | null = null;
+
+/* EN: WeakMap to store trap handlers without polluting DOM elements
+   RU: WeakMap для хранения обработчиков без загрязнения DOM элементов */
+const modalTrapHandlers = new WeakMap<HTMLElement, (e: KeyboardEvent) => void>();
 
 interface LeadFormElements extends HTMLFormControlsCollection {
   leadName: HTMLInputElement;
@@ -343,6 +416,23 @@ function setupLeadForm(): void {
       setButtonState('success');
       showStatus('Заявка отправлена! Мы свяжемся с вами в течение 24 часов.', 'success');
 
+      /* EN: Celebrate with confetti!
+         RU: Празднуем с конфетти! */
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#f06b93', '#ff9eb5', '#ffccd5', '#fff']
+      });
+
+      /* EN: Show toast notification
+         RU: Показать toast-уведомление */
+      showToast({
+        type: 'success',
+        message: 'Заявка отправлена!',
+        description: 'Мы свяжемся с вами в течение 24 часов'
+      });
+
       // Reset form after delay
       setTimeout(() => {
         leadForm?.reset();
@@ -363,6 +453,21 @@ function setupLeadForm(): void {
       setButtonState('success');
       showStatus('Заявка принята! Мы свяжемся с вами скоро.', 'success');
 
+      /* EN: Celebrate with confetti!
+         RU: Празднуем с конфетти! */
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#f06b93', '#ff9eb5', '#ffccd5']
+      });
+
+      showToast({
+        type: 'success',
+        message: 'Заявка принята!',
+        description: 'Мы свяжемся с вами скоро'
+      });
+
       setTimeout(() => {
         leadForm?.reset();
         setButtonState('default');
@@ -380,6 +485,11 @@ function setupLeadForm(): void {
     } else {
       setButtonState('default');
       showStatus('Не удалось отправить. Попробуйте позже или свяжитесь через Telegram.', 'error');
+      showToast({
+        type: 'error',
+        message: 'Ошибка отправки',
+        description: 'Попробуйте позже или свяжитесь через Telegram'
+      });
       track('lead_form_error', { error: result.error });
     }
   });
@@ -425,7 +535,7 @@ function openModal(prog: string): void {
     }
   }
 
-  (programModal as any).__trapHandler = trap;
+  modalTrapHandlers.set(programModal, trap);
   window.addEventListener('keydown', trap);
 }
 
@@ -439,9 +549,10 @@ function closeModal(): void {
   programModal.setAttribute('hidden', '');
   document.body.style.overflow = '';
 
-  if ((programModal as any).__trapHandler) {
-    window.removeEventListener('keydown', (programModal as any).__trapHandler);
-    delete (programModal as any).__trapHandler;
+  const trapHandler = modalTrapHandlers.get(programModal);
+  if (trapHandler) {
+    window.removeEventListener('keydown', trapHandler);
+    modalTrapHandlers.delete(programModal);
   }
 }
 

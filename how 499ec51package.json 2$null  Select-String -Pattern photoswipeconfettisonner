@@ -1,0 +1,76 @@
+[33mcommit 7e6866ab78b0682ca32e4bba982c0a9fcdd4ee63[m
+Author: Eduard Bosak <eduardbosak@gmail.com>
+Date:   Wed Nov 26 20:11:31 2025 +0300
+
+    Fix linting errors and complete Astro migration
+
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 90e8a94..322f737 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -34,35 +34,44 @@[m
+     "npm": ">=9.0.0"[m
+   },[m
+   "scripts": {[m
+[32m+[m[32m    "prepare": "husky",[m
+     "clean": "node build.mjs --clean",[m
+     "build": "cross-env NODE_ENV=production node build.mjs",[m
+     "watch": "node build.mjs --watch",[m
+[31m-    "serve": "chcp 65001 && npx http-server dist -p 5173 -c-1 --charset=utf-8",[m
+[32m+[m[32m    "serve": "node serve.mjs",[m
+[32m+[m[32m    "serve:silent": "node serve.mjs --silent",[m
+     "dev": "npm run build && npm-run-all --parallel watch serve",[m
+[31m-    "lint": "eslint src/**/*.js build.mjs og.js",[m
+[31m-    "lint:fix": "eslint src/**/*.js build.mjs og.js --fix",[m
+[31m-    "format": "prettier --write \"**/*.{js,json,css,md,html}\"",[m
+[31m-    "format:check": "prettier --check \"**/*.{js,json,css,md,html}\"",[m
+[31m-    "lighthouse": "npm run build && lhci autorun",[m
+[31m-    "lighthouse:open": "npm run build && lhci autorun && open .lighthouseci/lhr-*.html"[m
+[32m+[m[32m    "dev:stable": "npm run build && npm-run-all --parallel watch serve:silent",[m
+[32m+[m[32m    "dev:astro": "astro dev",[m
+[32m+[m[32m    "preview": "node serve.mjs --silent",[m
+[32m+[m[32m    "preview:astro": "astro preview",[m
+[32m+[m[32m    "preview:smoke": "node scripts/preview-smoke.mjs",[m
+[32m+[m[32m    "build:fast": "cross-env NODE_ENV=development node build.mjs",[m
+[32m+[m[32m    "build:astro": "astro build",[m
+[32m+[m[32m    "dev": "astro dev",[m
+[32m+[m[32m    "start": "astro dev",[m
+[32m+[m[32m    "build": "astro build",[m
+[32m+[m[32m    "preview": "astro preview",[m
+[32m+[m[32m    "astro": "astro",[m
+[32m+[m[32m    "lint": "eslint .",[m
+[32m+[m[32m    "format": "prettier --write ."[m
+   },[m
+   "devDependencies": {[m
+[31m-    "@lhci/cli": "^0.15.1",[m
+[31m-    "autoprefixer": "^10.4.20",[m
+[31m-    "cross-env": "^7.0.3",[m
+[31m-    "cssnano": "^7.1.1",[m
+[31m-    "esbuild": "^0.25.10",[m
+[31m-    "eslint": "^8.57.0",[m
+[31m-    "eslint-config-prettier": "^10.1.8",[m
+[31m-    "npm-run-all": "^4.1.5",[m
+[31m-    "postcss": "^8.4.47",[m
+[31m-    "postcss-cli": "^11.0.0",[m
+[31m-    "postcss-import": "^16.1.1",[m
+[32m+[m[32m    "eslint": "^9.15.0",[m
+[32m+[m[32m    "eslint-config-prettier": "^9.1.0",[m
+[32m+[m[32m    "eslint-plugin-astro": "^1.3.1",[m
+     "prettier": "^3.3.3",[m
+[31m-    "sharp": "^0.34.4"[m
+[32m+[m[32m    "prettier-plugin-astro": "^0.14.1",[m
+[32m+[m[32m    "rehype-autolink-headings": "^7.1.0",[m
+[32m+[m[32m    "rehype-slug": "^6.0.0",[m
+[32m+[m[32m    "remark-footnotes": "^4.0.1",[m
+[32m+[m[32m    "typescript": "^5.6.3"[m
+   },[m
+   "dependencies": {[m
+[31m-    "gray-matter": "^4.0.3",[m
+[31m-    "marked": "^16.4.0"[m
+[32m+[m[32m    "@astrojs/rss": "^4.0.10",[m
+[32m+[m[32m    "@astrojs/sitemap": "^3.2.1",[m
+[32m+[m[32m    "astro": "^5.0.0-beta.4",[m
+[32m+[m[32m    "canvas-confetti": "^1.9.3",[m
+[32m+[m[32m    "photoswipe": "^5.4.4"[m
+   }[m
+ }[m

@@ -24,7 +24,7 @@ import * as blog from './components/blog.ts';
 import { track } from './utils/analytics';
 import { eventBus } from './utils/events';
 import { initPerformanceMonitoring } from './utils/performance';
-import { safeInit, setupGlobalErrorHandlers } from './utils/logger';
+import { safeInit, setupGlobalErrorHandlers, debug, error as logError } from './utils/logger';
 import { initSentry, captureError, addBreadcrumb } from './utils/sentry';
 
 /* EN: Import API configuration
@@ -98,10 +98,10 @@ function initComponents(): void {
         try {
           m.init();
         } catch (e) {
-          console.error('Sakura init failed', e);
+          logError('Sakura init failed', 'Main', e);
         }
       })
-      .catch((e) => console.error('Failed to load sakura module', e));
+      .catch((e) => logError('Failed to load sakura module', 'Main', e));
   }
 
   /* EN: Interactive components with safe initialization
@@ -113,24 +113,24 @@ function initComponents(): void {
   /* EN: Lazy load gallery if grid exists
      RU: Ленивая загрузка галереи если существует сетка */
   const galleryEl = document.querySelector('.gallery');
-  console.log('[Main] Gallery element found:', !!galleryEl);
+  debug(`Gallery element found: ${!!galleryEl}`, 'Main');
 
   if (galleryEl) {
-    console.log('[Main] Loading gallery module...');
+    debug('Loading gallery module...', 'Main');
     import('./components/gallery.ts')
       .then(() => {
-        console.log('[Main] Gallery module loaded successfully');
+        debug('Gallery module loaded successfully', 'Main');
         // Now emit images:ready so gallery can initialize
         void setupResponsiveImages().then(() => {
-          console.log('[Main] Images ready, emitting event');
+          debug('Images ready, emitting event', 'Main');
           eventBus.emit('images:ready');
         });
       })
-      .catch((e) => console.error('Failed to load gallery module', e));
+      .catch((e) => logError('Failed to load gallery module', 'Main', e));
   } else {
     // No gallery, just setup images
     void setupResponsiveImages().then(() => {
-      console.log('[Main] Images ready, emitting event');
+      debug('Images ready, emitting event', 'Main');
       eventBus.emit('images:ready');
     });
   }

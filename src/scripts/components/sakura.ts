@@ -237,6 +237,12 @@ export function init(): void {
     prefersReducedMotion = e.matches;
   });
 
+  /* EN: Skip sakura on very small screens to save battery
+     RU: Пропуск сакуры на очень маленьких экранах для экономии батареи */
+  if (window.innerWidth < 480) {
+    return;
+  }
+
   canvas = document.getElementById('sakura-canvas') as HTMLCanvasElement;
   if (!canvas) return;
 

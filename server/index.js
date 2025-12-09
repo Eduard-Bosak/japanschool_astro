@@ -8,6 +8,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import nodemailer from 'nodemailer';
 import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
@@ -28,7 +29,41 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 /* ===== Middleware ===== */
-app.use(cors()); // Allow cross-origin requests / Разрешить кросс-доменные запросы
+// Security headers / Заголовки безопасности
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:']
+      }
+    },
+    crossOriginEmbedderPolicy: false
+  })
+);
+
+// CORS configuration / Настройка CORS
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:4321', 'http://localhost:3000'];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc)
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS not allowed'));
+      }
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
+  })
+);
+
 app.use(express.json()); // Parse JSON bodies / Парсить JSON тела запросов
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies / Парсить URL-encoded тела
 
@@ -84,6 +119,41 @@ const formLimiter = rateLimit({
     error: 'Слишком много запросов. Попробуйте позже.'
   }
 });
+
+/* ===== Admin Authentication Middleware ===== */
+// RU: Middleware для проверки авторизации администратора
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.ADMIN_PASS || '';
+
+/**
+ * @param {Request} req
+ * @param {Response} res
+ * @param {import('express').NextFunction} next
+ */
+function requireAdminAuth(req, res, next) {
+  // Skip auth if no password is set (development mode)
+  if (!ADMIN_PASS) {
+    console.warn('⚠️ Admin auth disabled - set ADMIN_PASS in .env for production!');
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
+
+  const base64Credentials = authHeader.split(' ')[1];
+  const credentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
+  const [user, pass] = credentials.split(':');
+
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    return next();
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+  return res.status(401).json({ success: false, error: 'Invalid credentials' });
+}
 
 /* ===== Validate email format ===== */
 /**
@@ -295,26 +365,30 @@ app.post(
 );
 
 /* ===== Get all submissions (admin endpoint) ===== */
-app.get('/api/submissions', async (/** @type {Request} */ req, /** @type {Response} */ res) => {
-  try {
-    const submissions = await readSubmissionsSafe(submissionsFile);
+app.get(
+  '/api/submissions',
+  requireAdminAuth,
+  async (/** @type {Request} */ req, /** @type {Response} */ res) => {
+    try {
+      const submissions = await readSubmissionsSafe(submissionsFile);
 
-    res.json({
-      success: true,
-      count: submissions.length,
-      data: submissions // Changed from 'submissions' to 'data'
-    });
-  } catch (error) {
-    res.json({
-      success: true,
-      count: 0,
-      data: [] // Changed from 'submissions' to 'data'
-    });
+      res.json({
+        success: true,
+        count: submissions.length,
+        data: submissions // Changed from 'submissions' to 'data'
+      });
+    } catch (error) {
+      res.json({
+        success: true,
+        count: 0,
+        data: [] // Changed from 'submissions' to 'data'
+      });
+    }
   }
-});
+);
 
 /* ===== Serve admin panel ===== */
-app.get('/admin', (/** @type {Request} */ req, /** @type {Response} */ res) => {
+app.get('/admin', requireAdminAuth, (/** @type {Request} */ req, /** @type {Response} */ res) => {
   res.sendFile(join(__dirname, 'admin.html'));
 });
 

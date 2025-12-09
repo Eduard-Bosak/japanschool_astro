@@ -2,10 +2,11 @@
 title: 'Как подготовиться к JLPT N3 за 3 месяца'
 slug: jlpt-n3-preparation
 date: 2024-09-01
+category: 'JLPT'
+cover: /images/jlpt-n3-cover.pnges/jlpt-n3-cover.png
 description:
   'Структурированный план подготовки: лексика, грамматика, аудирование и
   тестовые стратегии.'
-cover: i-XMW1h47xc.jpg
 keywords:
   ['jlpt n3', 'подготовка', 'грамматика', 'стратегия', 'экзамен', 'план']
 ---

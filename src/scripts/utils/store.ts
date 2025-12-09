@@ -24,7 +24,7 @@ export interface StoreSchema {
   // API queue
   'api.queue': Array<{
     type: string;
-    payload: Record<string, any>;
+    payload: Record<string, unknown>;
     ts: number;
   }>;
 }
