@@ -1,5 +1,5 @@
 {
-  "name": "japanschool-backend",
+  "name": "@japanschool/server",
   "version": "1.0.0",
   "description": "Backend server for Japan School landing page form submissions",
   "type": "module",

@@ -57,7 +57,7 @@
 ### Требования
 
 - **Node.js** 18+ ([скачать](https://nodejs.org/))
-- **npm** или **yarn**
+- **pnpm** 9+ (`npm install -g pnpm`)
 
 ### Установка
 
@@ -66,40 +66,55 @@
 git clone https://github.com/Eduard-Bosak/japanschool.git
 cd japanschool
 
-# 2. Установить зависимости
-npm install
+# 2. Установить зависимости (все пакеты монорепо)
+pnpm install
 
 # 3. Запустить dev-сервер
-npm run dev
-# Открыть http://localhost:5173
+pnpm dev
+# Открыть http://localhost:4321
 
 # 4. Собрать production
-npm run build
-# Результат в папке dist/
+pnpm build
+# Результат в папке apps/web/dist/
 ```
 
 ### Доступные команды
 
 ```bash
-npm run dev          # Режим разработки (http://localhost:4321)
-npm run build        # Production сборка → dist/
-npm run preview      # Просмотр production сборки
+# 🎯 Основные команды (monorepo)
+pnpm dev            # Astro dev server (http://localhost:4321)
+pnpm dev:server     # Express API server
+pnpm dev:portal     # Next.js admin portal
+pnpm build          # Production сборка web
+pnpm build:portal   # Production сборка portal
 
 # 🎨 Code Quality
-npm run lint         # Проверка кода с ESLint
-npm run format       # Форматирование с Prettier
-npm run typecheck    # Проверка TypeScript типов
+pnpm lint           # Проверка кода с ESLint
+pnpm format         # Форматирование с Prettier
 
 # 🧪 Тестирование
-npm run test         # Unit тесты (Vitest)
-npm run test:watch   # Тесты в watch режиме
-npm run test:ui      # Тесты с UI
-npm run e2e          # E2E тесты (Playwright)
-npm run e2e:ui       # E2E с UI
+pnpm test           # Unit тесты (Vitest)
+pnpm e2e            # E2E тесты (Playwright)
+
+# 📦 Запуск отдельных пакетов
+pnpm --filter @japanschool/web dev
+pnpm --filter @japanschool/server start
+pnpm --filter @japanschool/portal dev
 ```
 
-**✨ Новое:** WebSocket Live Reload — браузер автоматически обновляется при
-изменении файлов!
+### 📁 Monorepo структура
+
+```
+japanschool/
+├── apps/
+│   ├── web/        ← Astro лендинг (@japanschool/web)
+│   ├── server/     ← Express API (@japanschool/server)
+│   └── portal/     ← Next.js админка (@japanschool/portal)
+├── packages/
+│   └── shared/     ← Общие типы и утилиты
+├── pnpm-workspace.yaml
+└── package.json  ← Root workspace
+```
 
 ---
 

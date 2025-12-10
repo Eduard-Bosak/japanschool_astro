@@ -1,0 +1,18 @@
+{
+  "name": "@japanschool/shared",
+  "version": "1.0.0",
+  "description": "Shared types and utilities for japanschool monorepo",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -25,7 +25,7 @@ import { track } from './utils/analytics';
 import { eventBus } from './utils/events';
 import { initPerformanceMonitoring } from './utils/performance';
 import { safeInit, setupGlobalErrorHandlers, debug, error as logError } from './utils/logger';
-import { initSentry, captureError, addBreadcrumb } from './utils/sentry';
+// Sentry is lazy-loaded for better initial load performance
 
 /* EN: Import API configuration
   RU: Импорт конфигурации API */
@@ -56,9 +56,20 @@ type AppModules = {
  * RU: Инициализация всех компонентов при готовности DOM
  */
 function initializeApp(): void {
-  /* EN: Initialize Sentry error tracking first
-     RU: Сначала инициализируем отслеживание ошибок Sentry */
-  initSentry();
+  /* EN: Lazy-load Sentry for better initial performance (~120KB saved)
+     RU: Ленивая загрузка Sentry для лучшей начальной производительности (~120KB экономии) */
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(
+      () => {
+        import('./utils/sentry').then((m) => m.initSentry());
+      },
+      { timeout: 3000 }
+    );
+  } else {
+    setTimeout(() => {
+      import('./utils/sentry').then((m) => m.initSentry());
+    }, 2000);
+  }
 
   /* EN: Initialize theme system first (runs before DOM ready)
      RU: Инициализация системы тем в первую очередь (выполняется до готовности DOM) */
@@ -147,9 +158,6 @@ function initComponents(): void {
       path: window.location.pathname,
       referrer: document.referrer
     });
-
-    // Add breadcrumb for Sentry
-    addBreadcrumb(`Page loaded: ${window.location.pathname}`, 'navigation');
   });
 
   /* EN: Initialize performance monitoring
