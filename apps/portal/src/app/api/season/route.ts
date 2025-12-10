@@ -22,7 +22,7 @@ export async function GET() {
     const { data: settings } = await supabase
       .from('system_settings')
       .select('key, value')
-      .in('key', ['season_theme', 'season_auto_enabled', 'season_intensity']);
+      .in('key', ['season_theme', 'season_intensity']);
 
     const settingsMap =
       settings?.reduce(
@@ -33,29 +33,27 @@ export async function GET() {
         {} as Record<string, string>
       ) || {};
 
-    const autoEnabled = settingsMap['season_auto_enabled'] !== 'false';
     const themeSetting = settingsMap['season_theme'] || 'auto';
     const intensity = parseInt(settingsMap['season_intensity'] || '2', 10);
 
+    // If user selected a specific season, use it. Otherwise auto-detect.
     let season: string;
-
-    if (themeSetting === 'auto' || autoEnabled) {
+    if (themeSetting === 'auto') {
       season = getCurrentSeasonByDate();
     } else {
-      season = themeSetting;
+      season = themeSetting; // spring, summer, autumn, or winter
     }
 
     return NextResponse.json(
       {
         season,
         mode: themeSetting === 'auto' ? 'auto' : 'manual',
-        autoEnabled,
-        intensity: Math.max(0, Math.min(4, intensity)) // Clamp 0-4
+        intensity: Math.max(0, Math.min(4, intensity))
       },
       {
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'public, max-age=3600' // Cache for 1 hour
+          'Cache-Control': 'public, max-age=60' // Cache for 1 minute (shorter for testing)
         }
       }
     );

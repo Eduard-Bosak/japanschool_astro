@@ -18,9 +18,11 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "pnpm --filter @japanschool/web dev",
+    "dev": "pnpm --parallel --filter @japanschool/web --filter @japanschool/portal dev",
+    "dev:web": "pnpm --filter @japanschool/web dev",
     "dev:server": "pnpm --filter @japanschool/server dev",
     "dev:portal": "pnpm --filter @japanschool/portal dev",
+    "dev:all": "pnpm --parallel -r --filter \"./apps/*\" dev",
     "build": "pnpm --filter @japanschool/web build",
     "build:portal": "pnpm --filter @japanschool/portal build",
     "lint": "eslint .",

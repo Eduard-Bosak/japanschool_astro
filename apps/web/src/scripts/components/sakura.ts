@@ -1,50 +1,83 @@
 /* =============================================
-   Sakura Petals Canvas Animation Component
-   Компонент анимации лепестков сакуры на канвасе
+   Seasonal Particles Canvas Animation Component
+   Компонент анимации сезонных частиц на канвасе
+
+   Spring: Sakura petals (pink)
+   Summer: Fireflies (yellow glow)
+   Autumn: Falling leaves (orange/red)
+   Winter: Snowflakes (white)
    ============================================= */
 
-/**
- * EN: Sakura animation state
- * RU: Состояние анимации сакуры
- */
+type Season = 'spring' | 'summer' | 'autumn' | 'winter';
+type ParticleType = 'petal' | 'firefly' | 'leaf' | 'snowflake';
+
+interface Particle {
+  x: number;
+  y: number;
+  z: number; // depth
+  r: number; // radius/size
+  tilt: number;
+  drift: number;
+  vy: number; // vertical velocity
+  vr: number; // rotation velocity
+  type: ParticleType;
+  // Type-specific
+  opacity?: number; // for fireflies
+  pulsePhase?: number; // for firefly glow
+  color?: string; // for leaves
+}
+
 let canvas: HTMLCanvasElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
-let petals: Petal[] = [];
+let particles: Particle[] = [];
 let width = 0;
 let height = 0;
-let petalsStarted = false;
-let petalsPaused = false;
+let started = false;
+let paused = false;
 let frameSkip = 0;
 let resizeRafId: number | null = null;
 let prefersReducedMotion = false;
+let currentSeason: Season = 'spring';
 
-interface Petal {
-  x: number;
-  y: number;
-  z: number;
-  r: number;
-  tilt: number;
-  drift: number;
-  vy: number;
-  vr: number;
-  gradient?: CanvasGradient; // EN: Cached gradient | RU: Закешированный градиент
-}
-
-/* EN: Petal count based on screen size and device capability
-   RU: Количество лепестков в зависимости от размера экрана и возможностей устройства */
-function getPetalCount(): number {
+/* Particle count based on device capability */
+function getParticleCount(): number {
   const isMobile = window.innerWidth < 640;
   const isLowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
   if (isMobile || isLowPower) return 15;
   return 30;
 }
 
-const PETAL_COUNT = getPetalCount();
+const PARTICLE_COUNT = getParticleCount();
 
-/**
- * EN: Resize canvas to match window dimensions (RAF-throttled)
- * RU: Изменение размера канваса под размеры окна (с RAF-троттлингом)
- */
+/* Get current season from DOM attribute */
+function getSeasonFromDOM(): Season {
+  const season = document.documentElement.getAttribute('data-season');
+  if (season === 'summer' || season === 'autumn' || season === 'winter' || season === 'spring') {
+    return season;
+  }
+  // Auto-detect by month
+  const month = new Date().getMonth() + 1;
+  if (month >= 12 || month <= 2) return 'winter';
+  if (month >= 3 && month <= 5) return 'spring';
+  if (month >= 6 && month <= 8) return 'summer';
+  return 'autumn';
+}
+
+/* Map season to particle type */
+function getParticleType(season: Season): ParticleType {
+  switch (season) {
+    case 'spring':
+      return 'petal';
+    case 'summer':
+      return 'firefly';
+    case 'autumn':
+      return 'leaf';
+    case 'winter':
+      return 'snowflake';
+  }
+}
+
+/* Resize canvas */
 function resize(): void {
   if (resizeRafId) return;
   resizeRafId = requestAnimationFrame(() => {
@@ -52,196 +85,310 @@ function resize(): void {
     if (!canvas) return;
     width = canvas.width = window.innerWidth * devicePixelRatio;
     height = canvas.height = window.innerHeight * devicePixelRatio;
-    // EN: Invalidate cached gradients on resize | RU: Инвалидация кешированных градиентов при ресайзе
-    petals.forEach((p) => {
-      p.gradient = undefined;
-    });
   });
 }
 
-/**
- * EN: Create new petal with random properties
- * RU: Создание нового лепестка со случайными свойствами
- */
-function newPetal(): Petal {
-  const size = Math.random() * 10 + 5;
-  return {
+/* Create new particle based on type */
+function newParticle(type: ParticleType): Particle {
+  const base = {
     x: Math.random() * width,
     y: Math.random() * height,
-    z: Math.random() * 0.5 + 0.3, // EN: Depth factor | RU: Фактор глубины
-    r: size, // EN: Radius | RU: Радиус
-    tilt: Math.random() * Math.PI, // EN: Rotation angle | RU: Угол поворота
-    drift: Math.random() * 0.3 + 0.1, // EN: Horizontal drift | RU: Горизонтальный снос
-    vy: Math.random() * 0.35 + 0.3, // EN: Vertical velocity | RU: Вертикальная скорость
-    vr: (Math.random() - 0.5) * 0.008 // EN: Rotation velocity | RU: Скорость вращения
+    z: Math.random() * 0.5 + 0.3,
+    tilt: Math.random() * Math.PI,
+    drift: Math.random() * 0.3 + 0.1,
+    vr: (Math.random() - 0.5) * 0.008,
+    type
   };
-}
 
-/**
- * EN: Initialize petals array
- * RU: Инициализация массива лепестков
- */
-function initPetals(): void {
-  petals = Array.from({ length: PETAL_COUNT }, () => newPetal());
-}
-
-/**
- * EN: Draw petal on canvas with cached gradient
- * RU: Отрисовка лепестка на канвасе с кешированным градиентом
- */
-function drawPetal(p: Petal): void {
-  if (!ctx) return;
-
-  /* EN: Create and cache gradient for petal
-     RU: Создание и кеширование градиента для лепестка */
-  if (!p.gradient) {
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
-    g.addColorStop(0, `rgba(255,255,255,${0.6 * p.z})`);
-    g.addColorStop(0.5, `rgba(255,179,209,${0.35 * p.z})`);
-    g.addColorStop(1, `rgba(255,194,214,0)`);
-    p.gradient = g;
+  switch (type) {
+    case 'petal':
+      return {
+        ...base,
+        r: Math.random() * 10 + 5,
+        vy: Math.random() * 0.35 + 0.3
+      };
+    case 'firefly':
+      return {
+        ...base,
+        r: Math.random() * 3 + 2,
+        vy: (Math.random() - 0.5) * 0.2, // float up and down
+        opacity: Math.random(),
+        pulsePhase: Math.random() * Math.PI * 2
+      };
+    case 'leaf':
+      return {
+        ...base,
+        r: Math.random() * 12 + 6,
+        vy: Math.random() * 0.4 + 0.25,
+        drift: Math.random() * 0.5 + 0.2, // more drift
+        vr: (Math.random() - 0.5) * 0.015, // more rotation
+        color: ['#ff6b35', '#f7931e', '#c73e1d', '#a62c2c'][Math.floor(Math.random() * 4)]
+      };
+    case 'snowflake':
+      return {
+        ...base,
+        r: Math.random() * 4 + 2,
+        vy: Math.random() * 0.3 + 0.15,
+        drift: Math.random() * 0.15 + 0.05 // gentle drift
+      };
   }
+}
 
-  /* EN: Apply transformations and draw
-     RU: Применение трансформаций и отрисовка */
+/* Initialize particles */
+function initParticles(): void {
+  const type = getParticleType(currentSeason);
+  particles = Array.from({ length: PARTICLE_COUNT }, () => newParticle(type));
+}
+
+/* Draw petal (pink sakura) */
+function drawPetal(p: Particle): void {
+  if (!ctx) return;
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(Math.sin(p.tilt) * 0.6);
-  ctx.scale(1, 0.7); // EN: Flatten petal | RU: Сплющивание лепестка
+  ctx.scale(1, 0.7);
+
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
+  g.addColorStop(0, `rgba(255,255,255,${0.6 * p.z})`);
+  g.addColorStop(0.5, `rgba(255,179,209,${0.35 * p.z})`);
+  g.addColorStop(1, 'rgba(255,194,214,0)');
+
   ctx.beginPath();
-  ctx.fillStyle = p.gradient;
+  ctx.fillStyle = g;
   ctx.arc(0, 0, p.r, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
 
-/**
- * EN: Update petal position and rotation
- * RU: Обновление позиции и вращения лепестка
- */
-function updatePetal(p: Petal): void {
-  /* EN: Update position with depth-based speed
-     RU: Обновление позиции со скоростью, зависящей от глубины */
-  p.y += p.vy * p.z * 1.8;
-  p.x += Math.sin(p.tilt) * p.drift * 1.8;
-  p.tilt += p.vr;
+/* Draw firefly (glowing yellow dot) */
+function drawFirefly(p: Particle): void {
+  if (!ctx) return;
 
-  /* EN: Reset petal when it goes off-screen
-     RU: Сброс лепестка когда он выходит за экран */
-  if (p.y - p.r > height) {
-    const np = newPetal();
-    Object.assign(p, {
-      x: np.x,
-      y: -np.r,
-      r: np.r,
-      z: np.z,
-      drift: np.drift,
-      vy: np.vy,
-      vr: np.vr,
-      tilt: np.tilt
-    });
+  // Pulse effect
+  p.pulsePhase = (p.pulsePhase || 0) + 0.05;
+  const glow = (Math.sin(p.pulsePhase) + 1) / 2;
+  const alpha = 0.3 + glow * 0.7;
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+
+  // Outer glow
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r * 3);
+  g.addColorStop(0, `rgba(255,255,150,${alpha * 0.8})`);
+  g.addColorStop(0.3, `rgba(255,230,100,${alpha * 0.4})`);
+  g.addColorStop(1, 'rgba(255,200,50,0)');
+
+  ctx.beginPath();
+  ctx.fillStyle = g;
+  ctx.arc(0, 0, p.r * 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.beginPath();
+  ctx.fillStyle = `rgba(255,255,200,${alpha})`;
+  ctx.arc(0, 0, p.r * 0.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+/* Draw leaf (orange/red falling leaf) */
+function drawLeaf(p: Particle): void {
+  if (!ctx) return;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.tilt);
+  ctx.scale(1, 0.6);
+
+  const color = p.color || '#ff6b35';
+  const alpha = 0.7 * p.z;
+
+  // Leaf shape (simple oval with point)
+  ctx.beginPath();
+  ctx.moveTo(0, -p.r);
+  ctx.bezierCurveTo(p.r * 0.8, -p.r * 0.5, p.r * 0.8, p.r * 0.5, 0, p.r);
+  ctx.bezierCurveTo(-p.r * 0.8, p.r * 0.5, -p.r * 0.8, -p.r * 0.5, 0, -p.r);
+
+  ctx.fillStyle = color.replace(')', `,${alpha})`).replace('rgb', 'rgba');
+  // Fallback for hex colors
+  if (color.startsWith('#')) {
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+  }
+  ctx.fill();
+
+  // Leaf vein
+  ctx.beginPath();
+  ctx.moveTo(0, -p.r * 0.8);
+  ctx.lineTo(0, p.r * 0.8);
+  ctx.strokeStyle = `rgba(100,50,20,${alpha * 0.5})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+/* Draw snowflake (white crystal) */
+function drawSnowflake(p: Particle): void {
+  if (!ctx) return;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.tilt);
+
+  const alpha = 0.7 * p.z;
+  ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+  ctx.fillStyle = `rgba(255,255,255,${alpha * 0.3})`;
+  ctx.lineWidth = 1;
+
+  // Simple 6-point star
+  const arms = 6;
+  for (let i = 0; i < arms; i++) {
+    const angle = (i / arms) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(angle) * p.r, Math.sin(angle) * p.r);
+    ctx.stroke();
+
+    // Small branches
+    const branchLen = p.r * 0.4;
+    const branchX = Math.cos(angle) * p.r * 0.6;
+    const branchY = Math.sin(angle) * p.r * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(branchX, branchY);
+    ctx.lineTo(
+      branchX + Math.cos(angle + 0.5) * branchLen,
+      branchY + Math.sin(angle + 0.5) * branchLen
+    );
+    ctx.moveTo(branchX, branchY);
+    ctx.lineTo(
+      branchX + Math.cos(angle - 0.5) * branchLen,
+      branchY + Math.sin(angle - 0.5) * branchLen
+    );
+    ctx.stroke();
   }
 
-  /* EN: Wrap horizontally
-     RU: Обёртка по горизонтали */
-  if (p.x - p.r > width) {
-    p.x = -p.r;
-  }
-  if (p.x + p.r < 0) {
-    p.x = width + p.r;
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(0, 0, p.r * 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+/* Draw particle based on type */
+function drawParticle(p: Particle): void {
+  switch (p.type) {
+    case 'petal':
+      drawPetal(p);
+      break;
+    case 'firefly':
+      drawFirefly(p);
+      break;
+    case 'leaf':
+      drawLeaf(p);
+      break;
+    case 'snowflake':
+      drawSnowflake(p);
+      break;
   }
 }
 
-/**
- * EN: Animation loop
- * RU: Цикл анимации
- */
+/* Update particle position */
+function updateParticle(p: Particle): void {
+  // Movement based on type
+  if (p.type === 'firefly') {
+    // Fireflies float randomly
+    p.y += p.vy * p.z;
+    p.x += Math.sin(p.tilt) * p.drift * 2;
+    p.tilt += p.vr * 3;
+
+    // Bounce off edges
+    if (p.y < p.r || p.y > height - p.r) p.vy *= -1;
+    if (p.x < p.r) p.x = p.r;
+    if (p.x > width - p.r) p.x = width - p.r;
+  } else {
+    // Fall down
+    p.y += p.vy * p.z * 1.8;
+    p.x += Math.sin(p.tilt) * p.drift * 1.8;
+    p.tilt += p.vr;
+
+    // Reset when off-screen
+    if (p.y - p.r > height) {
+      const np = newParticle(p.type);
+      Object.assign(p, { ...np, y: -np.r });
+    }
+
+    // Wrap horizontally
+    if (p.x - p.r > width) p.x = -p.r;
+    if (p.x + p.r < 0) p.x = width + p.r;
+  }
+}
+
+/* Animation loop */
 function loop(): void {
   if (!ctx) return;
 
-  /* EN: Pause animation if tab is hidden or reduced motion preferred
-     RU: Пауза анимации если вкладка скрыта или предпочитается уменьшенное движение */
-  if (petalsPaused || prefersReducedMotion) {
+  if (paused || prefersReducedMotion) {
     requestAnimationFrame(loop);
     return;
   }
 
-  /* EN: Skip frames for performance
-     RU: Пропуск кадров для производительности */
   if (frameSkip > 0) {
     frameSkip--;
     requestAnimationFrame(loop);
     return;
   }
 
-  /* EN: Clear canvas and draw all petals
-     RU: Очистка канваса и отрисовка всех лепестков */
-  ctx.clearRect(0, 0, width, height);
-  for (let i = 0; i < petals.length; i++) {
-    updatePetal(petals[i]);
-    drawPetal(petals[i]);
+  // Check if season changed
+  const newSeason = getSeasonFromDOM();
+  if (newSeason !== currentSeason) {
+    currentSeason = newSeason;
+    initParticles();
   }
 
-  /* EN: Throttle if tab hidden
-     RU: Троттлинг если вкладка скрыта */
-  frameSkip = document.hidden ? 1 : 0;
+  ctx.clearRect(0, 0, width, height);
+  for (let i = 0; i < particles.length; i++) {
+    updateParticle(particles[i]);
+    drawParticle(particles[i]);
+  }
 
+  frameSkip = document.hidden ? 1 : 0;
   requestAnimationFrame(loop);
 }
 
-/**
- * EN: Start sakura animation
- * RU: Запуск анимации сакуры
- */
-function startPetals(): void {
-  if (petalsStarted || !canvas || !ctx) {
-    return;
-  }
+/* Start animation */
+function start(): void {
+  if (started || !canvas || !ctx) return;
 
-  petalsStarted = true;
+  started = true;
+  currentSeason = getSeasonFromDOM();
   resize();
-  initPetals();
+  initParticles();
   loop();
 
-  /* EN: Add resize listener
-     RU: Добавление обработчика изменения размера */
   window.addEventListener('resize', resize);
 }
 
-/**
- * EN: Pause animation (for tab visibility changes)
- * RU: Пауза анимации (для изменений видимости вкладки)
- */
 export function pause(): void {
-  petalsPaused = true;
+  paused = true;
 }
 
-/**
- * EN: Resume animation
- * RU: Возобновление анимации
- */
 export function resume(): void {
-  petalsPaused = false;
+  paused = false;
 }
 
-/**
- * EN: Initialize sakura canvas animation
- * RU: Инициализация анимации канваса сакуры
- */
+/* Initialize */
 export function init(): void {
-  /* EN: Cache reduced motion preference and listen for changes
-     RU: Кеширование предпочтения уменьшенного движения и слушание изменений */
   const motionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   prefersReducedMotion = motionMQ.matches;
   motionMQ.addEventListener('change', (e) => {
     prefersReducedMotion = e.matches;
   });
 
-  /* EN: Skip sakura on very small screens to save battery
-     RU: Пропуск сакуры на очень маленьких экранах для экономии батареи */
-  if (window.innerWidth < 480) {
-    return;
-  }
+  // Skip on very small screens
+  if (window.innerWidth < 480) return;
 
   canvas = document.getElementById('sakura-canvas') as HTMLCanvasElement;
   if (!canvas) return;
@@ -249,29 +396,21 @@ export function init(): void {
   ctx = canvas.getContext?.('2d');
   if (!ctx) return;
 
-  /* EN: Trigger function to remove event listeners after first call
-     RU: Функция триггера для удаления обработчиков после первого вызова */
-  const triggerPetals = () => {
-    startPetals();
-    window.removeEventListener('pointerdown', triggerPetals);
-    window.removeEventListener('keydown', triggerPetals);
+  const trigger = () => {
+    start();
+    window.removeEventListener('pointerdown', trigger);
+    window.removeEventListener('keydown', trigger);
   };
 
-  /* EN: Start after idle callback or timeout
-     RU: Запуск после idle callback или таймаута */
   if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => startPetals(), { timeout: 2500 });
+    requestIdleCallback(() => start(), { timeout: 2500 });
   } else {
-    setTimeout(startPetals, 1200);
+    setTimeout(start, 1200);
   }
 
-  /* EN: Also start on first interaction
-     RU: Также запуск при первом взаимодействии */
-  window.addEventListener('pointerdown', triggerPetals, { once: true });
-  window.addEventListener('keydown', triggerPetals, { once: true });
+  window.addEventListener('pointerdown', trigger, { once: true });
+  window.addEventListener('keydown', trigger, { once: true });
 
-  /* EN: Pause when tab becomes hidden
-     RU: Пауза когда вкладка становится скрытой */
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       pause();

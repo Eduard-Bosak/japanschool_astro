@@ -30,6 +30,52 @@ export function initTheme(): void {
 }
 
 /**
+ * EN: Fetch season theme from portal API and apply it
+ * RU: Получение сезонной темы из API портала и применение
+ */
+export async function fetchSeasonTheme(): Promise<void> {
+  try {
+    // Try to get theme from portal API
+    // In dev: localhost:3001, in prod: use PUBLIC_PORTAL_URL env
+    const portalUrl = import.meta.env.PUBLIC_PORTAL_URL || 'http://localhost:3001';
+    const response = await fetch(`${portalUrl}/api/season`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch season');
+    }
+
+    const data = await response.json();
+    const season = data.season as string;
+
+    // Apply season theme (uses data-season attribute, not data-theme)
+    root.setAttribute('data-season', season);
+    localStorage.setItem('season_theme', season);
+
+    track('season_theme_applied', { season, mode: data.mode });
+  } catch {
+    // Fallback: auto-detect by date
+    const month = new Date().getMonth() + 1;
+    let season: string;
+
+    if (month >= 12 || month <= 2) {
+      season = 'winter';
+    } else if (month >= 3 && month <= 5) {
+      season = 'spring';
+    } else if (month >= 6 && month <= 8) {
+      season = 'summer';
+    } else {
+      season = 'autumn';
+    }
+
+    root.setAttribute('data-season', season);
+    localStorage.setItem('season_theme', season);
+  }
+}
+
+/**
  * EN: Toggle between light and dark theme
  * RU: Переключение между светлой и темной темой
  */
@@ -136,6 +182,9 @@ export function setupThemeToggle(): void {
  * RU: Инициализация системы тем
  */
 export function init(): void {
-  initTheme();
+  // First apply season theme from portal API
+  fetchSeasonTheme();
+
+  // Then setup theme toggle button
   setupThemeToggle();
 }

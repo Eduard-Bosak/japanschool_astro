@@ -8,6 +8,7 @@
 export interface StoreSchema {
   // Theme
   theme: 'light' | 'dark';
+  seasonTheme: 'sakura' | 'summer' | 'autumn' | 'winter' | 'dark';
 
   // FAQ state
   'faq.state': {

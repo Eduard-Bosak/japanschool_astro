@@ -1,20 +1,61 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Snowflake, Flower2, Sun, Leaf, Wand2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Snowflake, Flower2, Sun, Leaf, Wand2, Check } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
-type Season = 'auto' | 'winter' | 'spring' | 'summer' | 'autumn';
+type Season = 'auto' | 'spring' | 'summer' | 'autumn' | 'winter';
 
-const seasons: { id: Season; icon: React.ReactNode; color: string }[] = [
-  { id: 'auto', icon: <Wand2 className="w-4 h-4" />, color: 'text-purple-400' },
-  { id: 'winter', icon: <Snowflake className="w-4 h-4" />, color: 'text-sky-400' },
-  { id: 'spring', icon: <Flower2 className="w-4 h-4" />, color: 'text-pink-400' },
-  { id: 'summer', icon: <Sun className="w-4 h-4" />, color: 'text-amber-400' },
-  { id: 'autumn', icon: <Leaf className="w-4 h-4" />, color: 'text-orange-400' }
+const seasons: {
+  id: Season;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+  bgColor: string;
+  description: string;
+}[] = [
+  {
+    id: 'auto',
+    label: 'Авто',
+    icon: <Wand2 className="w-5 h-5" />,
+    color: 'text-purple-400',
+    bgColor: 'from-purple-500/20 to-purple-600/10',
+    description: 'По дате'
+  },
+  {
+    id: 'spring',
+    label: 'Весна',
+    icon: <Flower2 className="w-5 h-5" />,
+    color: 'text-pink-400',
+    bgColor: 'from-pink-500/20 to-pink-600/10',
+    description: 'Сакура'
+  },
+  {
+    id: 'summer',
+    label: 'Лето',
+    icon: <Sun className="w-5 h-5" />,
+    color: 'text-amber-400',
+    bgColor: 'from-amber-500/20 to-amber-600/10',
+    description: 'Солнце'
+  },
+  {
+    id: 'autumn',
+    label: 'Осень',
+    icon: <Leaf className="w-5 h-5" />,
+    color: 'text-orange-400',
+    bgColor: 'from-orange-500/20 to-orange-600/10',
+    description: 'Листья'
+  },
+  {
+    id: 'winter',
+    label: 'Зима',
+    icon: <Snowflake className="w-5 h-5" />,
+    color: 'text-sky-400',
+    bgColor: 'from-sky-500/20 to-sky-600/10',
+    description: 'Снег'
+  }
 ];
 
 function getCurrentSeasonByDate(): Season {
@@ -27,7 +68,6 @@ function getCurrentSeasonByDate(): Season {
 
 export function SeasonThemeCard() {
   const [currentSeason, setCurrentSeason] = useState<Season>('auto');
-  const [intensity, setIntensity] = useState(2);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -35,83 +75,123 @@ export function SeasonThemeCard() {
       const { data } = await supabase
         .from('system_settings')
         .select('key, value')
-        .in('key', ['season_theme', 'season_intensity']);
+        .eq('key', 'season_theme');
 
-      if (data) {
-        const settings = data.reduce(
-          (acc, s) => {
-            acc[s.key] = s.value;
-            return acc;
-          },
-          {} as Record<string, string>
-        );
-        setCurrentSeason((settings['season_theme'] as Season) || 'auto');
-        setIntensity(parseInt(settings['season_intensity'] || '2', 10));
+      if (data && data.length > 0) {
+        setCurrentSeason((data[0].value as Season) || 'auto');
       }
     };
     loadSettings();
   }, []);
 
-  const saveSetting = useCallback(async (key: string, value: string) => {
+  const saveSetting = useCallback(async (value: string) => {
     setSaving(true);
-    await supabase
-      .from('system_settings')
-      .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    try {
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(
+          { key: 'season_theme', value, updated_at: new Date().toISOString() },
+          { onConflict: 'key' }
+        );
+
+      if (error) {
+        console.error('Failed to save season theme:', error);
+        alert(`Ошибка сохранения: ${error.message}`);
+      } else {
+        console.log('Season theme saved:', value);
+      }
+    } catch (err) {
+      console.error('Save error:', err);
+    }
     setSaving(false);
   }, []);
 
   const handleSeasonChange = async (season: Season) => {
     setCurrentSeason(season);
-    await saveSetting('season_theme', season);
-  };
-
-  const handleIntensityChange = async (enabled: boolean) => {
-    const newIntensity = enabled ? 2 : 0;
-    setIntensity(newIntensity);
-    await saveSetting('season_intensity', newIntensity.toString());
+    await saveSetting(season);
   };
 
   const actualSeason = currentSeason === 'auto' ? getCurrentSeasonByDate() : currentSeason;
-  const seasonInfo = seasons.find((s) => s.id === actualSeason) || seasons[0];
 
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          {/* Left: Season selector */}
-          <div className="flex items-center gap-1">
-            {seasons.map((season) => (
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex items-center gap-2">
+          🎨 Тема лендинга
+          {saving && (
+            <span className="text-xs text-muted-foreground animate-pulse">Сохранение...</span>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0">
+        {/* Season buttons grid */}
+        <div className="grid grid-cols-5 gap-2">
+          {seasons.map((season) => {
+            const isSelected = currentSeason === season.id;
+            const isActual = actualSeason === season.id && currentSeason === 'auto';
+
+            return (
               <button
                 key={season.id}
                 onClick={() => handleSeasonChange(season.id)}
                 disabled={saving}
                 className={cn(
-                  'p-2 rounded-lg transition-all duration-200',
-                  currentSeason === season.id
-                    ? `${season.color} bg-white/10`
-                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                  'relative flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-200 border',
+                  isSelected
+                    ? `bg-gradient-to-br ${season.bgColor} border-white/20 shadow-lg`
+                    : 'border-white/5 hover:border-white/10 hover:bg-white/5'
                 )}
               >
-                {season.icon}
-              </button>
-            ))}
-          </div>
+                {/* Selected indicator */}
+                {isSelected && (
+                  <div className="absolute top-1 right-1">
+                    <Check className="w-3 h-3 text-green-400" />
+                  </div>
+                )}
 
-          {/* Right: Toggle effects */}
-          <div className="flex items-center gap-3">
-            <span className={cn('text-sm transition-colors', seasonInfo.color)}>
-              {actualSeason === 'winter' && '❄️'}
-              {actualSeason === 'spring' && '🌸'}
-              {actualSeason === 'summer' && '☀️'}
-              {actualSeason === 'autumn' && '🍂'}
-              {currentSeason === 'auto' && ' auto'}
+                {/* Icon */}
+                <span
+                  className={cn(
+                    'transition-colors',
+                    isSelected || isActual ? season.color : 'text-muted-foreground'
+                  )}
+                >
+                  {season.icon}
+                </span>
+
+                {/* Label */}
+                <span
+                  className={cn(
+                    'text-xs font-medium',
+                    isSelected ? 'text-white' : 'text-muted-foreground'
+                  )}
+                >
+                  {season.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Current status */}
+        <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Активная тема:</span>
+            <span
+              className={cn(
+                'text-sm font-medium',
+                seasons.find((s) => s.id === actualSeason)?.color
+              )}
+            >
+              {seasons.find((s) => s.id === actualSeason)?.label}
+              {currentSeason === 'auto' && ' (авто)'}
             </span>
-            <Switch
-              checked={intensity > 0}
-              onCheckedChange={handleIntensityChange}
-              disabled={saving}
-            />
           </div>
+          {currentSeason === 'auto' && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Тема выбирается автоматически по текущему месяцу
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>
