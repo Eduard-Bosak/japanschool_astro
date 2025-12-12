@@ -19,6 +19,7 @@ interface TrialRequestBody {
   page?: string;
   timestamp?: string;
   source?: string;
+  slot_id?: string; // Selected slot for trial lesson
 }
 
 // CORS headers for cross-origin requests from landing page
@@ -80,6 +81,15 @@ export async function POST(request: NextRequest) {
     // Parse request body
     const body: TrialRequestBody = await request.json();
 
+    console.log('[Trial API] Received request:', {
+      name: body.name,
+      email: body.email,
+      goal: body.goal,
+      level: body.level,
+      slot_id: body.slot_id,
+      source: body.source
+    });
+
     // Validate required fields
     if (!body.name || body.name.trim().length < 2) {
       return NextResponse.json(
@@ -124,11 +134,40 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('[Trial API] Supabase error:', error);
+      console.error('[Trial API] Supabase error:', JSON.stringify(error, null, 2));
+      console.error('[Trial API] Error code:', error.code);
+      console.error('[Trial API] Error message:', error.message);
+      console.error('[Trial API] Error details:', error.details);
       return NextResponse.json(
-        { error: 'Failed to submit request. Please try again.' },
+        { error: 'Failed to submit request. Please try again.', details: error.message },
         { status: 500, headers: corsHeaders }
       );
+    }
+
+    // If slot_id was provided, mark the slot as booked for trial
+    let slotBooked = false;
+    if (body.slot_id && body.slot_id.trim() !== '') {
+      console.log(`[Trial API] Attempting to book slot: ${body.slot_id}`);
+
+      const { data: updateResult, error: slotError } = await supabase
+        .from('slots')
+        .update({ is_booked: true })
+        .eq('id', body.slot_id)
+        .eq('is_booked', false)
+        .select();
+
+      if (slotError) {
+        console.error('[Trial API] Slot booking error:', slotError);
+      } else if (updateResult && updateResult.length > 0) {
+        slotBooked = true;
+        console.log(`[Trial API] ✅ Slot ${body.slot_id} booked successfully!`);
+      } else {
+        console.log(
+          `[Trial API] ⚠️ Slot ${body.slot_id} was not updated (maybe already booked or not found)`
+        );
+      }
+    } else {
+      console.log('[Trial API] No slot_id provided, skipping slot booking');
     }
 
     // Success response
@@ -136,7 +175,8 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: 'Trial lesson request submitted successfully',
-        id: data?.id
+        id: data?.id,
+        slotBooked
       },
       { status: 201, headers: corsHeaders }
     );

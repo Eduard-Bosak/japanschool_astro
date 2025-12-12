@@ -38,16 +38,21 @@ let frameSkip = 0;
 let resizeRafId: number | null = null;
 let prefersReducedMotion = false;
 let currentSeason: Season = 'spring';
+let effectsEnabled = true;
+let intensity = 50; // 0-100
 
-/* Particle count based on device capability */
+/* Particle count based on device capability and intensity */
 function getParticleCount(): number {
   const isMobile = window.innerWidth < 640;
   const isLowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
-  if (isMobile || isLowPower) return 15;
-  return 30;
-}
+  // Higher base counts for more visible effect
+  const baseCount = isMobile || isLowPower ? 25 : 50;
 
-const PARTICLE_COUNT = getParticleCount();
+  // Scale by intensity (0-100)
+  // intensity 10 = 20% of base, intensity 100 = 150% of base
+  const scaleFactor = 0.2 + (intensity / 100) * 1.3;
+  return Math.round(baseCount * scaleFactor);
+}
 
 /* Get current season from DOM attribute */
 function getSeasonFromDOM(): Season {
@@ -127,9 +132,9 @@ function newParticle(type: ParticleType): Particle {
     case 'snowflake':
       return {
         ...base,
-        r: Math.random() * 4 + 2,
-        vy: Math.random() * 0.3 + 0.15,
-        drift: Math.random() * 0.15 + 0.05 // gentle drift
+        r: Math.random() * 8 + 6, // Much larger: 6-14 radius
+        vy: Math.random() * 0.4 + 0.2, // Slightly faster
+        drift: Math.random() * 0.2 + 0.08 // gentle drift
       };
   }
 }
@@ -137,7 +142,8 @@ function newParticle(type: ParticleType): Particle {
 /* Initialize particles */
 function initParticles(): void {
   const type = getParticleType(currentSeason);
-  particles = Array.from({ length: PARTICLE_COUNT }, () => newParticle(type));
+  const count = getParticleCount();
+  particles = Array.from({ length: count }, () => newParticle(type));
 }
 
 /* Draw petal (pink sakura) */
@@ -230,49 +236,57 @@ function drawLeaf(p: Particle): void {
   ctx.restore();
 }
 
-/* Draw snowflake (white crystal) */
+/* Draw snowflake (detailed crystal) */
 function drawSnowflake(p: Particle): void {
   if (!ctx) return;
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.tilt);
 
-  const alpha = 0.7 * p.z;
+  const alpha = 0.85 * p.z;
   ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-  ctx.fillStyle = `rgba(255,255,255,${alpha * 0.3})`;
-  ctx.lineWidth = 1;
+  ctx.fillStyle = `rgba(200,230,255,${alpha * 0.4})`;
+  ctx.lineWidth = 2; // Thicker lines
+  ctx.lineCap = 'round';
 
-  // Simple 6-point star
+  // 6-point snowflake crystal
   const arms = 6;
   for (let i = 0; i < arms; i++) {
     const angle = (i / arms) * Math.PI * 2;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+
+    // Main arm
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(Math.cos(angle) * p.r, Math.sin(angle) * p.r);
+    ctx.lineTo(cos * p.r, sin * p.r);
     ctx.stroke();
 
-    // Small branches
-    const branchLen = p.r * 0.4;
-    const branchX = Math.cos(angle) * p.r * 0.6;
-    const branchY = Math.sin(angle) * p.r * 0.6;
-    ctx.beginPath();
-    ctx.moveTo(branchX, branchY);
-    ctx.lineTo(
-      branchX + Math.cos(angle + 0.5) * branchLen,
-      branchY + Math.sin(angle + 0.5) * branchLen
-    );
-    ctx.moveTo(branchX, branchY);
-    ctx.lineTo(
-      branchX + Math.cos(angle - 0.5) * branchLen,
-      branchY + Math.sin(angle - 0.5) * branchLen
-    );
-    ctx.stroke();
+    // Main branches (at 60% and 40% of arm length)
+    const branchLen = p.r * 0.35;
+    for (const pos of [0.6, 0.4]) {
+      const bx = cos * p.r * pos;
+      const by = sin * p.r * pos;
+
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.lineTo(bx + Math.cos(angle + 0.6) * branchLen, by + Math.sin(angle + 0.6) * branchLen);
+      ctx.moveTo(bx, by);
+      ctx.lineTo(bx + Math.cos(angle - 0.6) * branchLen, by + Math.sin(angle - 0.6) * branchLen);
+      ctx.stroke();
+    }
   }
 
-  // Center dot
+  // Center diamond
   ctx.beginPath();
-  ctx.arc(0, 0, p.r * 0.2, 0, Math.PI * 2);
+  const c = p.r * 0.15;
+  ctx.moveTo(0, -c);
+  ctx.lineTo(c, 0);
+  ctx.lineTo(0, c);
+  ctx.lineTo(-c, 0);
+  ctx.closePath();
   ctx.fill();
+  ctx.stroke();
 
   ctx.restore();
 }
@@ -330,7 +344,23 @@ function updateParticle(p: Particle): void {
 function loop(): void {
   if (!ctx) return;
 
-  if (paused || prefersReducedMotion) {
+  // Check if effects are disabled
+  const effectsAttr = document.documentElement.getAttribute('data-effects-enabled');
+  effectsEnabled = effectsAttr !== 'false';
+
+  // Read current intensity
+  const intensityAttr = document.documentElement.getAttribute('data-effects-intensity');
+  const newIntensity = parseInt(intensityAttr || '50', 10);
+
+  // Reinit particles if intensity changed significantly
+  if (Math.abs(newIntensity - intensity) >= 10) {
+    intensity = newIntensity;
+    initParticles();
+  }
+
+  // Skip rendering if effects disabled or motion reduced
+  if (!effectsEnabled || paused || prefersReducedMotion) {
+    ctx.clearRect(0, 0, width, height);
     requestAnimationFrame(loop);
     return;
   }

@@ -99,11 +99,66 @@ interface LeadFormElements extends HTMLFormControlsCollection {
   leadEmail: HTMLInputElement;
   leadGoal: HTMLSelectElement;
   leadLevel: HTMLSelectElement;
+  leadSlot: HTMLSelectElement;
   leadMsg: HTMLTextAreaElement;
 }
 
 interface ProgramFormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
+}
+
+/* EN: Portal API URL - localhost for dev, production URL for prod
+   RU: URL API портала - localhost для разработки, продакшн URL для прода */
+const PORTAL_API_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:3001'
+    : 'https://japanschool-astro-9szg.vercel.app';
+
+/**
+ * EN: Load available slots from portal API
+ * RU: Загрузка доступных слотов из API портала
+ */
+async function loadAvailableSlots(): Promise<void> {
+  const slotSelect = document.getElementById('leadSlot') as HTMLSelectElement | null;
+  if (!slotSelect) return;
+
+  try {
+    const response = await fetch(`${PORTAL_API_URL}/api/public/slots`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch slots');
+    }
+
+    const data = await response.json();
+    const slots = data.slots || [];
+
+    // Clear existing options
+    slotSelect.innerHTML = '';
+
+    if (slots.length === 0) {
+      slotSelect.innerHTML = '<option value="" disabled selected>Нет доступных слотов</option>';
+      return;
+    }
+
+    // Add placeholder option
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.textContent = 'Выберите время...';
+    slotSelect.appendChild(placeholder);
+
+    // Add available slots
+    slots.forEach((slot: { id: string; label: string }) => {
+      const option = document.createElement('option');
+      option.value = slot.id;
+      option.textContent = slot.label;
+      slotSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading slots:', error);
+    slotSelect.innerHTML = '<option value="" disabled selected>Не удалось загрузить</option>';
+  }
 }
 
 interface ValidationRule {
@@ -342,6 +397,10 @@ function setupLeadForm(): void {
     });
   });
 
+  /* EN: Load available slots from portal
+     RU: Загрузка доступных слотов из портала */
+  loadAvailableSlots();
+
   /* EN: Setup input handlers for real-time validation
      RU: Настройка обработчиков ввода для валидации в реальном времени */
   const inputs = leadForm.querySelectorAll('input, textarea');
@@ -400,6 +459,7 @@ function setupLeadForm(): void {
       email: elements.leadEmail?.value?.trim(),
       goal: elements.leadGoal?.value || '',
       level: elements.leadLevel?.value || '',
+      slot_id: elements.leadSlot?.value || null,
       message: elements.leadMsg?.value?.trim() || '',
       source: 'landing_form'
     };

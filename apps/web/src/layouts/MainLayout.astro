@@ -108,9 +108,14 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
           return 'autumn';
         }
 
-        // Use cached season only for instant display (before API response)
+        // Use cached values for instant display
         var cachedSeason = localStorage.getItem('season_theme');
+        var cachedEnabled = localStorage.getItem('effects_enabled');
+        var cachedIntensity = localStorage.getItem('effects_intensity');
+
         document.documentElement.setAttribute('data-season', cachedSeason || getSeasonByDate());
+        document.documentElement.setAttribute('data-effects-enabled', cachedEnabled !== 'false' ? 'true' : 'false');
+        document.documentElement.setAttribute('data-effects-intensity', cachedIntensity || '50');
 
         // Always fetch fresh from API with cache-busting
         var apiUrl = (location.hostname === 'localhost')
@@ -120,16 +125,22 @@ const canonicalUrl = canonical || (Astro.site ? new URL(Astro.url.pathname, Astr
         fetch(apiUrl + '?t=' + Date.now(), { cache: 'no-store' })
           .then(function(r) { return r.json(); })
           .then(function(data) {
-            if (data && data.season) {
-              var newSeason = data.season;
-              var currentSeason = document.documentElement.getAttribute('data-season');
-
-              // Update if different
-              if (newSeason !== currentSeason) {
-                document.documentElement.setAttribute('data-season', newSeason);
-                console.log('Season updated:', currentSeason, '->', newSeason);
+            if (data) {
+              // Season
+              if (data.season) {
+                document.documentElement.setAttribute('data-season', data.season);
+                localStorage.setItem('season_theme', data.season);
               }
-              localStorage.setItem('season_theme', newSeason);
+
+              // Effects enabled
+              var enabled = data.effectsEnabled !== false;
+              document.documentElement.setAttribute('data-effects-enabled', String(enabled));
+              localStorage.setItem('effects_enabled', String(enabled));
+
+              // Intensity
+              var intensity = data.intensity || 50;
+              document.documentElement.setAttribute('data-effects-intensity', String(intensity));
+              localStorage.setItem('effects_intensity', String(intensity));
             }
           })
           .catch(function(err) { console.log('Season API error:', err); });

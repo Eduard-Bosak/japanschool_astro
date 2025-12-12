@@ -136,7 +136,7 @@
 }
 
 /* ============================================
-   ADMIN THEME - Dark with minimal lavender accents
+   ADMIN THEME - Dark mode (default)
    ============================================ */
 .admin-layout {
   /* Фон - очень темный, почти черный */
@@ -150,8 +150,8 @@
   --popover: 240 8% 12%;
   --popover-foreground: 0 0% 98%;
 
-  /* Primary - лавандовый только для акцентов */
-  --primary: 263 70% 60%;
+  /* Primary - sakura pink для акцентов */
+  --primary: 348 83% 55%;
   --primary-foreground: 0 0% 100%;
 
   /* Secondary - темно-серый */
@@ -167,7 +167,7 @@
   /* Borders - тонкие серые */
   --border: 240 8% 20%;
   --input: 240 8% 20%;
-  --ring: 263 70% 60%;
+  --ring: 348 83% 55%;
 
   --radius: 0.5rem;
 
@@ -176,13 +176,169 @@
   --destructive-foreground: 0 0% 98%;
 }
 
-/* Фон страницы - глубокий темный с минимальным градиентом */
-body:has(.admin-layout) {
+/* ============================================
+   ADMIN THEME - Light mode (HIGH CONTRAST)
+   ============================================ */
+.admin-layout.light,
+:root.light .admin-layout,
+html.light .admin-layout {
+  --background: oklch(0.96 0.005 250);
+  --foreground: oklch(0.15 0.02 250);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 250);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 250);
+
+  --primary: oklch(0.6 0.2 350);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.92 0.01 250);
+  --secondary-foreground: oklch(0.2 0.02 250);
+
+  --muted: oklch(0.93 0.01 250);
+  --muted-foreground: oklch(0.4 0.02 250);
+
+  --accent: oklch(0.92 0.01 250);
+  --accent-foreground: oklch(0.2 0.02 250);
+
+  --border: oklch(0.85 0.01 250);
+  --input: oklch(0.85 0.01 250);
+  --ring: oklch(0.6 0.2 350);
+
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+}
+
+/* Light mode - force ALL text colors to DARK */
+html.light .admin-layout {
+  color: oklch(0.1 0.02 250) !important;
+}
+
+html.light .admin-layout * {
+  --tw-text-opacity: 1;
+}
+
+/* Force ALL text-based elements to be dark */
+html.light .admin-layout h1,
+html.light .admin-layout h2,
+html.light .admin-layout h3,
+html.light .admin-layout h4,
+html.light .admin-layout h5,
+html.light .admin-layout h6 {
+  color: oklch(0.1 0.02 250) !important;
+}
+
+html.light .admin-layout p,
+html.light .admin-layout span:not(.sr-only):not([class*='bg-']),
+html.light .admin-layout label,
+html.light .admin-layout a:not([class*='bg-primary']) {
+  color: oklch(0.15 0.02 250) !important;
+}
+
+/* Card titles */
+html.light .admin-layout [class*='CardTitle'],
+html.light .admin-layout [class*='card'] h1,
+html.light .admin-layout [class*='card'] h2,
+html.light .admin-layout [class*='card'] h3 {
+  color: oklch(0.1 0.02 250) !important;
+}
+
+/* All foreground colors */
+html.light .admin-layout [class*='text-foreground'],
+html.light .admin-layout [class*='text-card-foreground'],
+html.light .admin-layout [class*='text-popover-foreground'] {
+  color: oklch(0.1 0.02 250) !important;
+}
+
+/* Muted text - darker gray */
+html.light .admin-layout [class*='text-muted-foreground'] {
+  color: oklch(0.35 0.02 250) !important;
+}
+
+/* Primary text (for active items) - dark pink */
+html.light .admin-layout [class*='text-primary']:not(button) {
+  color: oklch(0.4 0.22 350) !important;
+}
+
+/* Calendar text */
+html.light .admin-layout .rdp,
+html.light .admin-layout [data-slot='calendar'] {
+  color: oklch(0.15 0.02 250) !important;
+}
+
+html.light .admin-layout .rdp-caption_label,
+html.light .admin-layout .rdp-head_cell {
+  color: oklch(0.2 0.02 250) !important;
+}
+
+/* Slot status text */
+html.light .admin-layout [class*='text-sm'] {
+  color: oklch(0.25 0.02 250) !important;
+}
+
+/* Card headers - FORCE DARK */
+html.light .admin-layout [class*='CardHeader'] *,
+html.light .admin-layout [class*='card-header'] * {
+  color: oklch(0.15 0.02 250) !important;
+}
+
+/* SVG icons in headers */
+html.light .admin-layout [class*='CardHeader'] svg,
+html.light .admin-layout header svg {
+  color: oklch(0.3 0.02 250) !important;
+}
+
+/* Light mode - sidebar text - DARKER */
+html.light .admin-layout aside {
+  color: oklch(0.2 0.02 250);
+}
+
+html.light .admin-layout aside nav a {
+  color: oklch(0.35 0.02 250);
+}
+
+html.light .admin-layout aside nav a:hover {
+  color: oklch(0.15 0.02 250);
+  background-color: oklch(0.92 0.01 250);
+}
+
+/* Light mode - sidebar section headers (Система) */
+html.light .admin-layout aside h4,
+html.light .admin-layout aside [class*='text-sm'],
+html.light .admin-layout aside [class*='font-medium'] {
+  color: oklch(0.25 0.02 250) !important;
+}
+
+/* Light mode - sidebar active item - VERY STRONG */
+html.light .admin-layout aside [class*='bg-primary'] {
+  background-color: oklch(0.6 0.2 350 / 0.25) !important;
+  border-left: 3px solid oklch(0.55 0.22 350);
+}
+
+html.light .admin-layout aside [class*='text-primary'] {
+  color: oklch(0.45 0.22 350) !important;
+  font-weight: 700 !important;
+}
+
+/* Light mode - sidebar hover */
+html.light .admin-layout aside a:hover {
+  background-color: oklch(0.92 0.01 250);
+}
+
+/* Фон страницы - глубокий темный с минимальным градиентом (dark mode) */
+html:not(.light) body:has(.admin-layout) {
   background: linear-gradient(135deg, hsl(240, 10%, 6%) 0%, hsl(245, 12%, 8%) 100%);
 }
 
-/* Карточки - темные с тонким бордером */
-.admin-layout [class*='card'] {
+/* Light mode body background */
+html.light body:has(.admin-layout) {
+  background: linear-gradient(135deg, hsl(0, 0%, 96%) 0%, hsl(240, 5%, 94%) 100%);
+}
+
+/* Карточки - темные с тонким бордером (dark mode only) */
+html:not(.light) .admin-layout [class*='card'] {
   background: hsla(240, 8%, 12%, 0.95);
   backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid hsl(240 8% 18% / 0.5);
@@ -191,26 +347,38 @@ body:has(.admin-layout) {
     0 2px 4px -2px rgb(0 0 0 / 0.3);
 }
 
-/* Кнопки - primary фиолетовые, остальные серые */
+/* Light mode cards */
+html.light .admin-layout [class*='card'],
+:root.light .admin-layout [class*='card'] {
+  background: hsla(0, 0%, 100%, 0.95);
+  border: 1px solid hsl(240 5% 90%);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Кнопки - primary sakura pink */
 .admin-layout button[class*='primary'] {
-  background: hsl(263, 70%, 55%);
+  background: hsl(348, 83%, 55%);
 }
 
 .admin-layout button[class*='primary']:hover {
-  background: hsl(263, 70%, 60%);
+  background: hsl(348, 83%, 60%);
 }
 
-/* Кнопки - лавандовые */
+/* Кнопки - sakura pink градиент (исключаем календарь, ghost, outline) */
 .admin-layout
   button:not([class*='ghost']):not([class*='outline']):not([class*='secondary']):not(
     [class*='destructive']
+  ):not([data-day]):not([data-slot='calendar'] button):not(.rdp-button_previous):not(
+    .rdp-button_next
   ) {
-  background: linear-gradient(135deg, hsl(270, 85%, 76%) 0%, hsl(265, 80%, 72%) 100%);
-  color: hsl(265, 20%, 12%);
+  background: linear-gradient(135deg, hsl(348, 83%, 65%) 0%, hsl(348, 83%, 55%) 100%);
+  color: white;
   font-weight: 600;
   box-shadow:
-    0 2px 12px -2px hsl(270 70% 60% / 0.4),
-    0 1px 4px -1px hsl(265 60% 50% / 0.3);
+    0 2px 12px -2px hsl(348 83% 55% / 0.4),
+    0 1px 4px -1px hsl(348 83% 50% / 0.3);
   transition: all 0.2s ease;
   border: none;
 }
@@ -218,20 +386,66 @@ body:has(.admin-layout) {
 .admin-layout
   button:not([class*='ghost']):not([class*='outline']):not([class*='secondary']):not(
     [class*='destructive']
+  ):not([data-day]):not([data-slot='calendar'] button):not(.rdp-button_previous):not(
+    .rdp-button_next
   ):hover:not(:disabled) {
   box-shadow:
-    0 4px 16px -2px hsl(270 70% 60% / 0.6),
-    0 2px 8px -1px hsl(265 60% 50% / 0.4);
+    0 4px 16px -2px hsl(348 83% 55% / 0.6),
+    0 2px 8px -1px hsl(348 83% 50% / 0.4);
   transform: translateY(-1px);
-  filter: brightness(1.05);
+  filter: brightness(1.08);
 }
 
-/* Sidebar - лавандовый градиент */
-.admin-layout aside {
-  background: linear-gradient(180deg, hsla(265, 18%, 36%, 0.95) 0%, hsla(260, 16%, 33%, 0.95) 100%);
+/* Сброс стилей для календаря - чистые кнопки */
+.admin-layout [data-slot='calendar'] button,
+.admin-layout .rdp button,
+.admin-layout button[data-day] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  transform: none !important;
+  filter: none !important;
+  color: inherit;
+  font-weight: normal;
+  border-radius: 0.375rem;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+/* Hover эффект для дней календаря */
+.admin-layout button[data-day]:hover {
+  background: hsl(348, 83%, 60%, 0.2) !important;
+  color: hsl(348, 83%, 75%) !important;
+}
+
+/* Сегодняшний день - розовый */
+.admin-layout button[data-today='true'] {
+  background: hsl(348, 83%, 55%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px hsl(348, 83%, 55%, 0.4) !important;
+}
+
+/* Выбранный день (не сегодня) */
+.admin-layout button[data-selected='true']:not([data-today='true']) {
+  background: hsl(0, 0%, 30%) !important;
+  font-weight: 500 !important;
+}
+
+/* Sidebar - dark neutral with pink accents (dark mode only) */
+html:not(.light) .admin-layout aside {
+  background: linear-gradient(180deg, hsla(240, 10%, 16%, 0.98) 0%, hsla(240, 10%, 14%, 0.98) 100%);
   backdrop-filter: blur(20px) saturate(180%);
-  border-right: 1px solid hsl(265 20% 48% / 0.4);
-  box-shadow: 0 0 40px -10px hsl(270 60% 50% / 0.2);
+  border-right: 1px solid hsl(240 8% 22%);
+  box-shadow: 0 0 40px -10px hsl(348 83% 50% / 0.15);
+}
+
+/* Sidebar - light mode */
+html.light .admin-layout aside {
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, 0.98) 0%, hsla(240, 5%, 98%, 0.98) 100%);
+  border-right: 1px solid hsl(240 5% 90%);
+  box-shadow: 0 0 20px -5px hsl(0 0% 0% / 0.1);
 }
 
 /* Таблицы */
@@ -240,38 +454,73 @@ body:has(.admin-layout) {
   border-spacing: 0;
 }
 
-.admin-layout table tr:hover {
-  background: hsla(348, 30%, 35%, 0.5);
+/* Table rows (dark mode) */
+html:not(.light) .admin-layout table tr:hover {
+  background: hsla(348, 30%, 35%, 0.3);
   transition: background 0.15s ease;
 }
 
-.admin-layout th {
+html:not(.light) .admin-layout th {
   color: hsl(0 0% 95%);
   font-weight: 600;
   border-bottom: 1px solid hsla(348, 30%, 40%, 0.5);
 }
 
-.admin-layout td {
+html:not(.light) .admin-layout td {
   border-bottom: 1px solid hsla(348, 20%, 35%, 0.3);
 }
 
-/* Inputs - sakura style */
-.admin-layout input,
-.admin-layout select,
-.admin-layout textarea {
+/* Table rows (light mode) */
+html.light .admin-layout table tr:hover {
+  background: hsla(348, 83%, 50%, 0.08);
+}
+
+html.light .admin-layout th {
+  color: hsl(240, 10%, 20%);
+  border-bottom: 1px solid hsl(240 5% 88%);
+}
+
+html.light .admin-layout td {
+  border-bottom: 1px solid hsl(240 5% 92%);
+}
+
+/* Inputs - dark mode */
+html:not(.light) .admin-layout input,
+html:not(.light) .admin-layout select,
+html:not(.light) .admin-layout textarea {
   background: hsl(220 15% 25%);
   border: 1px solid hsl(220 15% 35%);
   color: hsl(0 0% 100%);
 }
 
-.admin-layout input:focus,
-.admin-layout select:focus,
-.admin-layout textarea:focus {
+html:not(.light) .admin-layout input:focus,
+html:not(.light) .admin-layout select:focus,
+html:not(.light) .admin-layout textarea:focus {
   background: hsl(220 15% 28%);
   border-color: #f06b93;
   box-shadow:
     0 0 0 4px rgba(240, 107, 147, 0.15),
     0 2px 12px rgba(240, 107, 147, 0.2);
+  outline: none;
+}
+
+/* Inputs - light mode */
+html.light .admin-layout input,
+html.light .admin-layout select,
+html.light .admin-layout textarea {
+  background: hsl(0 0% 100%);
+  border: 1px solid hsl(240 5% 85%);
+  color: hsl(240 10% 15%);
+}
+
+html.light .admin-layout input:focus,
+html.light .admin-layout select:focus,
+html.light .admin-layout textarea:focus {
+  background: hsl(0 0% 100%);
+  border-color: #f06b93;
+  box-shadow:
+    0 0 0 3px rgba(240, 107, 147, 0.12),
+    0 1px 8px rgba(240, 107, 147, 0.15);
   outline: none;
 }
 
@@ -550,4 +799,60 @@ body:has(.admin-layout) {
 
 .admin-layout [class*='text-2xl'] {
   animation: countUp 0.6s ease-out;
+}
+
+/* Sonner Toast - стили для dark theme */
+[data-sonner-toaster] [data-sonner-toast] {
+  background: hsl(240, 8%, 16%) !important;
+  border: 1px solid hsl(240, 8%, 25%) !important;
+  color: white !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-title] {
+  color: white !important;
+  font-weight: 600;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-description] {
+  color: hsl(0, 0%, 80%) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type='success'] {
+  background: hsl(145, 60%, 20%) !important;
+  border-color: hsl(145, 60%, 35%) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type='error'] {
+  background: hsl(0, 60%, 25%) !important;
+  border-color: hsl(0, 60%, 40%) !important;
+}
+
+/* ============================================
+   SMOOTH CALENDAR - DISABLE ALL JITTERY ANIMATIONS
+   ============================================ */
+
+/* Calendar container - no animations at all */
+[data-slot='calendar'],
+[data-slot='calendar'] * {
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Only allow color changes on hover */
+[data-slot='calendar'] button:hover {
+  transition: background-color 100ms ease !important;
+}
+
+/* Admin layout stability */
+.admin-layout .animate-spin {
+  contain: strict;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

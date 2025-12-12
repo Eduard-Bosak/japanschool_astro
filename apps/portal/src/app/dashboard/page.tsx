@@ -63,14 +63,14 @@ export default function StudentDashboard() {
   }, []);
 
   const fetchUserData = useCallback(async (userId: string) => {
-    // Fetch Profile (Balance)
+    // Fetch Profile (Lessons Remaining)
     const { data: profile } = await supabase
       .from('profiles')
-      .select('balance')
+      .select('lessons_remaining')
       .eq('id', userId)
       .single();
 
-    if (profile) setBalance(profile.balance || 0);
+    if (profile) setBalance(profile.lessons_remaining || 0);
 
     // Fetch Materials
     const { data: materialsData } = await supabase
@@ -112,31 +112,32 @@ export default function StudentDashboard() {
     if (!user) return;
 
     if (balance <= 0) {
-      toast.error('Недостаточно средств', {
-        description: 'Пожалуйста, пополните баланс для записи.'
+      toast.error('Недостаточно уроков', {
+        description: 'Пожалуйста, приобретите пакет уроков для записи.'
       });
       return;
     }
 
-    const { error } = await supabase
-      .from('slots')
-      .update({ is_booked: true, student_id: user.id })
-      .eq('id', slotId);
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotId })
+      });
 
-    if (error) {
-      toast.error('Ошибка бронирования', { description: error.message });
-    } else {
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error('Ошибка бронирования', { description: data.error });
+        return;
+      }
+
       toast.success('Вы записаны на урок!');
-      // Decrement local balance for immediate feedback (optimistic update)
-      setBalance((prev) => prev - 1);
-      // Update DB balance
-      await supabase
-        .from('profiles')
-        .update({ balance: balance - 1 })
-        .eq('id', user.id);
-
+      setBalance(data.lessonsRemaining);
       fetchSlots(date!);
       fetchUserData(user.id);
+    } catch (error) {
+      toast.error('Ошибка бронирования', { description: (error as Error).message });
     }
   };
 
@@ -144,59 +145,27 @@ export default function StudentDashboard() {
     if (!user) return;
 
     try {
-      // 1. Fetch cancellation policy setting
-      const { data: settingData } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'cancellation_hours')
-        .single();
+      const response = await fetch('/api/bookings', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotId })
+      });
 
-      const cancellationHours = parseInt(settingData?.value || '24');
+      const data = await response.json();
 
-      // 2. Get slot details
-      const { data: slot } = await supabase
-        .from('slots')
-        .select('start_time')
-        .eq('id', slotId)
-        .single();
-
-      if (!slot) {
-        toast.error('Слот не найден');
+      if (!response.ok) {
+        toast.error('Ошибка отмены', { description: data.error });
         return;
       }
 
-      // 3. Check if cancellation is allowed
-      const slotTime = new Date(slot.start_time);
-      const now = new Date();
-      const hoursUntilLesson = (slotTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-      if (hoursUntilLesson < cancellationHours) {
-        toast.error('Отмена невозможна', {
-          description: `Урок можно отменить только за ${cancellationHours}+ часов до начала.`
+      if (data.lessonReturned) {
+        toast.success('Урок отменен', { description: 'Урок возвращён на баланс' });
+      } else {
+        toast.warning('Урок отменен', {
+          description: 'Урок не возвращён (отмена менее чем за 24ч)'
         });
-        return;
       }
 
-      // 4. Cancel the booking
-      const { error } = await supabase
-        .from('slots')
-        .update({
-          is_booked: false,
-          student_id: null,
-          status: 'scheduled'
-        })
-        .eq('id', slotId);
-
-      if (error) throw error;
-
-      // 5. Refund balance
-      setBalance((prev) => prev + 1);
-      await supabase
-        .from('profiles')
-        .update({ balance: balance + 1 })
-        .eq('id', user.id);
-
-      toast.success('Урок отменен, баланс возвращен');
       fetchSlots(date!);
       fetchUserData(user.id);
     } catch (error) {

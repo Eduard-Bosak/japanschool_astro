@@ -8,7 +8,21 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Mail, Loader2 } from 'lucide-react';
+import {
+  Mail,
+  Loader2,
+  Bell,
+  CalendarPlus,
+  CalendarX,
+  Sunrise,
+  BarChart3,
+  Clock,
+  Send,
+  Bot,
+  MessageCircle,
+  Sparkles,
+  Shield
+} from 'lucide-react';
 
 import { User } from '@supabase/supabase-js';
 
@@ -25,16 +39,17 @@ type NotificationSettings = {
 export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testingTelegram, setTestingTelegram] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [settings, setSettings] = useState<NotificationSettings>({
-    email_booking_created: true,
-    email_booking_cancelled: true,
-    email_daily_digest: false,
-    email_weekly_digest: true,
-    email_slot_reminder: true,
-    telegram_bot_token: '',
-    telegram_chat_id: ''
-  });
+
+  // Отдельные состояния для каждого тумблера
+  const [bookingCreated, setBookingCreated] = useState(true);
+  const [bookingCancelled, setBookingCancelled] = useState(true);
+  const [dailyDigest, setDailyDigest] = useState(false);
+  const [weeklyDigest, setWeeklyDigest] = useState(true);
+  const [slotReminder, setSlotReminder] = useState(true);
+  const [telegramToken, setTelegramToken] = useState('');
+  const [telegramChatId, setTelegramChatId] = useState('');
 
   useEffect(() => {
     fetchSettings();
@@ -47,7 +62,7 @@ export default function NotificationsPage() {
     } = await supabase.auth.getUser();
 
     if (user) {
-      setUser(user); // Set user state
+      setUser(user);
       const { data } = await supabase
         .from('notification_settings')
         .select('*')
@@ -55,15 +70,13 @@ export default function NotificationsPage() {
         .single();
 
       if (data) {
-        setSettings({
-          email_booking_created: data.email_booking_created ?? true,
-          email_booking_cancelled: data.email_booking_cancelled ?? true,
-          email_daily_digest: data.email_daily_digest ?? false,
-          email_weekly_digest: data.email_weekly_digest ?? true,
-          email_slot_reminder: data.email_slot_reminder ?? true,
-          telegram_bot_token: data.telegram_bot_token || '',
-          telegram_chat_id: data.telegram_chat_id || ''
-        });
+        setBookingCreated(data.email_booking_created ?? true);
+        setBookingCancelled(data.email_booking_cancelled ?? true);
+        setDailyDigest(data.email_daily_digest ?? false);
+        setWeeklyDigest(data.email_weekly_digest ?? true);
+        setSlotReminder(data.email_slot_reminder ?? true);
+        setTelegramToken(data.telegram_bot_token || '');
+        setTelegramChatId(data.telegram_chat_id || '');
       }
     }
     setLoading(false);
@@ -76,20 +89,22 @@ export default function NotificationsPage() {
       const { error } = await supabase.from('notification_settings').upsert(
         {
           user_id: user.id,
-          email_booking_created: settings.email_booking_created,
-          email_booking_cancelled: settings.email_booking_cancelled,
-          email_daily_digest: settings.email_daily_digest,
-          email_weekly_digest: settings.email_weekly_digest,
-          email_slot_reminder: settings.email_slot_reminder,
-          telegram_bot_token: settings.telegram_bot_token,
-          telegram_chat_id: settings.telegram_chat_id,
+          email_booking_created: bookingCreated,
+          email_booking_cancelled: bookingCancelled,
+          email_daily_digest: dailyDigest,
+          email_weekly_digest: weeklyDigest,
+          email_slot_reminder: slotReminder,
+          telegram_bot_token: telegramToken,
+          telegram_chat_id: telegramChatId,
           updated_at: new Date().toISOString()
         },
         { onConflict: 'user_id' }
       );
 
       if (error) throw error;
-      toast.success('Настройки сохранены');
+      toast.success('Настройки сохранены', {
+        description: 'Ваши настройки уведомлений обновлены'
+      });
     } catch (error) {
       toast.error('Ошибка сохранения', {
         description: (error as Error).message
@@ -107,6 +122,41 @@ export default function NotificationsPage() {
     });
   };
 
+  const handleTestTelegram = async () => {
+    if (!telegramToken || !telegramChatId) {
+      toast.error('Заполните Bot Token и Chat ID');
+      return;
+    }
+
+    setTestingTelegram(true);
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: '🎌 *Japan School - Тест*\n\nПоздравляем! Telegram уведомления работают!',
+          parse_mode: 'Markdown'
+        })
+      });
+
+      if (response.ok) {
+        toast.success('Telegram подключён!', {
+          description: 'Проверьте сообщение в вашем чате'
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.description || 'Ошибка Telegram API');
+      }
+    } catch (error) {
+      toast.error('Ошибка подключения', {
+        description: (error as Error).message
+      });
+    } finally {
+      setTestingTelegram(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -118,140 +168,253 @@ export default function NotificationsPage() {
   if (!user) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Уведомления</h2>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleTestEmail}>
-            <Mail className="mr-2 h-4 w-4" />
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-pink-500/20">
+            <Bell className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Уведомления</h2>
+            <p className="text-muted-foreground text-sm">
+              Настройте как и когда получать уведомления
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={handleTestEmail} className="gap-2">
+            <Mail className="h-4 w-4" />
             Тестовое письмо
           </Button>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="gap-2 bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="h-4 w-4" />
+            )}
             Сохранить
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Email Уведомления</CardTitle>
-            <CardDescription>
-              Выберите, какие уведомления вы хотите получать на email.
-            </CardDescription>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Email Notifications Card */}
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-500/20">
+                <Mail className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <CardTitle>Email Уведомления</CardTitle>
+                <CardDescription>Выберите события для email-рассылки</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="booking_created" className="flex flex-col space-y-1">
-                <span>Новая запись</span>
-                <span className="font-normal text-sm text-muted-foreground">
-                  Уведомлять, когда ученик записывается на слот
-                </span>
-              </Label>
+          <CardContent className="p-0 divide-y">
+            {/* Новая запись */}
+            <div className="flex items-center justify-between p-4 hover:bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-500/10">
+                  <CalendarPlus className="h-4 w-4 text-green-500" />
+                </div>
+                <Label htmlFor="switch-booking-created" className="flex flex-col cursor-pointer">
+                  <span className="font-medium">Новая запись</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    Уведомлять, когда ученик записывается на слот
+                  </span>
+                </Label>
+              </div>
               <Switch
-                id="booking_created"
-                checked={settings.email_booking_created}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, email_booking_created: checked })
-                }
+                id="switch-booking-created"
+                checked={bookingCreated}
+                onCheckedChange={(v) => {
+                  setBookingCreated(v);
+                  toast(v ? '✅ Новая запись — включено' : '❌ Новая запись — выключено');
+                }}
               />
             </div>
 
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="booking_cancelled" className="flex flex-col space-y-1">
-                <span>Отмена записи</span>
-                <span className="font-normal text-sm text-muted-foreground">
-                  Уведомлять, когда ученик отменяет занятие
-                </span>
-              </Label>
+            {/* Отмена записи */}
+            <div className="flex items-center justify-between p-4 hover:bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-orange-500/10">
+                  <CalendarX className="h-4 w-4 text-orange-500" />
+                </div>
+                <Label htmlFor="switch-booking-cancelled" className="flex flex-col cursor-pointer">
+                  <span className="font-medium">Отмена записи</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    Уведомлять, когда ученик отменяет занятие
+                  </span>
+                </Label>
+              </div>
               <Switch
-                id="booking_cancelled"
-                checked={settings.email_booking_cancelled}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, email_booking_cancelled: checked })
-                }
+                id="switch-booking-cancelled"
+                checked={bookingCancelled}
+                onCheckedChange={(v) => {
+                  setBookingCancelled(v);
+                  toast(v ? '✅ Отмена записи — включено' : '❌ Отмена записи — выключено');
+                }}
               />
             </div>
 
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="daily_digest" className="flex flex-col space-y-1">
-                <span>Ежедневная сводка</span>
-                <span className="font-normal text-sm text-muted-foreground">
-                  Получать список занятий на день каждое утро
-                </span>
-              </Label>
+            {/* Ежедневная сводка */}
+            <div className="flex items-center justify-between p-4 hover:bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-amber-500/10">
+                  <Sunrise className="h-4 w-4 text-amber-500" />
+                </div>
+                <Label htmlFor="switch-daily-digest" className="flex flex-col cursor-pointer">
+                  <span className="font-medium">Ежедневная сводка</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    Получать список занятий на день каждое утро
+                  </span>
+                </Label>
+              </div>
               <Switch
-                id="daily_digest"
-                checked={settings.email_daily_digest}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, email_daily_digest: checked })
-                }
+                id="switch-daily-digest"
+                checked={dailyDigest}
+                onCheckedChange={(v) => {
+                  setDailyDigest(v);
+                  toast(v ? '✅ Ежедневная сводка — включено' : '❌ Ежедневная сводка — выключено');
+                }}
               />
             </div>
 
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="weekly_digest" className="flex flex-col space-y-1">
-                <span>Еженедельный отчет</span>
-                <span className="font-normal text-sm text-muted-foreground">
-                  Статистика за неделю по понедельникам
-                </span>
-              </Label>
+            {/* Еженедельный отчет */}
+            <div className="flex items-center justify-between p-4 hover:bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/10">
+                  <BarChart3 className="h-4 w-4 text-blue-500" />
+                </div>
+                <Label htmlFor="switch-weekly-digest" className="flex flex-col cursor-pointer">
+                  <span className="font-medium">Еженедельный отчет</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    Статистика за неделю по понедельникам
+                  </span>
+                </Label>
+              </div>
               <Switch
-                id="weekly_digest"
-                checked={settings.email_weekly_digest}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, email_weekly_digest: checked })
-                }
+                id="switch-weekly-digest"
+                checked={weeklyDigest}
+                onCheckedChange={(v) => {
+                  setWeeklyDigest(v);
+                  toast(
+                    v ? '✅ Еженедельный отчет — включено' : '❌ Еженедельный отчет — выключено'
+                  );
+                }}
               />
             </div>
 
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="slot_reminder" className="flex flex-col space-y-1">
-                <span>Напоминания о слотах</span>
-                <span className="font-normal text-sm text-muted-foreground">
-                  Напоминать за 15 минут до начала урока
-                </span>
-              </Label>
+            {/* Напоминания о слотах */}
+            <div className="flex items-center justify-between p-4 hover:bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/10">
+                  <Clock className="h-4 w-4 text-purple-500" />
+                </div>
+                <Label htmlFor="switch-slot-reminder" className="flex flex-col cursor-pointer">
+                  <span className="font-medium">Напоминания о слотах</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    Напоминать за 15 минут до начала урока
+                  </span>
+                </Label>
+              </div>
               <Switch
-                id="slot_reminder"
-                checked={settings.email_slot_reminder}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, email_slot_reminder: checked })
-                }
+                id="switch-slot-reminder"
+                checked={slotReminder}
+                onCheckedChange={(v) => {
+                  setSlotReminder(v);
+                  toast(
+                    v ? '✅ Напоминания о слотах — включено' : '❌ Напоминания о слотах — выключено'
+                  );
+                }}
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Telegram Интеграция</CardTitle>
-            <CardDescription>Настройте бота для получения уведомлений в Telegram.</CardDescription>
+        {/* Telegram Card */}
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-[#0088cc]/10 to-blue-500/10 border-b">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-[#0088cc]/20">
+                <Send className="h-5 w-5 text-[#0088cc]" />
+              </div>
+              <div>
+                <CardTitle>Telegram Интеграция</CardTitle>
+                <CardDescription>Мгновенные уведомления прямо в мессенджер</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="bot_token">Bot Token</Label>
+          <CardContent className="p-6 space-y-6">
+            {/* Bot Token */}
+            <div className="space-y-2">
+              <Label htmlFor="bot_token" className="flex items-center gap-2">
+                <Bot className="h-4 w-4 text-muted-foreground" />
+                Bot Token
+              </Label>
               <Input
                 id="bot_token"
                 type="password"
                 placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
-                value={settings.telegram_bot_token || ''}
-                onChange={(e) => setSettings({ ...settings, telegram_bot_token: e.target.value })}
+                value={telegramToken}
+                onChange={(e) => setTelegramToken(e.target.value)}
+                className="font-mono text-sm"
               />
-              <p className="text-xs text-muted-foreground">Токен, полученный от @BotFather</p>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Shield className="h-3 w-3" />
+                Токен надёжно хранится в базе данных
+              </p>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="chat_id">Chat ID</Label>
+
+            {/* Chat ID */}
+            <div className="space-y-2">
+              <Label htmlFor="chat_id" className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                Chat ID
+              </Label>
               <Input
                 id="chat_id"
                 placeholder="123456789"
-                value={settings.telegram_chat_id || ''}
-                onChange={(e) => setSettings({ ...settings, telegram_chat_id: e.target.value })}
+                value={telegramChatId}
+                onChange={(e) => setTelegramChatId(e.target.value)}
+                className="font-mono text-sm"
               />
               <p className="text-xs text-muted-foreground">
-                ID вашего чата с ботом (можно узнать через @userinfobot)
+                Узнайте ID через @userinfobot в Telegram
               </p>
+            </div>
+
+            {/* Test Button */}
+            <Button
+              variant="outline"
+              className="w-full gap-2 border-[#0088cc]/30 text-[#0088cc] hover:bg-[#0088cc]/10"
+              onClick={handleTestTelegram}
+              disabled={testingTelegram || !telegramToken || !telegramChatId}
+            >
+              {testingTelegram ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+              Отправить тестовое сообщение
+            </Button>
+
+            {/* Instructions */}
+            <div className="rounded-lg bg-muted/50 p-4 space-y-2">
+              <p className="text-sm font-medium">Как настроить:</p>
+              <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+                <li>Откройте @BotFather в Telegram</li>
+                <li>Создайте нового бота командой /newbot</li>
+                <li>Скопируйте полученный токен сюда</li>
+                <li>Напишите что-нибудь вашему боту</li>
+                <li>Получите Chat ID через @userinfobot</li>
+              </ol>
             </div>
           </CardContent>
         </Card>

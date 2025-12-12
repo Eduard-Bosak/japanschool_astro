@@ -328,6 +328,16 @@ const siteOrigin = Astro.site ? Astro.site.href.replace(/\/+$/, '') : 'https://e
                 </div>
               </div>
 
+              <!-- Выбор слота для консультации -->
+              <div class="form__field">
+                <select id="leadSlot" class="form__select" name="slot_id">
+                  <option value="" disabled selected>Загрузка...</option>
+                </select>
+                <label for="leadSlot" class="form__label-float">Удобное время</label>
+                <span class="form__select-arrow">▼</span>
+                <small class="form__hint" style="color: var(--muted); opacity: 1; font-size: 0.75rem;">Выберите время для бесплатной консультации</small>
+              </div>
+
               <button type="submit" class="form__submit" id="submitBtn">
                 <span class="form__submit-text">Отправить заявку</span>
                 <span class="form__submit-loading">

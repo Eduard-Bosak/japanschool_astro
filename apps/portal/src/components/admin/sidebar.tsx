@@ -11,7 +11,9 @@ import {
   LogOut,
   ClipboardCheck,
   Bell,
-  Activity
+  Activity,
+  CreditCard,
+  Wallet
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,6 +27,8 @@ const menuItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/slots', icon: Calendar, label: 'Слоты и Запись' },
   { href: '/admin/students', icon: Users, label: 'Ученики' },
+  { href: '/admin/tariffs', icon: CreditCard, label: 'Тарифы' },
+  { href: '/admin/payments', icon: Wallet, label: 'Платежи' },
   { href: '/admin/journal', icon: ClipboardCheck, label: 'Посещаемость' },
   { href: '/admin/activity', icon: Activity, label: 'Активность' },
   { href: '/admin/notifications', icon: Bell, label: 'Уведомления' },
@@ -62,28 +66,37 @@ export function Sidebar({ className, onClick }: SidebarProps) {
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                     whileHover={{ x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="relative"
                   >
+                    {/* Active indicator */}
                     {isActive && (
                       <motion.div
                         layoutId="sidebar-indicator"
-                        className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-400 to-purple-600 rounded-r-full"
+                        className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full"
+                        style={{ background: 'linear-gradient(to bottom, #f06b93, #ec4899)' }}
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       />
                     )}
-                    <Button
-                      variant={isActive ? 'secondary' : 'ghost'}
+
+                    <div
                       className={cn(
-                        'w-full justify-start transition-all duration-200',
-                        isActive && 'bg-secondary/80 text-secondary-foreground font-medium'
+                        'flex items-center w-full px-4 py-2 rounded-md text-sm transition-colors duration-150',
+                        isActive
+                          ? 'bg-primary/15 text-primary font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                       )}
                     >
-                      <Icon className="mr-2 h-4 w-4" />
+                      <Icon
+                        className={cn(
+                          'mr-2 h-4 w-4 transition-transform duration-150',
+                          !isActive && 'group-hover:scale-110'
+                        )}
+                      />
                       {item.label}
-                    </Button>
+                    </div>
                   </motion.div>
                 </Link>
               );

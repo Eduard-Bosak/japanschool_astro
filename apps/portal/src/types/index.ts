@@ -3,6 +3,23 @@
 // ============================================
 
 /**
+ * Tariff plan for students
+ */
+export type TariffPlan = {
+  id: string;
+  name: string;
+  slug: string;
+  price_monthly: number;
+  lessons_per_month: number;
+  description: string | null;
+  features: string[];
+  color: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+/**
  * User profile from profiles table
  */
 export type Profile = {
@@ -11,15 +28,38 @@ export type Profile = {
   display_name: string | null;
   role: 'student' | 'admin';
   balance: number;
+  tariff_id: string | null;
+  tariff_expires_at: string | null;
+  lessons_remaining: number;
   created_at: string;
   updated_at?: string;
 };
 
 /**
- * Student type (Profile with booking count)
+ * Student type (Profile with booking count and tariff)
  */
 export type Student = Profile & {
   booking_count: number;
+  tariff?: TariffPlan | null;
+};
+
+/**
+ * Payment transaction
+ */
+export type Payment = {
+  id: string;
+  student_id: string | null;
+  tariff_id: string | null;
+  amount: number;
+  status: 'pending' | 'completed' | 'refunded' | 'failed';
+  payment_method: string | null;
+  description: string | null;
+  period_start: string | null;
+  period_end: string | null;
+  created_at: string;
+  // Joined data
+  student_email?: string;
+  tariff_name?: string;
 };
 
 /**
@@ -33,6 +73,11 @@ export type Slot = {
   student_id: string | null;
   status?: SlotStatus;
   created_at: string;
+  // Joined student profile (optional)
+  student?: {
+    email: string;
+    display_name: string | null;
+  } | null;
 };
 
 export type SlotStatus =
@@ -105,6 +150,8 @@ export type DashboardStats = {
   totalStudents: number;
   activeSlots: number;
   totalBookings: number;
+  completedLessons: number;
+  missedLessons: number;
 };
 
 /**

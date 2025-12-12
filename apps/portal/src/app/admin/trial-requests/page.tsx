@@ -64,7 +64,7 @@ export default function TrialRequestsPage() {
     }
 
     setLoading(false);
-  }, [supabase, filter]);
+  }, [filter]);
 
   useEffect(() => {
     let mounted = true;
@@ -99,7 +99,7 @@ export default function TrialRequestsPage() {
     return () => {
       mounted = false;
     };
-  }, [supabase, filter]);
+  }, [filter]);
 
   async function updateStatus(id: string, newStatus: TrialRequest['status']) {
     const { error } = await supabase

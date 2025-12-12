@@ -20,16 +20,28 @@ import { Loader2, Users } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import type { Student } from '@/types';
+import type { Student, TariffPlan } from '@/types';
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
+  const [tariffs, setTariffs] = useState<Record<string, TariffPlan>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchStudents = async () => {
       setLoading(true);
+
+      // Fetch tariff plans first
+      const { data: tariffData } = await supabase.from('tariff_plans').select('*');
+
+      if (tariffData) {
+        const tariffMap: Record<string, TariffPlan> = {};
+        tariffData.forEach((t) => {
+          tariffMap[t.id] = { ...t, features: t.features || [] };
+        });
+        setTariffs(tariffMap);
+      }
 
       // Получаем всех пользователей из profiles
       const { data: profiles, error } = await supabase
@@ -184,6 +196,7 @@ export default function StudentsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Email</TableHead>
+                  <TableHead>Тариф</TableHead>
                   <TableHead>Роль</TableHead>
                   <TableHead>Записей</TableHead>
                 </TableRow>
@@ -212,6 +225,21 @@ export default function StudentsPage() {
                     </TableCell>
                     <TableCell>
                       {format(new Date(student.created_at), 'd MMM yyyy', { locale: ru })}
+                    </TableCell>
+                    <TableCell>
+                      {student.tariff_id && tariffs[student.tariff_id] ? (
+                        <Badge
+                          variant="outline"
+                          style={{
+                            borderColor: tariffs[student.tariff_id].color,
+                            color: tariffs[student.tariff_id].color
+                          }}
+                        >
+                          {tariffs[student.tariff_id].name}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Badge variant={student.role === 'admin' ? 'destructive' : 'secondary'}>

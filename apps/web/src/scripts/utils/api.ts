@@ -33,12 +33,15 @@ const DEFAULT_ENDPOINTS: ApiEndpoints = {
 
 /* EN: Portal API configuration - for production use portal URL
    RU: Конфигурация портала - в проде используй URL портала */
-const PORTAL_URL = import.meta.env.PUBLIC_PORTAL_URL || '';
+const PORTAL_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:3001'
+    : import.meta.env.PUBLIC_PORTAL_URL || 'https://japanschool-astro-9szg.vercel.app';
 
 const API_ENDPOINTS: ApiEndpoints = apiWindow.__API_ENDPOINTS || {
-  // If portal URL is set, use it; otherwise use relative paths (for local backend)
-  lead: PORTAL_URL ? `${PORTAL_URL}/api/trial` : DEFAULT_ENDPOINTS.lead,
-  program: PORTAL_URL ? `${PORTAL_URL}/api/program-interest` : DEFAULT_ENDPOINTS.program
+  // Always use portal URL for API calls
+  lead: `${PORTAL_URL}/api/trial`,
+  program: `${PORTAL_URL}/api/program-interest`
 };
 
 const API_TIMEOUT = 6500;
@@ -87,7 +90,11 @@ export async function sendToBackend(type: string, payload: Payload): Promise<Bac
 
   const body = JSON.stringify(enriched);
 
+  // Debug logging
+  console.log('[API] sendToBackend called:', { type, endpoint, payload: enriched });
+
   if (!endpoint) {
+    console.error('[API] No endpoint found for type:', type);
     queuePending(type, enriched);
     await simulateNetwork();
     return { ok: false, mock: true, error: 'endpoint_missing' };
@@ -97,6 +104,7 @@ export async function sendToBackend(type: string, payload: Payload): Promise<Bac
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
   try {
+    console.log('[API] Fetching:', endpoint);
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -105,8 +113,10 @@ export async function sendToBackend(type: string, payload: Payload): Promise<Bac
       credentials: 'omit'
     });
 
+    console.log('[API] Response status:', res.status);
     const isJSON = (res.headers.get('content-type') || '').includes('application/json');
     const data = isJSON ? await res.json().catch(() => null) : null;
+    console.log('[API] Response data:', data);
 
     if (res.ok) {
       return { ok: true, data, status: res.status };
@@ -114,6 +124,7 @@ export async function sendToBackend(type: string, payload: Payload): Promise<Bac
 
     throw new Error(`status_${res.status}`);
   } catch (err) {
+    console.error('[API] Error:', err);
     queuePending(type, enriched);
     return {
       ok: false,

@@ -105,7 +105,7 @@ export default function HealthCheckPage() {
     try {
       // Check if landing site is accessible
       const landingUrl = process.env.NEXT_PUBLIC_LANDING_URL || 'http://localhost:4321';
-      const res = await fetch(`${landingUrl}`, { mode: 'no-cors' });
+      await fetch(`${landingUrl}`, { mode: 'no-cors' });
       const latency = Date.now() - start;
 
       return {
@@ -115,7 +115,7 @@ export default function HealthCheckPage() {
         latency,
         lastChecked: new Date()
       };
-    } catch (error) {
+    } catch {
       return {
         name: 'Landing Site',
         status: 'warning',
@@ -144,7 +144,7 @@ export default function HealthCheckPage() {
         latency,
         lastChecked: new Date()
       };
-    } catch (error) {
+    } catch {
       return {
         name: 'API Endpoints',
         status: 'error',
@@ -233,8 +233,12 @@ export default function HealthCheckPage() {
   }, [checkSupabase, checkLandingSite, checkAPIEndpoints, checkAuth]);
 
   useEffect(() => {
-    runAllChecks();
-    fetchWebVitals();
+    // Initial load via async IIFE to satisfy lint rules
+    const initializeData = async () => {
+      await runAllChecks();
+      await fetchWebVitals();
+    };
+    initializeData();
     // Auto-refresh every 30 seconds
     const interval = setInterval(runAllChecks, 30000);
     const vitalsInterval = setInterval(fetchWebVitals, 60000);

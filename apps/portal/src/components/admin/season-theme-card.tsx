@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Snowflake, Flower2, Sun, Leaf, Wand2, Check } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Snowflake, Flower2, Sun, Leaf, Wand2, Check, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +40,7 @@ const seasons: {
     icon: <Sun className="w-5 h-5" />,
     color: 'text-amber-400',
     bgColor: 'from-amber-500/20 to-amber-600/10',
-    description: 'Солнце'
+    description: 'Светлячки'
   },
   {
     id: 'autumn',
@@ -54,7 +56,7 @@ const seasons: {
     icon: <Snowflake className="w-5 h-5" />,
     color: 'text-sky-400',
     bgColor: 'from-sky-500/20 to-sky-600/10',
-    description: 'Снег'
+    description: 'Снежинки'
   }
 ];
 
@@ -68,6 +70,8 @@ function getCurrentSeasonByDate(): Season {
 
 export function SeasonThemeCard() {
   const [currentSeason, setCurrentSeason] = useState<Season>('auto');
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
+  const [intensity, setIntensity] = useState(50); // 0-100
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -75,30 +79,34 @@ export function SeasonThemeCard() {
       const { data } = await supabase
         .from('system_settings')
         .select('key, value')
-        .eq('key', 'season_theme');
+        .in('key', ['season_theme', 'effects_enabled', 'effects_intensity']);
 
-      if (data && data.length > 0) {
-        setCurrentSeason((data[0].value as Season) || 'auto');
+      if (data) {
+        data.forEach((item) => {
+          if (item.key === 'season_theme') {
+            setCurrentSeason((item.value as Season) || 'auto');
+          } else if (item.key === 'effects_enabled') {
+            setEffectsEnabled(item.value !== 'false');
+          } else if (item.key === 'effects_intensity') {
+            setIntensity(parseInt(item.value) || 50);
+          }
+        });
       }
     };
     loadSettings();
   }, []);
 
-  const saveSetting = useCallback(async (value: string) => {
+  const saveSetting = useCallback(async (key: string, value: string) => {
     setSaving(true);
     try {
       const { error } = await supabase
         .from('system_settings')
-        .upsert(
-          { key: 'season_theme', value, updated_at: new Date().toISOString() },
-          { onConflict: 'key' }
-        );
+        .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
 
       if (error) {
-        console.error('Failed to save season theme:', error);
-        alert(`Ошибка сохранения: ${error.message}`);
+        console.error(`Failed to save ${key}:`, error);
       } else {
-        console.log('Season theme saved:', value);
+        console.log(`${key} saved:`, value);
       }
     } catch (err) {
       console.error('Save error:', err);
@@ -108,7 +116,20 @@ export function SeasonThemeCard() {
 
   const handleSeasonChange = async (season: Season) => {
     setCurrentSeason(season);
-    await saveSetting(season);
+    await saveSetting('season_theme', season);
+  };
+
+  const handleEffectsToggle = async (enabled: boolean) => {
+    setEffectsEnabled(enabled);
+    await saveSetting('effects_enabled', String(enabled));
+  };
+
+  const handleIntensityChange = (value: number[]) => {
+    setIntensity(value[0]);
+  };
+
+  const handleIntensitySave = async (value: number[]) => {
+    await saveSetting('effects_intensity', String(value[0]));
   };
 
   const actualSeason = currentSeason === 'auto' ? getCurrentSeasonByDate() : currentSeason;
@@ -123,7 +144,43 @@ export function SeasonThemeCard() {
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="space-y-6 pt-0">
+        {/* Effects Toggle */}
+        <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-yellow-400" />
+            <span className="text-sm font-medium">Эффекты частиц</span>
+          </div>
+          <Switch
+            checked={effectsEnabled}
+            onCheckedChange={handleEffectsToggle}
+            disabled={saving}
+          />
+        </div>
+
+        {/* Intensity Slider */}
+        {effectsEnabled && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Интенсивность</span>
+              <span className="text-sm font-medium">{intensity}%</span>
+            </div>
+            <Slider
+              value={[intensity]}
+              onValueChange={handleIntensityChange}
+              onValueCommit={handleIntensitySave}
+              max={100}
+              step={10}
+              disabled={saving}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Мало</span>
+              <span>Много</span>
+            </div>
+          </div>
+        )}
+
         {/* Season buttons grid */}
         <div className="grid grid-cols-5 gap-2">
           {seasons.map((season) => {
@@ -174,7 +231,7 @@ export function SeasonThemeCard() {
         </div>
 
         {/* Current status */}
-        <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
+        <div className="p-3 rounded-lg bg-white/5 border border-white/10">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Активная тема:</span>
             <span
@@ -191,6 +248,9 @@ export function SeasonThemeCard() {
             <p className="text-xs text-muted-foreground mt-1">
               Тема выбирается автоматически по текущему месяцу
             </p>
+          )}
+          {!effectsEnabled && (
+            <p className="text-xs text-orange-400 mt-1">⚠️ Эффекты частиц отключены</p>
           )}
         </div>
       </CardContent>

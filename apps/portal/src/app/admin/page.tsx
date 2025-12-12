@@ -14,7 +14,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Users, Calendar, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
+import { Users, Calendar, CheckCircle, Activity, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -24,7 +24,9 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     totalStudents: 0,
     activeSlots: 0,
-    totalBookings: 0
+    totalBookings: 0,
+    completedLessons: 0,
+    missedLessons: 0
   });
   const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
   const [upcomingSlots, setUpcomingSlots] = useState<
@@ -53,10 +55,24 @@ export default function AdminDashboard() {
       .select('*', { count: 'exact', head: true })
       .eq('is_booked', true);
 
+    // 4. Completed Lessons
+    const { count: completedCount } = await supabase
+      .from('slots')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'completed');
+
+    // 5. Missed Lessons
+    const { count: missedCount } = await supabase
+      .from('slots')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'missed');
+
     setStats({
       totalStudents: studentsCount || 0,
       activeSlots: activeSlotsCount || 0,
-      totalBookings: bookingsCount || 0
+      totalBookings: bookingsCount || 0,
+      completedLessons: completedCount || 0,
+      missedLessons: missedCount || 0
     });
   }, []);
 
@@ -205,7 +221,7 @@ export default function AdminDashboard() {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
         <StatsCard
           title="Всего учеников"
           value={stats.totalStudents}
@@ -223,6 +239,18 @@ export default function AdminDashboard() {
           value={stats.totalBookings}
           icon={CheckCircle}
           description="За все время"
+        />
+        <StatsCard
+          title="Проведено"
+          value={stats.completedLessons}
+          icon={CheckCircle}
+          description="Уроков проведено"
+        />
+        <StatsCard
+          title="Пропущено"
+          value={stats.missedLessons}
+          icon={Activity}
+          description="Уроков пропущено"
         />
       </div>
 
