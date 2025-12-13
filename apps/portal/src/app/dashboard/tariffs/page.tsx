@@ -130,10 +130,7 @@ export default function StudentTariffsPage() {
       </motion.div>
 
       {tariffs.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
           <Card className="!bg-white !border-neutral-200 shadow-sm">
             <CardContent className="py-8 text-center">
               <CreditCard className="h-10 w-10 mx-auto text-neutral-300 mb-3" />
@@ -161,7 +158,7 @@ export default function StudentTariffsPage() {
               >
                 <Card
                   className={cn(
-                    '!bg-white shadow-sm transition-shadow hover:shadow-lg relative overflow-hidden cursor-pointer h-full',
+                    '!bg-white shadow-sm transition-shadow hover:shadow-lg relative overflow-hidden cursor-pointer h-full flex flex-col',
                     isCurrent ? '!border-2 !border-green-500' : '!border-neutral-200'
                   )}
                 >
@@ -178,7 +175,9 @@ export default function StudentTariffsPage() {
                       transition={{ delay: 0.2, type: 'spring' }}
                       className="absolute top-2 right-2"
                     >
-                      <Badge className="bg-green-500 text-white text-xs px-1.5 py-0.5">Текущий</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-1.5 py-0.5">
+                        Текущий
+                      </Badge>
                     </motion.div>
                   )}
 
@@ -186,23 +185,21 @@ export default function StudentTariffsPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <motion.div
                         whileHover={{ rotate: 10 }}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: `${tariff.color}20`, color: tariff.color }}
                       >
                         {IconComponent}
                       </motion.div>
                       <CardTitle className="text-base text-neutral-900">{tariff.name}</CardTitle>
                     </div>
-                    {tariff.description && (
-                      <CardDescription className="text-neutral-500 text-xs line-clamp-1">
-                        {tariff.description}
-                      </CardDescription>
-                    )}
+                    <CardDescription className="text-neutral-500 text-xs line-clamp-1 min-h-[16px]">
+                      {tariff.description || '\u00A0'}
+                    </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="space-y-2 px-3 pb-3">
+                  <CardContent className="flex flex-col flex-1 px-3 pb-3">
                     {/* Price */}
-                    <div>
+                    <div className="mb-2">
                       <div className="flex items-baseline gap-1">
                         <span className="text-xl font-bold text-neutral-900">
                           {tariff.price_monthly?.toLocaleString('ru-RU')}
@@ -210,45 +207,57 @@ export default function StudentTariffsPage() {
                         <span className="text-neutral-500 text-xs">₽/мес</span>
                       </div>
                       <div className="text-xs text-neutral-500">
-                        {tariff.lessons_per_month} ур. • {tariff.price_per_lesson?.toLocaleString('ru-RU')} ₽/ур
+                        {tariff.lessons_per_month} ур. •{' '}
+                        {tariff.price_per_lesson?.toLocaleString('ru-RU')} ₽/ур
                       </div>
                       {tariff.discount_percent > 0 && (
-                        <Badge variant="secondary" className="bg-amber-100 text-amber-700 text-xs mt-1 px-1.5 py-0">
+                        <Badge
+                          variant="secondary"
+                          className="bg-amber-100 text-amber-700 text-xs mt-1 px-1.5 py-0"
+                        >
                           -{tariff.discount_percent}%
                         </Badge>
                       )}
                     </div>
 
-                    {/* Features - compact */}
-                    {tariff.features && tariff.features.length > 0 && (
-                      <div className="space-y-1 pt-1 border-t border-neutral-100">
-                        {tariff.features.slice(0, 3).map((feature: string, idx: number) => (
-                          <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 * idx + 0.3 }}
-                            className="flex items-center gap-1.5 text-xs"
-                          >
-                            <Check
-                              className="w-3 h-3 flex-shrink-0"
-                              style={{ color: tariff.color }}
-                            />
-                            <span className="text-neutral-600 truncate">{feature}</span>
-                          </motion.div>
-                        ))}
-                        {tariff.features.length > 3 && (
-                          <span className="text-xs text-neutral-400">
-                            +{tariff.features.length - 3} ещё
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    {/* Features - fixed height */}
+                    <div className="flex-1 min-h-[80px] space-y-1 pt-1 border-t border-neutral-100">
+                      {tariff.features && tariff.features.length > 0 ? (
+                        <>
+                          {tariff.features.slice(0, 3).map((feature: string, idx: number) => (
+                            <motion.div
+                              key={idx}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.1 * idx + 0.3 }}
+                              className="flex items-center gap-1.5 text-xs"
+                            >
+                              <Check
+                                className="w-3 h-3 flex-shrink-0"
+                                style={{ color: tariff.color }}
+                              />
+                              <span className="text-neutral-600 truncate">{feature}</span>
+                            </motion.div>
+                          ))}
+                          {tariff.features.length > 3 && (
+                            <span className="text-xs text-neutral-400">
+                              +{tariff.features.length - 3} ещё
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <div className="text-xs text-neutral-400">Базовые возможности</div>
+                      )}
+                    </div>
 
-                    {/* Action button */}
-                    <div className="pt-2">
+                    {/* Action button - always at bottom */}
+                    <div className="pt-2 mt-auto">
                       {isCurrent ? (
-                        <Button disabled size="sm" className="w-full h-7 text-xs bg-green-500 text-white">
+                        <Button
+                          disabled
+                          size="sm"
+                          className="w-full h-7 text-xs bg-green-500 text-white"
+                        >
                           <Check className="w-3 h-3 mr-1" />
                           Ваш тариф
                         </Button>
