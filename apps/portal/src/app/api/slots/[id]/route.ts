@@ -51,16 +51,24 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       error: authError
     } = await authClient.auth.getUser();
 
+    console.log('[Delete Slot] Auth check:', { userId: user?.id, authError: authError?.message });
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check if user is admin using service client (bypasses RLS)
-    const { data: profile } = await serviceClient
+    const { data: profile, error: profileError } = await serviceClient
       .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
+
+    console.log('[Delete Slot] Profile check:', {
+      userId: user.id,
+      role: profile?.role,
+      profileError: profileError?.message
+    });
 
     if (profile?.role !== 'admin' && profile?.role !== 'teacher') {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
