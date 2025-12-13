@@ -9,12 +9,37 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import type { TariffPlan } from '@/types';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const tariffIcons: Record<string, React.ReactNode> = {
-  trial: <Gift className="w-8 h-8" />,
-  basic: <BookOpen className="w-8 h-8" />,
-  standard: <Sparkles className="w-8 h-8" />,
-  premium: <Crown className="w-8 h-8" />
+  trial: <Gift className="w-5 h-5" />,
+  basic: <BookOpen className="w-5 h-5" />,
+  standard: <Sparkles className="w-5 h-5" />,
+  premium: <Crown className="w-5 h-5" />
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 24
+    }
+  }
 };
 
 export default function StudentTariffsPage() {
@@ -81,144 +106,198 @@ export default function StudentTariffsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-400" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Loader2 className="h-8 w-8 animate-spin text-neutral-400" />
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="h-full flex flex-col p-4 overflow-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Тарифы</h1>
-        <p className="text-neutral-500 mt-1">Выберите подходящий тариф для обучения</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="mb-4"
+      >
+        <h1 className="text-xl font-bold text-neutral-900">Тарифы</h1>
+        <p className="text-neutral-500 text-sm mt-0.5">Выберите подходящий тариф</p>
+      </motion.div>
 
       {tariffs.length === 0 ? (
-        <Card className="!bg-white !border-neutral-200 shadow-sm">
-          <CardContent className="py-12 text-center">
-            <CreditCard className="h-12 w-12 mx-auto text-neutral-300 mb-4" />
-            <p className="text-neutral-500">Тарифы пока не настроены</p>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <Card className="!bg-white !border-neutral-200 shadow-sm">
+            <CardContent className="py-8 text-center">
+              <CreditCard className="h-10 w-10 mx-auto text-neutral-300 mb-3" />
+              <p className="text-neutral-500 text-sm">Тарифы пока не настроены</p>
+            </CardContent>
+          </Card>
+        </motion.div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {tariffs.map((tariff) => {
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
+          {tariffs.map((tariff, index) => {
             const isCurrent = currentTariffId === tariff.id;
-            const IconComponent = tariffIcons[tariff.slug] || <BookOpen className="w-8 h-8" />;
+            const IconComponent = tariffIcons[tariff.slug] || <BookOpen className="w-5 h-5" />;
 
             return (
-              <Card
+              <motion.div
                 key={tariff.id}
-                className={cn(
-                  '!bg-white shadow-sm transition-all hover:shadow-md relative overflow-hidden',
-                  isCurrent ? '!border-2 !border-green-500' : '!border-neutral-200'
-                )}
+                variants={cardVariants}
+                whileHover={{ scale: 1.02, y: -4 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {/* Color accent */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-1"
-                  style={{ backgroundColor: tariff.color }}
-                />
-
-                {isCurrent && (
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-green-500 text-white">Текущий</Badge>
-                  </div>
-                )}
-
-                <CardHeader className="pt-6">
+                <Card
+                  className={cn(
+                    '!bg-white shadow-sm transition-shadow hover:shadow-lg relative overflow-hidden cursor-pointer h-full',
+                    isCurrent ? '!border-2 !border-green-500' : '!border-neutral-200'
+                  )}
+                >
+                  {/* Color accent */}
                   <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                    style={{ backgroundColor: `${tariff.color}20`, color: tariff.color }}
-                  >
-                    {IconComponent}
-                  </div>
-                  <CardTitle className="text-xl text-neutral-900">{tariff.name}</CardTitle>
-                  {tariff.description && (
-                    <CardDescription className="text-neutral-500">
-                      {tariff.description}
-                    </CardDescription>
-                  )}
-                </CardHeader>
+                    className="absolute top-0 left-0 right-0 h-1"
+                    style={{ backgroundColor: tariff.color }}
+                  />
 
-                <CardContent className="space-y-4">
-                  {/* Price */}
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-neutral-900">
-                        {tariff.price_monthly?.toLocaleString('ru-RU')}
-                      </span>
-                      <span className="text-neutral-500">₽/мес</span>
-                    </div>
-                    <div className="text-sm text-neutral-500">
-                      {tariff.lessons_per_month} уроков • {tariff.price_per_lesson?.toLocaleString('ru-RU')} ₽/урок
-                    </div>
-                    {tariff.discount_percent > 0 && (
-                      <Badge variant="secondary" className="bg-amber-100 text-amber-700 mt-1">
-                        Скидка {tariff.discount_percent}%
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Features */}
-                  {tariff.features && tariff.features.length > 0 && (
-                    <div className="space-y-2 pt-2 border-t border-neutral-100">
-                      {tariff.features.map((feature: string, idx: number) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm">
-                          <Check
-                            className="w-4 h-4 mt-0.5 flex-shrink-0"
-                            style={{ color: tariff.color }}
-                          />
-                          <span className="text-neutral-700">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
+                  {isCurrent && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.2, type: 'spring' }}
+                      className="absolute top-2 right-2"
+                    >
+                      <Badge className="bg-green-500 text-white text-xs px-1.5 py-0.5">Текущий</Badge>
+                    </motion.div>
                   )}
 
-                  {/* Action button */}
-                  <div className="pt-4">
-                    {isCurrent ? (
-                      <Button disabled className="w-full bg-green-500 text-white">
-                        <Check className="w-4 h-4 mr-2" />
-                        Ваш тариф
-                      </Button>
-                    ) : (
-                      <Button
-                        className="w-full"
-                        style={{
-                          backgroundColor: tariff.color,
-                          color: 'white'
-                        }}
-                        onClick={() => handleSelectTariff(tariff.id)}
+                  <CardHeader className="pt-4 pb-2 px-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <motion.div
+                        whileHover={{ rotate: 10 }}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: `${tariff.color}20`, color: tariff.color }}
                       >
-                        Выбрать тариф
-                      </Button>
+                        {IconComponent}
+                      </motion.div>
+                      <CardTitle className="text-base text-neutral-900">{tariff.name}</CardTitle>
+                    </div>
+                    {tariff.description && (
+                      <CardDescription className="text-neutral-500 text-xs line-clamp-1">
+                        {tariff.description}
+                      </CardDescription>
                     )}
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+
+                  <CardContent className="space-y-2 px-3 pb-3">
+                    {/* Price */}
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-bold text-neutral-900">
+                          {tariff.price_monthly?.toLocaleString('ru-RU')}
+                        </span>
+                        <span className="text-neutral-500 text-xs">₽/мес</span>
+                      </div>
+                      <div className="text-xs text-neutral-500">
+                        {tariff.lessons_per_month} ур. • {tariff.price_per_lesson?.toLocaleString('ru-RU')} ₽/ур
+                      </div>
+                      {tariff.discount_percent > 0 && (
+                        <Badge variant="secondary" className="bg-amber-100 text-amber-700 text-xs mt-1 px-1.5 py-0">
+                          -{tariff.discount_percent}%
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Features - compact */}
+                    {tariff.features && tariff.features.length > 0 && (
+                      <div className="space-y-1 pt-1 border-t border-neutral-100">
+                        {tariff.features.slice(0, 3).map((feature: string, idx: number) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 * idx + 0.3 }}
+                            className="flex items-center gap-1.5 text-xs"
+                          >
+                            <Check
+                              className="w-3 h-3 flex-shrink-0"
+                              style={{ color: tariff.color }}
+                            />
+                            <span className="text-neutral-600 truncate">{feature}</span>
+                          </motion.div>
+                        ))}
+                        {tariff.features.length > 3 && (
+                          <span className="text-xs text-neutral-400">
+                            +{tariff.features.length - 3} ещё
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Action button */}
+                    <div className="pt-2">
+                      {isCurrent ? (
+                        <Button disabled size="sm" className="w-full h-7 text-xs bg-green-500 text-white">
+                          <Check className="w-3 h-3 mr-1" />
+                          Ваш тариф
+                        </Button>
+                      ) : (
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                          <Button
+                            size="sm"
+                            className="w-full h-7 text-xs"
+                            style={{
+                              backgroundColor: tariff.color,
+                              color: 'white'
+                            }}
+                            onClick={() => handleSelectTariff(tariff.id)}
+                          >
+                            Выбрать
+                          </Button>
+                        </motion.div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
 
       {/* Info card */}
-      <Card className="!bg-neutral-50 !border-neutral-200 mt-6">
-        <CardContent className="py-4">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center flex-shrink-0">
-              <CreditCard className="w-5 h-5 text-neutral-600" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Card className="!bg-neutral-50 !border-neutral-200 mt-4">
+          <CardContent className="py-3 px-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-4 h-4 text-neutral-600" />
+              </div>
+              <div>
+                <h3 className="font-medium text-neutral-900 text-sm">Как сменить тариф?</h3>
+                <p className="text-xs text-neutral-500">
+                  Свяжитесь с преподавателем для смены тарифа или покупки уроков
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-medium text-neutral-900">Как сменить тариф?</h3>
-              <p className="text-sm text-neutral-500 mt-1">
-                Для смены тарифа или покупки дополнительных уроков свяжитесь с преподавателем.
-                После оплаты ваш баланс будет обновлён.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
