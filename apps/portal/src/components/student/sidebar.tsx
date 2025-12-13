@@ -11,7 +11,8 @@ import {
   User,
   Bell,
   LogOut,
-  Wallet
+  Wallet,
+  CreditCard
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -28,6 +29,7 @@ const menuItems = [
   { href: '/dashboard/schedule', icon: Calendar, label: 'Расписание' },
   { href: '/dashboard/history', icon: History, label: 'История' },
   { href: '/dashboard/materials', icon: BookOpen, label: 'Материалы' },
+  { href: '/dashboard/tariffs', icon: CreditCard, label: 'Тарифы' },
   { href: '/dashboard/profile', icon: User, label: 'Профиль' },
   { href: '/dashboard/notifications', icon: Bell, label: 'Уведомления' }
 ];
