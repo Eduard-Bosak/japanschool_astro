@@ -46,7 +46,7 @@ export function StudentSidebar({ className, onClick }: SidebarProps) {
       if (authUser) {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('display_name, lessons_remaining')
+          .select('display_name, balance')
           .eq('id', authUser.id)
           .single();
 
@@ -54,7 +54,7 @@ export function StudentSidebar({ className, onClick }: SidebarProps) {
           email: authUser.email,
           display_name: profile?.display_name
         });
-        setBalance(profile?.lessons_remaining || 0);
+        setBalance(profile?.balance || 0);
       }
     };
     fetchUser();

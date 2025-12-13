@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     // Get student profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('lessons_remaining, display_name')
+      .select('balance, display_name')
       .eq('id', user.id)
       .single();
 
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if student has lessons
-    if (profile.lessons_remaining <= 0) {
+    if (profile.balance <= 0) {
       return NextResponse.json(
         { error: 'No lessons remaining. Please purchase more lessons.' },
         { status: 400 }
@@ -98,10 +98,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to book slot' }, { status: 500 });
     }
 
-    // Decrement lessons_remaining (freeze lesson)
+    // Decrement balance (freeze lesson)
     const { error: decrementError } = await supabase
       .from('profiles')
-      .update({ lessons_remaining: profile.lessons_remaining - 1 })
+      .update({ balance: profile.balance - 1 })
       .eq('id', user.id);
 
     if (decrementError) {
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Slot booked successfully',
-      lessonsRemaining: profile.lessons_remaining - 1
+      lessonsRemaining: profile.balance - 1
     });
   } catch (error) {
     console.error('Booking error:', error);
@@ -199,14 +199,14 @@ export async function DELETE(request: NextRequest) {
     if (hoursUntilLesson >= 24) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('lessons_remaining')
+        .select('balance')
         .eq('id', user.id)
         .single();
 
       if (profile) {
         await supabase
           .from('profiles')
-          .update({ lessons_remaining: profile.lessons_remaining + 1 })
+          .update({ balance: profile.balance + 1 })
           .eq('id', user.id);
         lessonReturned = true;
       }

@@ -90,14 +90,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       // Return lesson to student before deleting
       const { data: studentProfile } = await serviceClient
         .from('profiles')
-        .select('lessons_remaining')
+        .select('balance')
         .eq('id', slot.student_id)
         .single();
 
       if (studentProfile) {
         await serviceClient
           .from('profiles')
-          .update({ lessons_remaining: studentProfile.lessons_remaining + 1 })
+          .update({ balance: studentProfile.balance + 1 })
           .eq('id', slot.student_id);
       }
     }

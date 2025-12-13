@@ -46,13 +46,13 @@ export default function StudentDashboard() {
     // Fetch profile
     const { data: profile } = await supabase
       .from('profiles')
-      .select('display_name, lessons_remaining')
+      .select('display_name, balance')
       .eq('id', authUser.id)
       .single();
 
     if (profile) {
       setDisplayName(profile.display_name);
-      setBalance(profile.lessons_remaining || 0);
+      setBalance(profile.balance || 0);
     }
 
     // Fetch upcoming lessons (next 5)

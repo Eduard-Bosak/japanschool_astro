@@ -62,11 +62,11 @@ export default function SchedulePage() {
   const fetchUserData = useCallback(async (userId: string) => {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('lessons_remaining')
+      .select('balance')
       .eq('id', userId)
       .single();
 
-    if (profile) setBalance(profile.lessons_remaining || 0);
+    if (profile) setBalance(profile.balance || 0);
   }, []);
 
   useEffect(() => {

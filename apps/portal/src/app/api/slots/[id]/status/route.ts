@@ -88,14 +88,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (status === 'canceled_teacher' && slot.student_id) {
       const { data: studentProfile } = await supabase
         .from('profiles')
-        .select('lessons_remaining')
+        .select('balance')
         .eq('id', slot.student_id)
         .single();
 
       if (studentProfile) {
         await supabase
           .from('profiles')
-          .update({ lessons_remaining: studentProfile.lessons_remaining + 1 })
+          .update({ balance: studentProfile.balance + 1 })
           .eq('id', slot.student_id);
 
         // Also clear the booking
