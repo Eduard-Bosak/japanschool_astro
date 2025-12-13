@@ -218,7 +218,7 @@ export default function SchedulePage() {
               month={currentMonth}
               onMonthChange={setCurrentMonth}
               locale={ru}
-              className="rounded-md w-full [&_.rdp]:text-sm [&_.rdp-day]:text-neutral-700 [&_.rdp-day_button:hover]:bg-neutral-100 [&_.rdp-day_button.rdp-day_selected]:bg-neutral-900 [&_.rdp-day_button.rdp-day_selected]:text-white [&_.rdp-head_cell]:text-neutral-500"
+              className="rounded-md w-full [&_.rdp-day]:text-neutral-900 [&_.rdp-day]:font-medium [&_.rdp-day_button]:text-neutral-900 [&_.rdp-day_button:hover]:bg-neutral-200 [&_.rdp-day_button.rdp-day_selected]:bg-neutral-900 [&_.rdp-day_button.rdp-day_selected]:text-white [&_.rdp-head_cell]:text-neutral-600 [&_.rdp-head_cell]:font-semibold [&_.rdp-day_outside]:text-neutral-400 [&_.rdp-nav_button]:text-neutral-700 [&_.rdp-caption]:text-neutral-900"
               modifiers={{
                 hasSlots: (day) => {
                   const daySlots = monthSlots.filter((s) => isSameDay(new Date(s.start_time), day));
@@ -268,26 +268,26 @@ export default function SchedulePage() {
                       key={slot.id}
                       className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
                         isMyBooking
-                          ? 'bg-green-50 border-green-200'
+                          ? 'bg-green-50 border-green-300'
                           : isAvailable
-                            ? 'bg-neutral-50 border-neutral-200 hover:border-neutral-400'
-                            : 'bg-neutral-100 border-neutral-200 opacity-60'
+                            ? 'bg-white border-neutral-300 hover:border-neutral-500 hover:shadow-sm'
+                            : 'bg-neutral-100 border-neutral-300'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`text-lg font-bold font-mono ${isMyBooking ? 'text-green-600' : 'text-neutral-900'}`}
+                          className={`text-lg font-bold font-mono ${isMyBooking ? 'text-green-700' : isAvailable ? 'text-neutral-900' : 'text-neutral-500'}`}
                         >
                           {format(new Date(slot.start_time), 'HH:mm')}
                         </div>
                         {isMyBooking && (
-                          <span className="flex items-center text-xs font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                          <span className="flex items-center text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
                             <CheckCircle2 className="w-3 h-3 mr-1" />
                             Записан
                           </span>
                         )}
                         {!isAvailable && !isMyBooking && (
-                          <span className="text-xs text-neutral-400">Занято</span>
+                          <span className="text-xs font-medium text-neutral-500">Занято</span>
                         )}
                       </div>
 

@@ -76,7 +76,7 @@ function Calendar({
         table: 'w-full border-collapse',
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
-          'text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none',
+          'text-neutral-600 rounded-md flex-1 font-semibold text-[0.8rem] select-none',
           defaultClassNames.weekday
         ),
         week: cn('flex w-full mt-2', defaultClassNames.week),
@@ -95,8 +95,8 @@ function Calendar({
         range_middle: 'rounded-none',
         range_end: 'rounded-r-md',
         today: '', // Handled in CalendarDayButton
-        outside: 'text-muted-foreground/40',
-        disabled: 'text-muted-foreground/30 opacity-50',
+        outside: 'text-neutral-400',
+        disabled: 'text-neutral-300 opacity-50',
         hidden: cn('invisible', defaultClassNames.hidden),
         ...classNames
       }}
@@ -156,19 +156,19 @@ function CalendarDayButton({
       className={cn(
         // Base styles - neutral
         'flex aspect-square size-auto w-full min-w-8 items-center justify-center',
-        'text-sm font-normal rounded-md transition-colors',
-        // Default state - no background
-        'bg-transparent text-foreground',
-        // Hover - light pink
-        'hover:bg-primary/10 hover:text-primary',
-        // Today - glowing pink
-        isToday && 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/30',
-        // Selected (not today) - subtle gray
-        isSelected && !isToday && 'bg-muted font-medium',
+        'text-sm font-medium rounded-md transition-colors',
+        // Default state - dark text for contrast
+        'bg-transparent text-neutral-800',
+        // Hover - light gray
+        'hover:bg-neutral-200 hover:text-neutral-900',
+        // Today - black background
+        isToday && 'bg-neutral-900 text-white font-bold shadow-md',
+        // Selected (not today) - gray background
+        isSelected && !isToday && 'bg-neutral-200 text-neutral-900 font-semibold',
         // Outside days
-        modifiers.outside && 'text-muted-foreground/40',
+        modifiers.outside && 'text-neutral-400',
         // Disabled
-        modifiers.disabled && 'text-muted-foreground/30 pointer-events-none',
+        modifiers.disabled && 'text-neutral-300 pointer-events-none',
         className
       )}
       {...props}
