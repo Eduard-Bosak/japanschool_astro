@@ -125,16 +125,20 @@ export default function StudentTariffsPage() {
         transition={{ duration: 0.3 }}
         className="mb-4"
       >
-        <h1 className="text-xl font-bold text-neutral-900">Тарифы</h1>
-        <p className="text-neutral-500 text-sm mt-0.5">Выберите подходящий тариф</p>
+        <h1 className="text-xl font-bold text-neutral-900 dark:text-white">Тарифы</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-0.5">
+          Выберите подходящий тариф
+        </p>
       </motion.div>
 
       {tariffs.length === 0 ? (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-          <Card className="!bg-white !border-neutral-200 shadow-sm">
+          <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
             <CardContent className="py-8 text-center">
-              <CreditCard className="h-10 w-10 mx-auto text-neutral-300 mb-3" />
-              <p className="text-neutral-500 text-sm">Тарифы пока не настроены</p>
+              <CreditCard className="h-10 w-10 mx-auto text-neutral-300 dark:text-neutral-600 mb-3" />
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+                Тарифы пока не настроены
+              </p>
             </CardContent>
           </Card>
         </motion.div>
@@ -158,8 +162,10 @@ export default function StudentTariffsPage() {
               >
                 <Card
                   className={cn(
-                    '!bg-white shadow-sm transition-shadow hover:shadow-lg relative overflow-hidden cursor-pointer h-full flex flex-col',
-                    isCurrent ? '!border-2 !border-green-500' : '!border-neutral-200'
+                    '!bg-white dark:!bg-neutral-900 shadow-sm transition-shadow hover:shadow-lg relative overflow-hidden cursor-pointer h-full flex flex-col',
+                    isCurrent
+                      ? '!border-2 !border-green-500'
+                      : '!border-neutral-200 dark:!border-neutral-800'
                   )}
                 >
                   {/* Color accent */}
@@ -190,9 +196,11 @@ export default function StudentTariffsPage() {
                       >
                         {IconComponent}
                       </motion.div>
-                      <CardTitle className="text-base text-neutral-900">{tariff.name}</CardTitle>
+                      <CardTitle className="text-base text-neutral-900 dark:text-white">
+                        {tariff.name}
+                      </CardTitle>
                     </div>
-                    <CardDescription className="text-neutral-500 text-xs line-clamp-1 min-h-[16px]">
+                    <CardDescription className="text-neutral-500 dark:text-neutral-400 text-xs line-clamp-1 min-h-[16px]">
                       {tariff.description || '\u00A0'}
                     </CardDescription>
                   </CardHeader>
@@ -201,19 +209,21 @@ export default function StudentTariffsPage() {
                     {/* Price */}
                     <div className="mb-2">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-bold text-neutral-900">
+                        <span className="text-xl font-bold text-neutral-900 dark:text-white">
                           {tariff.price_monthly?.toLocaleString('ru-RU')}
                         </span>
-                        <span className="text-neutral-500 text-xs">₽/мес</span>
+                        <span className="text-neutral-500 dark:text-neutral-400 text-xs">
+                          ₽/мес
+                        </span>
                       </div>
-                      <div className="text-xs text-neutral-500">
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
                         {tariff.lessons_per_month} ур. •{' '}
                         {tariff.price_per_lesson?.toLocaleString('ru-RU')} ₽/ур
                       </div>
                       {tariff.discount_percent > 0 && (
                         <Badge
                           variant="secondary"
-                          className="bg-amber-100 text-amber-700 text-xs mt-1 px-1.5 py-0"
+                          className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs mt-1 px-1.5 py-0"
                         >
                           -{tariff.discount_percent}%
                         </Badge>
@@ -221,7 +231,7 @@ export default function StudentTariffsPage() {
                     </div>
 
                     {/* Features - fixed height */}
-                    <div className="flex-1 min-h-[80px] space-y-1 pt-1 border-t border-neutral-100">
+                    <div className="flex-1 min-h-[80px] space-y-1 pt-1 border-t border-neutral-100 dark:border-neutral-800">
                       {tariff.features && tariff.features.length > 0 ? (
                         <>
                           {tariff.features.slice(0, 3).map((feature: string, idx: number) => (
@@ -236,17 +246,21 @@ export default function StudentTariffsPage() {
                                 className="w-3 h-3 flex-shrink-0"
                                 style={{ color: tariff.color }}
                               />
-                              <span className="text-neutral-600 truncate">{feature}</span>
+                              <span className="text-neutral-600 dark:text-neutral-400 truncate">
+                                {feature}
+                              </span>
                             </motion.div>
                           ))}
                           {tariff.features.length > 3 && (
-                            <span className="text-xs text-neutral-400">
+                            <span className="text-xs text-neutral-400 dark:text-neutral-500">
                               +{tariff.features.length - 3} ещё
                             </span>
                           )}
                         </>
                       ) : (
-                        <div className="text-xs text-neutral-400">Базовые возможности</div>
+                        <div className="text-xs text-neutral-400 dark:text-neutral-500">
+                          Базовые возможности
+                        </div>
                       )}
                     </div>
 
@@ -291,15 +305,17 @@ export default function StudentTariffsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <Card className="!bg-neutral-50 !border-neutral-200 mt-4">
+        <Card className="!bg-neutral-50 dark:!bg-neutral-800 !border-neutral-200 dark:!border-neutral-700 mt-4">
           <CardContent className="py-3 px-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center flex-shrink-0">
-                <CreditCard className="w-4 h-4 text-neutral-600" />
+              <div className="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
               </div>
               <div>
-                <h3 className="font-medium text-neutral-900 text-sm">Как сменить тариф?</h3>
-                <p className="text-xs text-neutral-500">
+                <h3 className="font-medium text-neutral-900 dark:text-white text-sm">
+                  Как сменить тариф?
+                </h3>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   Свяжитесь с преподавателем для смены тарифа или покупки уроков
                 </p>
               </div>

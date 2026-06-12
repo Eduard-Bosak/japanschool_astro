@@ -13,7 +13,8 @@ import {
   Bell,
   Activity,
   CreditCard,
-  Wallet
+  Wallet,
+  FolderOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -27,6 +28,7 @@ const menuItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/slots', icon: Calendar, label: 'Слоты и Запись' },
   { href: '/admin/students', icon: Users, label: 'Ученики' },
+  { href: '/admin/materials', icon: FolderOpen, label: 'Материалы' },
   { href: '/admin/tariffs', icon: CreditCard, label: 'Тарифы' },
   { href: '/admin/payments', icon: Wallet, label: 'Платежи' },
   { href: '/admin/journal', icon: ClipboardCheck, label: 'Посещаемость' },

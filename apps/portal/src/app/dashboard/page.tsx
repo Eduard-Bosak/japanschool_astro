@@ -107,7 +107,7 @@ export default function StudentDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-900" />
+        <Loader2 className="h-8 w-8 animate-spin text-neutral-900 dark:text-white" />
       </div>
     );
   }
@@ -116,10 +116,10 @@ export default function StudentDashboard() {
     <div className="space-y-6">
       {/* Welcome Header */}
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900">
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
           Привет, {displayName || user?.email?.split('@')[0] || 'Ученик'}! 👋
         </h1>
-        <p className="text-neutral-500">
+        <p className="text-neutral-500 dark:text-neutral-400">
           {upcomingLessons.length > 0
             ? `У вас ${upcomingLessons.length} предстоящих ${upcomingLessons.length === 1 ? 'урок' : upcomingLessons.length < 5 ? 'урока' : 'уроков'}`
             : 'Запишитесь на первый урок!'}
@@ -129,55 +129,59 @@ export default function StudentDashboard() {
       {/* Quick Actions */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/schedule">
-          <Card className="!bg-white !border-neutral-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm hover:shadow-md transition-all cursor-pointer group">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 bg-neutral-100 rounded-lg text-neutral-900 group-hover:scale-110 transition-transform">
+              <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg text-neutral-900 dark:text-white group-hover:scale-110 transition-transform">
                 <Calendar className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium text-sm text-neutral-900">Записаться</p>
-                <p className="text-xs text-neutral-500">на урок</p>
+                <p className="font-medium text-sm text-neutral-900 dark:text-white">Записаться</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">на урок</p>
               </div>
             </CardContent>
           </Card>
         </Link>
 
         <Link href="/dashboard/history">
-          <Card className="!bg-white !border-neutral-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm hover:shadow-md transition-all cursor-pointer group">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 bg-neutral-100 rounded-lg text-neutral-900 group-hover:scale-110 transition-transform">
+              <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg text-neutral-900 dark:text-white group-hover:scale-110 transition-transform">
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium text-sm text-neutral-900">История</p>
-                <p className="text-xs text-neutral-500">занятий</p>
+                <p className="font-medium text-sm text-neutral-900 dark:text-white">История</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">занятий</p>
               </div>
             </CardContent>
           </Card>
         </Link>
 
         <Link href="/dashboard/materials">
-          <Card className="!bg-white !border-neutral-200 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+          <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm hover:shadow-md transition-all cursor-pointer group">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 bg-neutral-100 rounded-lg text-neutral-900 group-hover:scale-110 transition-transform">
+              <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg text-neutral-900 dark:text-white group-hover:scale-110 transition-transform">
                 <BookOpen className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium text-sm text-neutral-900">Материалы</p>
-                <p className="text-xs text-neutral-500">{recentMaterials.length} файлов</p>
+                <p className="font-medium text-sm text-neutral-900 dark:text-white">Материалы</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  {recentMaterials.length} файлов
+                </p>
               </div>
             </CardContent>
           </Card>
         </Link>
 
-        <Card className="!bg-white !border-neutral-200 shadow-sm">
+        <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg text-green-600">
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">
               <TrendingUp className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-medium text-sm text-neutral-900">Пройдено</p>
-              <p className="text-xs text-neutral-500">{stats.completed} уроков</p>
+              <p className="font-medium text-sm text-neutral-900 dark:text-white">Пройдено</p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                {stats.completed} уроков
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -185,14 +189,14 @@ export default function StudentDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Upcoming Lessons */}
-        <Card className="!bg-white !border-neutral-200 shadow-sm">
+        <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-neutral-900 flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-neutral-700" />
+              <CardTitle className="text-neutral-900 dark:text-white flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
                 Ближайшие уроки
               </CardTitle>
-              <CardDescription className="text-neutral-500">
+              <CardDescription className="text-neutral-500 dark:text-neutral-400">
                 {upcomingLessons.length > 0 ? 'Ваши записи' : 'Нет запланированных уроков'}
               </CardDescription>
             </div>
@@ -200,7 +204,7 @@ export default function StudentDashboard() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-neutral-900 hover:text-neutral-700 hover:bg-neutral-100"
+                className="text-neutral-900 dark:text-white hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
                 Все <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
@@ -209,10 +213,12 @@ export default function StudentDashboard() {
           <CardContent>
             {upcomingLessons.length === 0 ? (
               <div className="text-center py-8">
-                <Sparkles className="h-12 w-12 mx-auto text-neutral-300 mb-3" />
-                <p className="text-neutral-500 mb-4">Запишитесь на первый урок!</p>
+                <Sparkles className="h-12 w-12 mx-auto text-neutral-300 dark:text-neutral-600 mb-3" />
+                <p className="text-neutral-500 dark:text-neutral-400 mb-4">
+                  Запишитесь на первый урок!
+                </p>
                 <Link href="/dashboard/schedule">
-                  <Button className="bg-neutral-900 hover:bg-neutral-800 text-white">
+                  <Button className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900">
                     Выбрать время
                   </Button>
                 </Link>
@@ -222,27 +228,27 @@ export default function StudentDashboard() {
                 {upcomingLessons.slice(0, 3).map((lesson) => (
                   <div
                     key={lesson.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 border border-neutral-200"
+                    className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700"
                   >
                     <div className="flex items-center gap-3">
                       <div className="text-center min-w-[50px]">
-                        <div className="text-lg font-bold text-neutral-900">
+                        <div className="text-lg font-bold text-neutral-900 dark:text-white">
                           {format(new Date(lesson.start_time), 'd')}
                         </div>
-                        <div className="text-xs text-neutral-500 uppercase">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400 uppercase">
                           {format(new Date(lesson.start_time), 'MMM', { locale: ru })}
                         </div>
                       </div>
                       <div>
-                        <div className="font-medium text-neutral-900">
+                        <div className="font-medium text-neutral-900 dark:text-white">
                           {getDateLabel(lesson.start_time)}
                         </div>
-                        <div className="text-sm text-neutral-500">
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400">
                           {format(new Date(lesson.start_time), 'HH:mm')}
                         </div>
                       </div>
                     </div>
-                    <Badge className="bg-green-100 text-green-700 border-green-200">
+                    <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
                       <CheckCircle2 className="w-3 h-3 mr-1" />
                       Записан
                     </Badge>
@@ -254,20 +260,22 @@ export default function StudentDashboard() {
         </Card>
 
         {/* Recent Materials */}
-        <Card className="!bg-white !border-neutral-200 shadow-sm">
+        <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-neutral-900 flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-neutral-700" />
+              <CardTitle className="text-neutral-900 dark:text-white flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
                 Новые материалы
               </CardTitle>
-              <CardDescription className="text-neutral-500">От преподавателя</CardDescription>
+              <CardDescription className="text-neutral-500 dark:text-neutral-400">
+                От преподавателя
+              </CardDescription>
             </div>
             <Link href="/dashboard/materials">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-neutral-900 hover:text-neutral-700 hover:bg-neutral-100"
+                className="text-neutral-900 dark:text-white hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
                 Все <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
@@ -276,8 +284,8 @@ export default function StudentDashboard() {
           <CardContent>
             {recentMaterials.length === 0 ? (
               <div className="text-center py-8">
-                <BookOpen className="h-12 w-12 mx-auto text-neutral-300 mb-3" />
-                <p className="text-neutral-500">Пока нет материалов</p>
+                <BookOpen className="h-12 w-12 mx-auto text-neutral-300 dark:text-neutral-600 mb-3" />
+                <p className="text-neutral-500 dark:text-neutral-400">Пока нет материалов</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -287,22 +295,22 @@ export default function StudentDashboard() {
                     href={material.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 border border-neutral-200 hover:border-neutral-400 transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-neutral-200 text-neutral-700">
+                      <div className="p-2 rounded-lg bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300">
                         <BookOpen className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="font-medium text-neutral-900 group-hover:text-neutral-700 transition-colors line-clamp-1">
+                        <div className="font-medium text-neutral-900 dark:text-white group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors line-clamp-1">
                           {material.title}
                         </div>
-                        <div className="text-xs text-neutral-500">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">
                           {format(new Date(material.created_at), 'd MMM', { locale: ru })}
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-neutral-400 group-hover:text-neutral-700 transition-colors" />
+                    <ArrowRight className="h-4 w-4 text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors" />
                   </a>
                 ))}
               </div>

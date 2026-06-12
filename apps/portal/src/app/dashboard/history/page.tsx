@@ -66,7 +66,7 @@ export default function HistoryPage() {
 
     if (slotTime > now) {
       return (
-        <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+        <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">
           <Clock className="w-3 h-3 mr-1" />
           Предстоит
         </Badge>
@@ -75,7 +75,7 @@ export default function HistoryPage() {
 
     if (slot.status === 'completed') {
       return (
-        <Badge className="bg-green-100 text-green-700 border-green-200">
+        <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
           <CheckCircle2 className="w-3 h-3 mr-1" />
           Завершён
         </Badge>
@@ -84,7 +84,7 @@ export default function HistoryPage() {
 
     if (slot.status === 'missed') {
       return (
-        <Badge className="bg-red-100 text-red-700 border-red-200">
+        <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">
           <XCircle className="w-3 h-3 mr-1" />
           Пропущен
         </Badge>
@@ -92,7 +92,7 @@ export default function HistoryPage() {
     }
 
     return (
-      <Badge className="bg-neutral-100 text-neutral-600 border-neutral-200">
+      <Badge className="bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 border-neutral-200 dark:border-neutral-600">
         <Clock className="w-3 h-3 mr-1" />
         Ожидание
       </Badge>
@@ -113,7 +113,7 @@ export default function HistoryPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-900" />
+        <Loader2 className="h-8 w-8 animate-spin text-neutral-900 dark:text-white" />
       </div>
     );
   }
@@ -122,12 +122,14 @@ export default function HistoryPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">История занятий</h1>
-          <p className="text-neutral-500">Ваши прошедшие и предстоящие уроки</p>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">История занятий</h1>
+          <p className="text-neutral-500 dark:text-neutral-400">
+            Ваши прошедшие и предстоящие уроки
+          </p>
         </div>
         <Button
           onClick={exportToCalendar}
-          className="bg-neutral-900 hover:bg-neutral-800 text-white"
+          className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900"
         >
           <Download className="mr-2 h-4 w-4" />
           Экспорт в календарь
@@ -135,7 +137,7 @@ export default function HistoryPage() {
       </div>
 
       {/* Filters */}
-      <Card className="!bg-white !border-neutral-200 shadow-sm">
+      <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-2">
             {[
@@ -151,8 +153,8 @@ export default function HistoryPage() {
                 onClick={() => setFilter(item.value as FilterType)}
                 className={
                   filter === item.value
-                    ? 'bg-neutral-900 text-white hover:bg-neutral-800'
-                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+                    ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
                 }
               >
                 {item.label}
@@ -163,10 +165,10 @@ export default function HistoryPage() {
       </Card>
 
       {/* History List */}
-      <Card className="!bg-white !border-neutral-200 shadow-sm">
+      <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-neutral-900 flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-neutral-700" />
+          <CardTitle className="text-neutral-900 dark:text-white flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
             Занятия ({filteredHistory.length})
           </CardTitle>
         </CardHeader>
@@ -182,22 +184,22 @@ export default function HistoryPage() {
               {filteredHistory.map((slot) => (
                 <div
                   key={slot.id}
-                  className="flex items-center justify-between p-4 rounded-xl bg-neutral-50 border border-neutral-200"
+                  className="flex items-center justify-between p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700"
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-neutral-900">
+                      <div className="text-2xl font-bold text-neutral-900 dark:text-white">
                         {format(new Date(slot.start_time), 'd')}
                       </div>
-                      <div className="text-xs text-neutral-500 uppercase">
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400 uppercase">
                         {format(new Date(slot.start_time), 'MMM', { locale: ru })}
                       </div>
                     </div>
                     <div>
-                      <div className="font-medium text-neutral-900">
+                      <div className="font-medium text-neutral-900 dark:text-white">
                         {format(new Date(slot.start_time), 'EEEE', { locale: ru })}
                       </div>
-                      <div className="text-sm text-neutral-500">
+                      <div className="text-sm text-neutral-500 dark:text-neutral-400">
                         {format(new Date(slot.start_time), 'HH:mm')} -{' '}
                         {format(
                           new Date(new Date(slot.start_time).getTime() + 60 * 60 * 1000),

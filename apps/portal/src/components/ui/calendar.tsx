@@ -76,7 +76,7 @@ function Calendar({
         table: 'w-full border-collapse',
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
-          'text-neutral-600 rounded-md flex-1 font-semibold text-[0.8rem] select-none',
+          'text-neutral-600 dark:text-neutral-400 rounded-md flex-1 font-semibold text-[0.8rem] select-none',
           defaultClassNames.weekday
         ),
         week: cn('flex w-full mt-2', defaultClassNames.week),
@@ -157,18 +157,21 @@ function CalendarDayButton({
         // Base styles - neutral
         'flex aspect-square size-auto w-full min-w-8 items-center justify-center',
         'text-sm font-medium rounded-md transition-colors',
-        // Default state - dark text for contrast
-        'bg-transparent text-neutral-800',
-        // Hover - light gray
-        'hover:bg-neutral-200 hover:text-neutral-900',
-        // Today - black background
-        isToday && 'bg-neutral-900 text-white font-bold shadow-md',
+        // Default state - dark text for contrast (light mode) / light text (dark mode)
+        'bg-transparent text-neutral-800 dark:text-neutral-200',
+        // Hover - light gray (light mode) / dark gray (dark mode)
+        'hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-900 dark:hover:text-white',
+        // Today - black background (light) / white background (dark)
+        isToday &&
+          'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-bold shadow-md',
         // Selected (not today) - gray background
-        isSelected && !isToday && 'bg-neutral-200 text-neutral-900 font-semibold',
+        isSelected &&
+          !isToday &&
+          'bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white font-semibold',
         // Outside days
-        modifiers.outside && 'text-neutral-400',
+        modifiers.outside && 'text-neutral-400 dark:text-neutral-600',
         // Disabled
-        modifiers.disabled && 'text-neutral-300 pointer-events-none',
+        modifiers.disabled && 'text-neutral-300 dark:text-neutral-600 pointer-events-none',
         className
       )}
       {...props}

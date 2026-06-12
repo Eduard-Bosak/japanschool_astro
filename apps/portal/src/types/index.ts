@@ -114,6 +114,73 @@ export type ActivityLog = {
 };
 
 /**
+ * Storage file metadata
+ */
+export type StorageFile = {
+  id: string;
+  name: string;
+  storage_path: string;
+  mime_type: string | null;
+  size_bytes: number;
+  category: string;
+  description: string | null;
+  uploaded_by: string | null;
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+/**
+ * Student material assignment
+ */
+export type StudentMaterial = {
+  id: string;
+  student_id: string;
+  file_id: string;
+  is_viewed: boolean;
+  viewed_at: string | null;
+  assigned_at: string;
+  // Joined data
+  file?: StorageFile;
+  student?: {
+    email: string;
+    display_name: string | null;
+  };
+};
+
+/**
+ * File category for materials
+ */
+export type FileCategory =
+  | 'general'
+  | 'hiragana'
+  | 'katakana'
+  | 'kanji'
+  | 'grammar'
+  | 'vocabulary'
+  | 'reading'
+  | 'listening'
+  | 'n5'
+  | 'n4'
+  | 'n3'
+  | 'homework';
+
+export const FILE_CATEGORIES: { value: FileCategory; label: string }[] = [
+  { value: 'general', label: 'Общее' },
+  { value: 'hiragana', label: 'Хирагана' },
+  { value: 'katakana', label: 'Катакана' },
+  { value: 'kanji', label: 'Кандзи' },
+  { value: 'grammar', label: 'Грамматика' },
+  { value: 'vocabulary', label: 'Словарь' },
+  { value: 'reading', label: 'Чтение' },
+  { value: 'listening', label: 'Аудирование' },
+  { value: 'n5', label: 'JLPT N5' },
+  { value: 'n4', label: 'JLPT N4' },
+  { value: 'n3', label: 'JLPT N3' },
+  { value: 'homework', label: 'Домашнее задание' }
+];
+
+/**
  * Notification settings
  */
 export type NotificationSettings = {

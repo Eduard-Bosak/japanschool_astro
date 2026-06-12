@@ -157,12 +157,12 @@ export function StudentSidebar({ className, onClick }: SidebarProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="space-y-2">
           <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"
-            className="flex-1 justify-start text-neutral-400 hover:text-red-400 hover:bg-neutral-800"
+            className="w-full justify-start text-neutral-400 hover:text-red-400 hover:bg-neutral-800"
             onClick={handleLogout}
           >
             <LogOut className="mr-2 h-4 w-4" />

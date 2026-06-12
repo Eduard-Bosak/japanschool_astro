@@ -95,7 +95,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-900" />
+        <Loader2 className="h-8 w-8 animate-spin text-neutral-900 dark:text-white" />
       </div>
     );
   }
@@ -103,24 +103,24 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900">Профиль</h1>
-        <p className="text-neutral-500">Управление личными данными</p>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Профиль</h1>
+        <p className="text-neutral-500 dark:text-neutral-400">Управление личными данными</p>
       </div>
 
       {/* Profile Info */}
-      <Card className="!bg-white !border-neutral-200 shadow-sm">
+      <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-neutral-900 flex items-center gap-2">
-            <User className="h-5 w-5 text-neutral-700" />
+          <CardTitle className="text-neutral-900 dark:text-white flex items-center gap-2">
+            <User className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
             Личные данные
           </CardTitle>
-          <CardDescription className="text-neutral-500">
+          <CardDescription className="text-neutral-500 dark:text-neutral-400">
             Обновите ваше имя для отображения
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-neutral-700">
+            <Label htmlFor="email" className="text-neutral-700 dark:text-neutral-300">
               Email
             </Label>
             <div className="flex items-center gap-2">
@@ -129,13 +129,13 @@ export default function ProfilePage() {
                 id="email"
                 value={user?.email || ''}
                 disabled
-                className="bg-neutral-100 border-neutral-200 text-neutral-500"
+                className="bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="displayName" className="text-neutral-700">
+            <Label htmlFor="displayName" className="text-neutral-700 dark:text-neutral-300">
               Отображаемое имя
             </Label>
             <Input
@@ -143,14 +143,14 @@ export default function ProfilePage() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Введите ваше имя"
-              className="bg-white border-neutral-200 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900"
+              className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-neutral-900 dark:focus:border-neutral-500"
             />
           </div>
 
           <Button
             onClick={saveProfile}
             disabled={saving}
-            className="bg-neutral-900 hover:bg-neutral-800 text-white"
+            className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900"
           >
             {saving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -163,19 +163,19 @@ export default function ProfilePage() {
       </Card>
 
       {/* Change Password */}
-      <Card className="!bg-white !border-neutral-200 shadow-sm">
+      <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-neutral-900 flex items-center gap-2">
-            <Key className="h-5 w-5 text-neutral-700" />
+          <CardTitle className="text-neutral-900 dark:text-white flex items-center gap-2">
+            <Key className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
             Смена пароля
           </CardTitle>
-          <CardDescription className="text-neutral-500">
+          <CardDescription className="text-neutral-500 dark:text-neutral-400">
             Обновите пароль для входа в аккаунт
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="newPassword" className="text-neutral-700">
+            <Label htmlFor="newPassword" className="text-neutral-700 dark:text-neutral-300">
               Новый пароль
             </Label>
             <Input
@@ -184,12 +184,12 @@ export default function ProfilePage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Минимум 6 символов"
-              className="bg-white border-neutral-200 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900"
+              className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-neutral-900 dark:focus:border-neutral-500"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-neutral-700">
+            <Label htmlFor="confirmPassword" className="text-neutral-700 dark:text-neutral-300">
               Подтвердите пароль
             </Label>
             <Input
@@ -198,14 +198,14 @@ export default function ProfilePage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Повторите пароль"
-              className="bg-white border-neutral-200 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900"
+              className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-neutral-900 dark:focus:border-neutral-500"
             />
           </div>
 
           <Button
             onClick={changePassword}
             disabled={saving || !newPassword || !confirmPassword}
-            className="bg-neutral-900 hover:bg-neutral-800 text-white"
+            className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900"
           >
             {saving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

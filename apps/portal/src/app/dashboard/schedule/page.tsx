@@ -172,19 +172,19 @@ export default function SchedulePage() {
   return (
     <div className="h-full flex flex-col">
       <div className="flex-shrink-0 mb-2">
-        <h1 className="text-lg font-bold text-neutral-900">Расписание</h1>
+        <h1 className="text-lg font-bold text-neutral-900 dark:text-white">Расписание</h1>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2 flex-1 min-h-0">
         {/* Calendar Card */}
-        <Card className="!bg-white !border-neutral-200 shadow-sm flex flex-col">
+        <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm flex flex-col">
           <CardHeader className="flex flex-row items-center justify-between py-3">
-            <CardTitle className="text-neutral-900 text-base">Календарь</CardTitle>
+            <CardTitle className="text-neutral-900 dark:text-white text-base">Календарь</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
+                className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 onClick={() => {
                   const prev = new Date(currentMonth);
                   prev.setMonth(prev.getMonth() - 1);
@@ -193,13 +193,13 @@ export default function SchedulePage() {
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <span className="text-sm font-medium min-w-[120px] text-center text-neutral-700">
+              <span className="text-sm font-medium min-w-[120px] text-center text-neutral-700 dark:text-neutral-300">
                 {format(currentMonth, 'LLLL yyyy', { locale: ru })}
               </span>
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
+                className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 onClick={() => {
                   const next = new Date(currentMonth);
                   next.setMonth(next.getMonth() + 1);
@@ -218,7 +218,7 @@ export default function SchedulePage() {
               month={currentMonth}
               onMonthChange={setCurrentMonth}
               locale={ru}
-              className="rounded-md w-full [&_.rdp-day]:text-neutral-900 [&_.rdp-day]:font-medium [&_.rdp-day_button]:text-neutral-900 [&_.rdp-day_button:hover]:bg-neutral-200 [&_.rdp-day_button.rdp-day_selected]:bg-neutral-900 [&_.rdp-day_button.rdp-day_selected]:text-white [&_.rdp-head_cell]:text-neutral-600 [&_.rdp-head_cell]:font-semibold [&_.rdp-day_outside]:text-neutral-400 [&_.rdp-nav_button]:text-neutral-700 [&_.rdp-caption]:text-neutral-900"
+              className="rounded-md w-full"
               modifiers={{
                 hasSlots: (day) => {
                   const daySlots = monthSlots.filter((s) => isSameDay(new Date(s.start_time), day));
@@ -231,29 +231,31 @@ export default function SchedulePage() {
             />
             <div className="mt-2 flex items-center gap-4 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-neutral-900" />
-                <span className="text-neutral-500">Есть слоты</span>
+                <div className="w-3 h-3 rounded-full bg-neutral-900 dark:bg-white" />
+                <span className="text-neutral-500 dark:text-neutral-400">Есть слоты</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="text-neutral-500">Вы записаны</span>
+                <span className="text-neutral-500 dark:text-neutral-400">Вы записаны</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Slots Card */}
-        <Card className="!bg-white !border-neutral-200 shadow-sm flex flex-col overflow-hidden">
+        <Card className="!bg-white dark:!bg-neutral-900 !border-neutral-200 dark:!border-neutral-800 shadow-sm flex flex-col overflow-hidden">
           <CardHeader className="py-3 flex-shrink-0">
-            <CardTitle className="text-neutral-900 text-base">
+            <CardTitle className="text-neutral-900 dark:text-white text-base">
               Слоты на {date ? format(date, 'd MMMM', { locale: ru }) : '...'}
             </CardTitle>
-            <CardDescription className="text-neutral-500 text-sm">Выберите время</CardDescription>
+            <CardDescription className="text-neutral-500 dark:text-neutral-400 text-sm">
+              Выберите время
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 overflow-y-auto">
             {loading ? (
               <div className="flex justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-neutral-900" />
+                <Loader2 className="h-6 w-6 animate-spin text-neutral-900 dark:text-white" />
               </div>
             ) : slots.length === 0 ? (
               <div className="text-center py-8 text-neutral-400 text-sm">Нет доступных слотов</div>
@@ -268,26 +270,28 @@ export default function SchedulePage() {
                       key={slot.id}
                       className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
                         isMyBooking
-                          ? 'bg-green-50 border-green-300'
+                          ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-800'
                           : isAvailable
-                            ? 'bg-white border-neutral-300 hover:border-neutral-500 hover:shadow-sm'
-                            : 'bg-neutral-100 border-neutral-300'
+                            ? 'bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 hover:border-neutral-500 dark:hover:border-neutral-500 hover:shadow-sm'
+                            : 'bg-neutral-100 dark:bg-neutral-800/50 border-neutral-300 dark:border-neutral-700'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`text-lg font-bold font-mono ${isMyBooking ? 'text-green-700' : isAvailable ? 'text-neutral-900' : 'text-neutral-500'}`}
+                          className={`text-lg font-bold font-mono ${isMyBooking ? 'text-green-700 dark:text-green-400' : isAvailable ? 'text-neutral-900 dark:text-white' : 'text-neutral-500 dark:text-neutral-400'}`}
                         >
                           {format(new Date(slot.start_time), 'HH:mm')}
                         </div>
                         {isMyBooking && (
-                          <span className="flex items-center text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                          <span className="flex items-center text-xs font-medium text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                             <CheckCircle2 className="w-3 h-3 mr-1" />
                             Записан
                           </span>
                         )}
                         {!isAvailable && !isMyBooking && (
-                          <span className="text-xs font-medium text-neutral-500">Занято</span>
+                          <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                            Занято
+                          </span>
                         )}
                       </div>
 
@@ -295,7 +299,7 @@ export default function SchedulePage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-red-500 hover:text-red-600 hover:bg-red-50 h-7 px-2 text-xs"
+                          className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 px-2 text-xs"
                           onClick={() => cancelBooking(slot.id)}
                         >
                           Отменить
@@ -303,7 +307,7 @@ export default function SchedulePage() {
                       ) : isAvailable ? (
                         <Button
                           size="sm"
-                          className="bg-neutral-900 hover:bg-neutral-800 text-white h-7 px-3 text-xs"
+                          className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 h-7 px-3 text-xs"
                           onClick={() => bookSlot(slot.id)}
                         >
                           Записаться
@@ -312,7 +316,7 @@ export default function SchedulePage() {
                         <Button
                           size="sm"
                           disabled
-                          className="bg-neutral-200 text-neutral-400 h-7 px-2 text-xs"
+                          className="bg-neutral-200 dark:bg-neutral-700 text-neutral-400 h-7 px-2 text-xs"
                         >
                           Занято
                         </Button>
